@@ -1,0 +1,82 @@
+<?php
+
+/*
+ * HTML5 DOMDocument PHP library (extends DOMDocument)
+ * https://github.com/ivopetkov/html5-dom-document-php
+ * Copyright 2016, Ivo Petkov
+ * Free to use under the MIT license.
+ */
+
+/**
+ * @runTestsInSeparateProcesses
+ */
+class Test extends PHPUnit_Framework_TestCase
+{
+
+    /**
+     * 
+     */
+    public function testSaveHTML()
+    {
+        $bodyContent = '<div>hello</div>';
+
+        $testSource = function($source, $expectedSource) {
+            $dom = new HTML5DOMDocument();
+            $dom->loadHTML($source);
+            $this->assertTrue($expectedSource === $dom->saveHTML());
+        };
+
+        $expectedSource = '<!DOCTYPE html><html><body>' . $bodyContent . '</body></html>';
+        $testSource('<!DOCTYPE html><html><body>' . $bodyContent . '</body></html>', $expectedSource);
+        $testSource('<html><body>' . $bodyContent . '</body></html>', $expectedSource);
+        $testSource('<body>' . $bodyContent . '</body>', $expectedSource);
+        $testSource($bodyContent, $expectedSource);
+
+        $expectedSource = '<!DOCTYPE html><html><head></head><body>' . $bodyContent . '</body></html>';
+        $testSource('<!DOCTYPE html><html><head></head><body>' . $bodyContent . '</body></html>', $expectedSource);
+        $testSource('<html><head></head><body>' . $bodyContent . '</body></html>', $expectedSource);
+    }
+
+    /**
+     * 
+     */
+    public function testUTF()
+    {
+        $bodyContent = '<div>hello</div>'
+                . '<div>здравей</div>'
+                . '<div>你好</div>';
+        $expectedSource = '<!DOCTYPE html><html><body>' . $bodyContent . '</body></html>';
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($bodyContent);
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+    }
+
+    /**
+     * 
+     */
+    public function testNbspAndWhiteSpace()
+    {
+        $bodyContent = '<div> &nbsp; &nbsp; &nbsp; </div>'
+                . '<div> &nbsp;&nbsp;&nbsp; </div>'
+                . '<div> &nbsp; <span>&nbsp;</span></div>'
+                . '<div>text1 ' . "\n" . 'text2 </div>';
+        $expectedSource = '<!DOCTYPE html><html><body>' . $bodyContent . '</body></html>';
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($bodyContent);
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+    }
+
+    /**
+     * 
+     */
+    public function testInserHTML()
+    {
+        $source = '<!DOCTYPE html><html><body>text1</body></html>';
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($source);
+        $dom->insertHTML('<html><head><meta custom="value"></head><body><div>text2</div></body></html>');
+        $expectedSource = '<!DOCTYPE html><html><head><meta custom="value"></head><body>text1<div>text2</div></body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+    }
+
+}
