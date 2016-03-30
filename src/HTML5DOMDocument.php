@@ -193,10 +193,23 @@ class HTML5DOMDocument extends DOMDocument
     }
 
     /**
+     * Creates an element that will be replaces by the new body in insertHTML
+     * @param string $name
+     * @return DOMElement 
+     */
+    public function createInsertTarget($name)
+    {
+        $element = $this->createElement('html5-dom-document-insert-target');
+        $element->setAttribute('name', $name);
+        return $element;
+    }
+
+    /**
      * Inserts a HTML document into the current document. The elements from the head and the body will be moved to their proper locations.
      * @param string $source
+     * @param string $target afterBodyBegin or beforeBodyEnd or target name
      */
-    public function insertHTML($source)
+    public function insertHTML($source, $target = 'beforeBodyEnd')
     {
         $domDocument = new HTML5DOMDocument();
         $domDocument->loadHTML($source);
@@ -224,8 +237,34 @@ class HTML5DOMDocument extends DOMDocument
             $currentDomBodyElement = $this->getElementsByTagName('body')->item(0);
             $bodyElementChildren = $bodyElement->childNodes;
             $bodyElementChildrenCount = $bodyElementChildren->length;
-            for ($i = 0; $i < $bodyElementChildrenCount; $i++) {
-                $currentDomBodyElement->appendChild($this->importNode($bodyElementChildren->item($i), true));
+            if ($target === 'afterBodyBegin') {
+                for ($i = $bodyElementChildrenCount - 1; $i >= 0; $i--) {
+                    $newNode = $this->importNode($bodyElementChildren->item($i), true);
+                    if ($currentDomBodyElement->firstChild === null) {
+                        $currentDomBodyElement->appendChild($newNode);
+                    } else {
+                        $currentDomBodyElement->insertBefore($newNode, $currentDomBodyElement->firstChild);
+                    }
+                }
+            } else if ($target === 'beforeBodyEnd') {
+                for ($i = 0; $i < $bodyElementChildrenCount; $i++) {
+                    $newNode = $this->importNode($bodyElementChildren->item($i), true);
+                    $currentDomBodyElement->appendChild($newNode);
+                }
+            } else {
+                $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
+                $targetElementsCount = $targetElements->length;
+                for ($j = 0; $j < $targetElementsCount; $j++) {
+                    $targetElement = $targetElements->item($j);
+                    if ($targetElement->getAttribute('name') === $target) {
+                        for ($i = 0; $i < $bodyElementChildrenCount; $i++) {
+                            $newNode = $this->importNode($bodyElementChildren->item($i), true);
+                            $targetElement->parentNode->insertBefore($newNode, $targetElement);
+                        }
+                    }
+                    $targetElement->parentNode->removeChild($targetElement);
+                    break;
+                }
             }
         }
     }

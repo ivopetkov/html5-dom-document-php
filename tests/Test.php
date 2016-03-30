@@ -71,11 +71,72 @@ class Test extends PHPUnit_Framework_TestCase
      */
     public function testInserHTML()
     {
-        $source = '<!DOCTYPE html><html><body>text1</body></html>';
+        $source = '<!DOCTYPE html><html><body>'
+                . 'text1'
+                . '</body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($source);
-        $dom->insertHTML('<html><head><meta custom="value"></head><body><div>text2</div></body></html>');
-        $expectedSource = '<!DOCTYPE html><html><head><meta custom="value"></head><body>text1<div>text2</div></body></html>';
+        $dom->insertHTML('<html><head><meta custom="value"></head><body>'
+                . '<div>text2</div>'
+                . '<div>text3</div>'
+                . '</body></html>');
+        $expectedSource = '<!DOCTYPE html><html><head><meta custom="value"></head><body>'
+                . 'text1'
+                . '<div>text2</div>'
+                . '<div>text3</div>'
+                . '</body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        $source = '<!DOCTYPE html><html><body>'
+                . 'text1'
+                . '</body></html>';
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($source);
+        $dom->insertHTML('<html><head><meta custom="value"></head><body>'
+                . '<div>text2</div>'
+                . '<div>text3</div>'
+                . '</body></html>', 'afterBodyBegin');
+        $expectedSource = '<!DOCTYPE html><html><head><meta custom="value"></head><body>'
+                . '<div>text2</div>'
+                . '<div>text3</div>'
+                . 'text1'
+                . '</body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+        
+        $source = '<!DOCTYPE html><html><body></body></html>';
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($source);
+        $dom->insertHTML('<html><head><meta custom="value"></head><body>'
+                . '<div>text1</div>'
+                . '<div>text2</div>'
+                . '</body></html>', 'afterBodyBegin');
+        $expectedSource = '<!DOCTYPE html><html><head><meta custom="value"></head><body>'
+                . '<div>text1</div>'
+                . '<div>text2</div>'
+                . '</body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        $source = '<!DOCTYPE html><html><body>'
+                . '<div></div>'
+                . '<div></div>'
+                . '<div></div>'
+                . '</body></html>';
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($source);
+        $secondDiv = $dom->querySelectorAll('div')->item(1);
+        $secondDiv->appendChild($dom->createInsertTarget('name1'));
+        $dom->insertHTML('<html><head><meta custom="value"></head><body>'
+                . '<div>text1</div>'
+                . '<div>text2</div>'
+                . '</body></html>', 'name1');
+        $expectedSource = '<!DOCTYPE html><html><head><meta custom="value"></head><body>'
+                . '<div></div>'
+                . '<div>'
+                . '<div>text1</div>'
+                . '<div>text2</div>'
+                . '</div>'
+                . '<div></div>'
+                . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
