@@ -7,10 +7,12 @@
  * Free to use under the MIT license.
  */
 
+namespace IvoPetkov;
+
 /**
  * 
  */
-class HTML5DOMElement extends DOMElement
+class HTML5DOMElement extends \DOMElement
 {
 
     function __get($name)

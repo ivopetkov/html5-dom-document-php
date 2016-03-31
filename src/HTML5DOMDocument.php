@@ -7,10 +7,12 @@
  * Free to use under the MIT license.
  */
 
+namespace IvoPetkov;
+
 /**
  * 
  */
-class HTML5DOMDocument extends DOMDocument
+class HTML5DOMDocument extends \DOMDocument
 {
 
     /**
@@ -21,7 +23,7 @@ class HTML5DOMDocument extends DOMDocument
     function __construct($version = null, $encoding = null)
     {
         parent::__construct($version, $encoding);
-        $this->registerNodeClass('DOMElement', 'HTML5DOMElement');
+        $this->registerNodeClass('DOMElement', '\IvoPetkov\HTML5DOMElement');
     }
 
     /**
@@ -42,7 +44,7 @@ class HTML5DOMDocument extends DOMDocument
         if (stripos($source, '<!DOCTYPE') === false) {
             $source = '<!DOCTYPE html>' . $source;
         }
-        $source = str_replace('&nbsp;', 'html5-dom-document-internal-nbsp-prefix<html5-dom-document-internal-nbsp></html5-dom-document-internal-nbsp>html5-dom-document-internal-nbsp-suffix', $source);
+        $source = str_replace('&nbsp;', 'html5-dom-document-internal-nbsp', $source);
         $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $options);
         if ($internalErrorsOptionValue === false) {
             libxml_use_internal_errors(false);
@@ -58,25 +60,6 @@ class HTML5DOMDocument extends DOMDocument
             }
         }
 
-        for ($c = 0; $c < 1000; $c++) {
-            $nbspElements = $this->getElementsByTagName('html5-dom-document-internal-nbsp');
-            $nbspElementsCount = $nbspElements->length;
-            if ($nbspElementsCount === 0) {
-                break;
-            }
-            for ($i = 0; $i < $nbspElementsCount; $i++) {
-                $nbspElement = $nbspElements->item($i);
-                if ($nbspElement !== null) {
-                    if ($nbspElement->previousSibling instanceof DOMText) {
-                        $nbspElement->parentNode->replaceChild($this->createTextNode(substr($nbspElement->previousSibling->nodeValue, 0, -strlen('html5-dom-document-internal-nbsp-prefix'))), $nbspElement->previousSibling);
-                    }
-                    if ($nbspElement->nextSibling instanceof DOMText) {
-                        $nbspElement->parentNode->replaceChild($this->createTextNode(substr($nbspElement->nextSibling->nodeValue, strlen('html5-dom-document-internal-nbsp-suffix'))), $nbspElement->nextSibling);
-                    }
-                    $nbspElement->parentNode->replaceChild($this->createEntityReference('nbsp'), $nbspElement);
-                }
-            }
-        }
         return true;
     }
 
@@ -115,7 +98,7 @@ class HTML5DOMDocument extends DOMDocument
         $headElements = $this->getElementsByTagName('head');
         $removeHeadElement = false;
         if ($headElements->length === 0) {
-            $headElement = new DOMElement('head');
+            $headElement = new \DOMElement('head');
             $this->getElementsByTagName('html')->item(0)->insertBefore($headElement, $this->getElementsByTagName('body')->item(0));
             $removeHeadElement = true;
         }
@@ -147,9 +130,8 @@ class HTML5DOMDocument extends DOMDocument
             $html = str_replace('<head></head>', '', $html);
         }
         $html = str_replace('html5-dom-document-internal-content', '', $html);
-        $html = str_replace("\n<html", '<html', $html);
 
-        $html = str_replace('<html5-dom-document-internal-nbsp></html5-dom-document-internal-nbsp>', '&nbsp;', $html);
+        $html = str_replace('html5-dom-document-internal-nbsp', '&nbsp;', $html);
 
         $voidElementsList = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
         foreach ($voidElementsList as $elementName) {
@@ -170,7 +152,7 @@ class HTML5DOMDocument extends DOMDocument
     /**
      * Returns the first document element matching the selector
      * @param string $selector
-     * @return DOMElement|null
+     * @return \DOMElement|null
      */
     public function querySelector($selector)
     {
@@ -195,7 +177,7 @@ class HTML5DOMDocument extends DOMDocument
     /**
      * Creates an element that will be replaces by the new body in insertHTML
      * @param string $name
-     * @return DOMElement 
+     * @return \DOMElement 
      */
     public function createInsertTarget($name)
     {
@@ -223,7 +205,7 @@ class HTML5DOMDocument extends DOMDocument
                 if ($currentDomHeadElement === null) {
                     $currentDomHeadElements = $this->getElementsByTagName('head');
                     if ($currentDomHeadElements->length === 0) {
-                        $currentDomHeadElement = new DOMElement('head');
+                        $currentDomHeadElement = new \DOMElement('head');
                         $this->getElementsByTagName('html')->item(0)->insertBefore($currentDomHeadElement, $this->getElementsByTagName('body')->item(0));
                     }
                     $currentDomHeadElement = $this->getElementsByTagName('head')->item(0);

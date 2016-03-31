@@ -7,6 +7,8 @@
  * Free to use under the MIT license.
  */
 
+use IvoPetkov\HTML5DOMDocument;
+
 /**
  * @runTestsInSeparateProcesses
  */
@@ -26,13 +28,13 @@ class Test extends PHPUnit_Framework_TestCase
             $this->assertTrue($expectedSource === $dom->saveHTML());
         };
 
-        $expectedSource = '<!DOCTYPE html><html><body>' . $bodyContent . '</body></html>';
+        $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>' . $bodyContent . '</body></html>';
         $testSource('<!DOCTYPE html><html><body>' . $bodyContent . '</body></html>', $expectedSource);
         $testSource('<html><body>' . $bodyContent . '</body></html>', $expectedSource);
         $testSource('<body>' . $bodyContent . '</body>', $expectedSource);
         $testSource($bodyContent, $expectedSource);
 
-        $expectedSource = '<!DOCTYPE html><html><head></head><body>' . $bodyContent . '</body></html>';
+        $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head></head><body>' . $bodyContent . '</body></html>';
         $testSource('<!DOCTYPE html><html><head></head><body>' . $bodyContent . '</body></html>', $expectedSource);
         $testSource('<html><head></head><body>' . $bodyContent . '</body></html>', $expectedSource);
     }
@@ -45,7 +47,7 @@ class Test extends PHPUnit_Framework_TestCase
         $bodyContent = '<div>hello</div>'
                 . '<div>здравей</div>'
                 . '<div>你好</div>';
-        $expectedSource = '<!DOCTYPE html><html><body>' . $bodyContent . '</body></html>';
+        $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>' . $bodyContent . '</body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($bodyContent);
         $this->assertTrue($expectedSource === $dom->saveHTML());
@@ -60,7 +62,7 @@ class Test extends PHPUnit_Framework_TestCase
                 . '<div> &nbsp;&nbsp;&nbsp; </div>'
                 . '<div> &nbsp; <span>&nbsp;</span></div>'
                 . '<div>text1 ' . "\n" . 'text2 </div>';
-        $expectedSource = '<!DOCTYPE html><html><body>' . $bodyContent . '</body></html>';
+        $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>' . $bodyContent . '</body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($bodyContent);
         $this->assertTrue($expectedSource === $dom->saveHTML());
@@ -80,7 +82,7 @@ class Test extends PHPUnit_Framework_TestCase
                 . '<div>text2</div>'
                 . '<div>text3</div>'
                 . '</body></html>');
-        $expectedSource = '<!DOCTYPE html><html><head><meta custom="value"></head><body>'
+        $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head><meta custom="value"></head><body>'
                 . 'text1'
                 . '<div>text2</div>'
                 . '<div>text3</div>'
@@ -96,13 +98,13 @@ class Test extends PHPUnit_Framework_TestCase
                 . '<div>text2</div>'
                 . '<div>text3</div>'
                 . '</body></html>', 'afterBodyBegin');
-        $expectedSource = '<!DOCTYPE html><html><head><meta custom="value"></head><body>'
+        $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head><meta custom="value"></head><body>'
                 . '<div>text2</div>'
                 . '<div>text3</div>'
                 . 'text1'
                 . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
-        
+
         $source = '<!DOCTYPE html><html><body></body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($source);
@@ -110,7 +112,7 @@ class Test extends PHPUnit_Framework_TestCase
                 . '<div>text1</div>'
                 . '<div>text2</div>'
                 . '</body></html>', 'afterBodyBegin');
-        $expectedSource = '<!DOCTYPE html><html><head><meta custom="value"></head><body>'
+        $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head><meta custom="value"></head><body>'
                 . '<div>text1</div>'
                 . '<div>text2</div>'
                 . '</body></html>';
@@ -129,7 +131,7 @@ class Test extends PHPUnit_Framework_TestCase
                 . '<div>text1</div>'
                 . '<div>text2</div>'
                 . '</body></html>', 'name1');
-        $expectedSource = '<!DOCTYPE html><html><head><meta custom="value"></head><body>'
+        $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head><meta custom="value"></head><body>'
                 . '<div></div>'
                 . '<div>'
                 . '<div>text1</div>'
