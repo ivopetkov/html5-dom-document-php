@@ -2,7 +2,7 @@
 
 **An HTML5 parser for PHP**
 
-HTML5DOMDocument extends the native [DOMDocument](http://php.net/manual/en/class.domdocument.php) library and fixes some bugs, and adds some new functionality. Learn more at [https://ivopetkov.com/](https://ivopetkov.com/).
+HTML5DOMDocument extends the native [DOMDocument](http://php.net/manual/en/class.domdocument.php) library. It fixes some bugs and adds some new functionality. Learn more at [https://ivopetkov.com/b/a-better-html5-parser-for-php/](https://ivopetkov.com/b/a-better-html5-parser-for-php/).
 
 ## Familiar
 
