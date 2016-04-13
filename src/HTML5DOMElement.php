@@ -38,5 +38,10 @@ class HTML5DOMElement extends \DOMElement
         }
         return $attributes;
     }
+    
+    function __toString()
+    {
+        return $this->outerHTML;
+    }
 
 }
