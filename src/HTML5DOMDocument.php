@@ -24,6 +24,7 @@ class HTML5DOMDocument extends \DOMDocument
     {
         parent::__construct($version, $encoding);
         $this->registerNodeClass('DOMElement', '\IvoPetkov\HTML5DOMElement');
+        $this->loadHTML('<html><body></body></html>');
     }
 
     /**
