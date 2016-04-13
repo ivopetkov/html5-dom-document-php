@@ -165,14 +165,30 @@ class HTML5DOMDocument extends \DOMDocument
      * Returns a list of document elements matching the selector
      * @param string $selector
      * @return DOMNodeList
-     * @throws Exception
+     * @throws \Exception
      */
     public function querySelectorAll($selector)
     {
-        if (preg_match('/^[a-z]*$/', $selector) === 1) {
+        if ($selector === '*') { // all
+            return $this->getElementsByTagName('*');
+        } elseif (preg_match('/^[a-z]*$/', $selector) === 1) { // tagname
             return $this->getElementsByTagName($selector);
+        } elseif (substr($selector, 0, 1) === '#') { // id
+            $element = $this->getElementById(substr($selector, 1));
+            return $element !== null ? new \IvoPetkov\HTML5DOMNodeList([$element]) : new \IvoPetkov\HTML5DOMNodeList();
+        } elseif (substr($selector, 0, 1) === '.') { // classname
+            $elements = $this->getElementsByTagName('*');
+            $result = [];
+            $selectorClass = substr($selector, 1);
+            foreach ($elements as $element) {
+                $classAttribute = $element->getAttribute('class');
+                if ($classAttribute === $selectorClass || strpos($classAttribute, $selectorClass . ' ') === 0 || substr($classAttribute, -(strlen($selectorClass) + 1)) === ' ' . $selectorClass || strpos($classAttribute, ' ' . $selectorClass . ' ') !== false) {
+                    $result[] = $element;
+                }
+            }
+            return new \IvoPetkov\HTML5DOMNodeList($result);
         }
-        throw new Exception('');
+        throw new \Exception('Unsupported selector');
     }
 
     /**
