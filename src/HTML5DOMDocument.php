@@ -15,16 +15,17 @@ namespace IvoPetkov;
 class HTML5DOMDocument extends \DOMDocument
 {
 
+    private $loaded = false;
+
     /**
      * 
      * @param string $version
      * @param string $encoding
      */
-    function __construct($version = null, $encoding = null)
+    public function __construct($version = null, $encoding = null)
     {
         parent::__construct($version, $encoding);
         $this->registerNodeClass('DOMElement', '\IvoPetkov\HTML5DOMElement');
-        $this->loadHTML('<html><body></body></html>');
     }
 
     /**
@@ -34,17 +35,19 @@ class HTML5DOMDocument extends \DOMDocument
      * @throws Exception
      * @return boolean
      */
-    function loadHTML($source, $options = 0)
+    public function loadHTML($source, $options = 0)
     {
+        // Enables libxml errors handling
         $internalErrorsOptionValue = libxml_use_internal_errors();
         if ($internalErrorsOptionValue === false) {
             libxml_use_internal_errors(true);
         }
         $source = trim($source);
-
-        if (stripos($source, '<!DOCTYPE') === false) {
+        if (stripos($source, '<!DOCTYPE') !== 0) {
             $source = '<!DOCTYPE html>' . $source;
         }
+
+        // Preserve nbsp
         $source = str_replace('&nbsp;', 'html5-dom-document-internal-nbsp', $source);
         $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $options);
         if ($internalErrorsOptionValue === false) {
@@ -60,7 +63,7 @@ class HTML5DOMDocument extends \DOMDocument
                 break;
             }
         }
-
+        $this->loaded = true;
         return true;
     }
 
@@ -69,9 +72,42 @@ class HTML5DOMDocument extends \DOMDocument
      * @param string $filename
      * @param int $options
      */
-    function loadHTMLFile($filename, $options = 0)
+    public function loadHTMLFile($filename, $options = 0)
     {
         return $this->loadHTML(file_get_contents($filename), $options);
+    }
+
+    private function addHtmlElementIfMissing()
+    {
+        if ($this->getElementsByTagName('html')->item(0) === null) {
+            $this->appendChild(new \DOMElement('html'));
+            return true;
+        }
+        return false;
+    }
+
+    private function addHeadElementIfMissing()
+    {
+        if ($this->getElementsByTagName('head')->item(0) === null) {
+            $htmlElement = $this->getElementsByTagName('html')->item(0);
+            $headElement = new \DOMElement('head');
+            if ($htmlElement->childNodes->length === 0) {
+                $htmlElement->appendChild($headElement);
+            } else {
+                $htmlElement->insertBefore($headElement, $htmlElement->firstChild);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private function addBodyElementIfMissing()
+    {
+        if ($this->getElementsByTagName('body')->item(0) === null) {
+            $this->getElementsByTagName('html')->item(0)->appendChild(new \DOMElement('body'));
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -79,8 +115,11 @@ class HTML5DOMDocument extends \DOMDocument
      * @param \DOMNode $node
      * @return string
      */
-    function saveHTML(\DOMNode $node = NULL)
+    public function saveHTML(\DOMNode $node = NULL)
     {
+        if (!$this->loaded) {
+            return '<!DOCTYPE html>';
+        }
         $bodyElement = $this->getElementsByTagName('body')->item(0);
         if ($bodyElement !== null) {
             $bodyElements = $bodyElement->getElementsByTagName('*');
@@ -96,18 +135,23 @@ class HTML5DOMDocument extends \DOMDocument
             }
         }
 
-        $headElements = $this->getElementsByTagName('head');
+        $removeHtmlElement = false;
         $removeHeadElement = false;
-        if ($headElements->length === 0) {
-            $headElement = new \DOMElement('head');
-            $this->getElementsByTagName('html')->item(0)->insertBefore($headElement, $this->getElementsByTagName('body')->item(0));
-            $removeHeadElement = true;
+        $headElement = $this->getElementsByTagName('head')->item(0);
+        if ($headElement === null) {
+            if ($this->addHtmlElementIfMissing()) {
+                $removeHtmlElement = true;
+            }
+            if ($this->addHeadElementIfMissing()) {
+                $removeHeadElement = true;
+            }
+            $headElement = $this->getElementsByTagName('head')->item(0);
         }
         $meta = $this->createElement('meta');
         $meta->setAttribute('data-html5-dom-document-internal-attribute', '1');
         $meta->setAttribute('http-equiv', 'content-type');
         $meta->setAttribute('content', 'text/html; charset=utf-8');
-        $this->getElementsByTagName('head')->item(0)->appendChild($meta);
+        $headElement->appendChild($meta);
 
         $html = parent::saveHTML($node);
 
@@ -120,7 +164,6 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         if ($removeHeadElement) {
-            $headElement = $this->getElementsByTagName('head')->item(0);
             $headElement->parentNode->removeChild($headElement);
         } else {
             $meta->parentNode->removeChild($meta);
@@ -131,13 +174,17 @@ class HTML5DOMDocument extends \DOMDocument
             $html = str_replace('<head></head>', '', $html);
         }
         $html = str_replace('html5-dom-document-internal-content', '', $html);
-
         $html = str_replace('html5-dom-document-internal-nbsp', '&nbsp;', $html);
+        if ($removeHtmlElement) {
+            $html = str_replace('<html></html>', '', $html);
+        }
 
         $voidElementsList = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
         foreach ($voidElementsList as $elementName) {
             $html = str_replace('</' . $elementName . '>', '', $html);
         }
+        // Remove the whitespace between the doctype and html tag
+        $html = preg_replace('/\>\s\<html/', '><html', $html, 1);
         return trim($html);
     }
 
@@ -198,6 +245,9 @@ class HTML5DOMDocument extends \DOMDocument
      */
     public function createInsertTarget($name)
     {
+        if (!$this->loaded) {
+            $this->loadHTML('');
+        }
         $element = $this->createElement('html5-dom-document-insert-target');
         $element->setAttribute('name', $name);
         return $element;
@@ -210,23 +260,23 @@ class HTML5DOMDocument extends \DOMDocument
      */
     public function insertHTML($source, $target = 'beforeBodyEnd')
     {
+        if (!$this->loaded) {
+            $this->loadHTML('');
+        }
         $domDocument = new HTML5DOMDocument();
         $domDocument->loadHTML($source);
 
         $headElement = $domDocument->getElementsByTagName('head')->item(0);
-        $currentDomHeadElement = null;
         if ($headElement !== null) {
+            $currentDomHeadElement = $this->getElementsByTagName('head')->item(0);
+            if ($currentDomHeadElement === null) {
+                $this->addHtmlElementIfMissing();
+                $this->addHeadElementIfMissing();
+                $currentDomHeadElement = $this->getElementsByTagName('head')->item(0);
+            }
             $headElementChildren = $headElement->childNodes;
             $headElementChildrenCount = $headElementChildren->length;
             for ($i = 0; $i < $headElementChildrenCount; $i++) {
-                if ($currentDomHeadElement === null) {
-                    $currentDomHeadElements = $this->getElementsByTagName('head');
-                    if ($currentDomHeadElements->length === 0) {
-                        $currentDomHeadElement = new \DOMElement('head');
-                        $this->getElementsByTagName('html')->item(0)->insertBefore($currentDomHeadElement, $this->getElementsByTagName('body')->item(0));
-                    }
-                    $currentDomHeadElement = $this->getElementsByTagName('head')->item(0);
-                }
                 $currentDomHeadElement->appendChild($this->importNode($headElementChildren->item($i), true));
             }
         }
@@ -234,6 +284,11 @@ class HTML5DOMDocument extends \DOMDocument
         $bodyElement = $domDocument->getElementsByTagName('body')->item(0);
         if ($bodyElement !== null) {
             $currentDomBodyElement = $this->getElementsByTagName('body')->item(0);
+            if ($currentDomBodyElement === null) {
+                $this->addHtmlElementIfMissing();
+                $this->addBodyElementIfMissing();
+                $currentDomBodyElement = $this->getElementsByTagName('body')->item(0);
+            }
             $bodyElementChildren = $bodyElement->childNodes;
             $bodyElementChildrenCount = $bodyElementChildren->length;
             if ($target === 'afterBodyBegin') {
