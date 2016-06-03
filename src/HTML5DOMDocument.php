@@ -268,9 +268,11 @@ class HTML5DOMDocument extends \DOMDocument
 
         $currentDomDocument = &$this;
         $getNewChild = function($child) use ($currentDomDocument) {
-            $id = $child->getAttribute('id');
-            if ($id !== '' && $currentDomDocument->getElementById($id) !== null) {
-                return null;
+            if ($child instanceof \DOMElement) {
+                $id = $child->getAttribute('id');
+                if ($id !== '' && $currentDomDocument->getElementById($id) !== null) {
+                    return null;
+                }
             }
             return $currentDomDocument->importNode($child, true);
         };

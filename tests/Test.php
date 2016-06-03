@@ -331,7 +331,7 @@ class Test extends PHPUnit_Framework_TestCase
                 . '<script id="script1">var script1=1;</script>'
                 . '<script id="script2">var script2=1;</script>'
                 . '</head><body>'
-                . '<div id="text1">text1</div>'
+                . 'hello<div id="text1">text1</div>'
                 . '<div id="text2">text2</div>'
                 . '<div id="text3">text3</div>'
                 . '</body></html>');
@@ -350,7 +350,7 @@ class Test extends PHPUnit_Framework_TestCase
                 . '<script id="script0">var script0=1;</script>'
                 . '<script id="script3">var script3=1;</script>'
                 . '</head><body>'
-                . '<div id="text1">text1</div>'
+                . 'hello<div id="text1">text1</div>'
                 . '<div id="text2">text2</div>'
                 . '<div id="text3">text3</div>'
                 . '<div id="text0">text0</div>'
