@@ -266,6 +266,15 @@ class HTML5DOMDocument extends \DOMDocument
         $domDocument = new HTML5DOMDocument();
         $domDocument->loadHTML($source);
 
+        $currentDomDocument = &$this;
+        $getNewChild = function($child) use ($currentDomDocument) {
+            $id = $child->getAttribute('id');
+            if ($id !== '' && $currentDomDocument->getElementById($id) !== null) {
+                return null;
+            }
+            return $currentDomDocument->importNode($child, true);
+        };
+
         $headElement = $domDocument->getElementsByTagName('head')->item(0);
         if ($headElement !== null) {
             $currentDomHeadElement = $this->getElementsByTagName('head')->item(0);
@@ -277,7 +286,10 @@ class HTML5DOMDocument extends \DOMDocument
             $headElementChildren = $headElement->childNodes;
             $headElementChildrenCount = $headElementChildren->length;
             for ($i = 0; $i < $headElementChildrenCount; $i++) {
-                $currentDomHeadElement->appendChild($this->importNode($headElementChildren->item($i), true));
+                $newNode = $getNewChild($headElementChildren->item($i));
+                if ($newNode !== null) {
+                    $currentDomHeadElement->appendChild($newNode);
+                }
             }
         }
 
@@ -293,17 +305,21 @@ class HTML5DOMDocument extends \DOMDocument
             $bodyElementChildrenCount = $bodyElementChildren->length;
             if ($target === 'afterBodyBegin') {
                 for ($i = $bodyElementChildrenCount - 1; $i >= 0; $i--) {
-                    $newNode = $this->importNode($bodyElementChildren->item($i), true);
-                    if ($currentDomBodyElement->firstChild === null) {
-                        $currentDomBodyElement->appendChild($newNode);
-                    } else {
-                        $currentDomBodyElement->insertBefore($newNode, $currentDomBodyElement->firstChild);
+                    $newNode = $getNewChild($bodyElementChildren->item($i));
+                    if ($newNode !== null) {
+                        if ($currentDomBodyElement->firstChild === null) {
+                            $currentDomBodyElement->appendChild($newNode);
+                        } else {
+                            $currentDomBodyElement->insertBefore($newNode, $currentDomBodyElement->firstChild);
+                        }
                     }
                 }
             } else if ($target === 'beforeBodyEnd') {
                 for ($i = 0; $i < $bodyElementChildrenCount; $i++) {
-                    $newNode = $this->importNode($bodyElementChildren->item($i), true);
-                    $currentDomBodyElement->appendChild($newNode);
+                    $newNode = $getNewChild($bodyElementChildren->item($i));
+                    if ($newNode !== null) {
+                        $currentDomBodyElement->appendChild($newNode);
+                    }
                 }
             } else {
                 $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
@@ -312,8 +328,10 @@ class HTML5DOMDocument extends \DOMDocument
                     $targetElement = $targetElements->item($j);
                     if ($targetElement->getAttribute('name') === $target) {
                         for ($i = 0; $i < $bodyElementChildrenCount; $i++) {
-                            $newNode = $this->importNode($bodyElementChildren->item($i), true);
-                            $targetElement->parentNode->insertBefore($newNode, $targetElement);
+                            $newNode = $getNewChild($bodyElementChildren->item($i));
+                            if ($newNode !== null) {
+                                $targetElement->parentNode->insertBefore($newNode, $targetElement);
+                            }
                         }
                     }
                     $targetElement->parentNode->removeChild($targetElement);

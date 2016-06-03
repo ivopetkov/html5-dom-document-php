@@ -321,4 +321,42 @@ class Test extends PHPUnit_Framework_TestCase
                 . '</body></html>');
     }
 
+    /**
+     * 
+     */
+    public function testDuplicateIDs()
+    {
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><html><head>'
+                . '<script id="script1">var script1=1;</script>'
+                . '<script id="script2">var script2=1;</script>'
+                . '</head><body>'
+                . '<div id="text1">text1</div>'
+                . '<div id="text2">text2</div>'
+                . '<div id="text3">text3</div>'
+                . '</body></html>');
+        $dom->insertHTML('<!DOCTYPE html><html><head>'
+                . '<script id="script0">var script0=1;</script>'
+                . '<script id="script1">var script1=1;</script>'
+                . '<script id="script3">var script3=1;</script>'
+                . '</head><body>'
+                . '<div id="text0">text0</div>'
+                . '<div id="text2">text2</div>'
+                . '<div id="text4">text4</div>'
+                . '</body></html>');
+        $expectedSource = '<!DOCTYPE html><html><head>'
+                . '<script id="script1">var script1=1;</script>'
+                . '<script id="script2">var script2=1;</script>'
+                . '<script id="script0">var script0=1;</script>'
+                . '<script id="script3">var script3=1;</script>'
+                . '</head><body>'
+                . '<div id="text1">text1</div>'
+                . '<div id="text2">text2</div>'
+                . '<div id="text3">text3</div>'
+                . '<div id="text0">text0</div>'
+                . '<div id="text4">text4</div>'
+                . '</body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+    }
+
 }
