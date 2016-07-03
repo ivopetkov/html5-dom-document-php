@@ -47,8 +47,17 @@ class HTML5DOMDocument extends \DOMDocument
             $source = '<!DOCTYPE html>' . $source;
         }
 
-        // Preserve nbsp
-        $source = str_replace('&nbsp;', 'html5-dom-document-internal-nbsp', $source);
+        // Preserve html entities
+        $matches = [];
+        preg_match_all('/&[a-zA-Z]*;/', $source, $matches);
+        foreach ($matches[0] as $match) {
+            $source = str_replace($match, 'html5-dom-document-internal-entity1-' . trim($match, '&;') . '-end', $source);
+        }
+        $matches = [];
+        preg_match_all('/&#[0-9]*;/', $source, $matches);
+        foreach ($matches[0] as $match) {
+            $source = str_replace($match, 'html5-dom-document-internal-entity2-' . trim($match, '&#;') . '-end', $source);
+        }
         $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $options);
         if ($internalErrorsOptionValue === false) {
             libxml_use_internal_errors(false);
@@ -174,7 +183,16 @@ class HTML5DOMDocument extends \DOMDocument
             $html = str_replace('<head></head>', '', $html);
         }
         $html = str_replace('html5-dom-document-internal-content', '', $html);
-        $html = str_replace('html5-dom-document-internal-nbsp', '&nbsp;', $html);
+        $matches = [];
+        preg_match_all('/html5-dom-document-internal-entity1-(.*?)-end/', $html, $matches);
+        foreach ($matches[0] as $i => $match) {
+            $html = str_replace($match, '&' . $matches[1][$i] . ';', $html);
+        }
+        $matches = [];
+        preg_match_all('/html5-dom-document-internal-entity2-(.*?)-end/', $html, $matches);
+        foreach ($matches[0] as $i => $match) {
+            $html = str_replace($match, '&#' . $matches[1][$i] . ';', $html);
+        }
         if ($removeHtmlElement) {
             $html = str_replace('<html></html>', '', $html);
         }

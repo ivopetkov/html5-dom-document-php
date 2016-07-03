@@ -104,6 +104,18 @@ class Test extends PHPUnit_Framework_TestCase
     /**
      * 
      */
+    public function testHtmlEntities()
+    {
+        $bodyContent = '<div> &#8595; &amp; &Acirc; &rsaquo;&rsaquo;&Acirc; </div>';
+        $expectedSource = '<!DOCTYPE html><html><body>' . $bodyContent . '</body></html>';
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($bodyContent);
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+    }
+
+    /**
+     * 
+     */
     public function testInserHTML()
     {
         // insert beforeBodyEnd
