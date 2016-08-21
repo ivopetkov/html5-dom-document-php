@@ -112,6 +112,8 @@ class Test extends PHPUnit_Framework_TestCase
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($bodyContent);
         $this->assertTrue($expectedSource === $dom->saveHTML());
+        $this->assertTrue(html_entity_decode($attributeContent) === $dom->querySelector('div')->getAttribute('data-value'));
+        $dom->querySelector('div')->setAttribute('data-value', $attributeContent);
         $this->assertTrue($attributeContent === $dom->querySelector('div')->getAttribute('data-value'));
     }
 
@@ -304,6 +306,7 @@ class Test extends PHPUnit_Framework_TestCase
     {
 
         $dataAttributeValue = '&quot;<>&*;';
+        $expectedDataAttributeValue = '"<>&*;';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<html><body>'
                 . '<div class="text1" data-value="' . $dataAttributeValue . '">text1</div>'
@@ -311,7 +314,7 @@ class Test extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($dom->querySelector('div')->getAttribute('class') === 'text1');
         $this->assertTrue($dom->querySelector('div')->getAttribute('unknown') === '');
-        $this->assertTrue($dom->querySelector('div')->getAttribute('data-value') === $dataAttributeValue);
+        $this->assertTrue($dom->querySelector('div')->getAttribute('data-value') === $expectedDataAttributeValue);
         $attributes = $dom->querySelector('div')->getAttributes();
         $this->assertTrue(sizeof($attributes) === 2);
         $this->assertTrue($attributes['class'] === 'text1');
