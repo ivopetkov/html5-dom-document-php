@@ -47,6 +47,33 @@ class HTML5DOMDocument extends \DOMDocument
             $source = '<!DOCTYPE html>' . $source;
         }
 
+        // Adds temporary head tag
+        $removeCharsetTag = false;
+        $charsetTag = '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8" />';
+        $matches = [];
+        preg_match('/\<head.*?\>/', $source, $matches);
+        $removeHeadTag = true;
+        $removeHtmlTag = true;
+        if (isset($matches[0])) { // has head tag
+            $removeHeadTag = false;
+            $removeHtmlTag = false;
+            $insertPosition = strpos($source, $matches[0]) + strlen($matches[0]);
+            $source = substr($source, 0, $insertPosition) . $charsetTag . substr($source, $insertPosition);
+            $removeCharsetTag = true;
+        } else {
+            $matches = [];
+            preg_match('/\<html.*?\>/', $source, $matches);
+            if (isset($matches[0])) { // has html tag
+                $removeHtmlTag = false;
+                $source = str_replace($matches[0], $matches[0] . $charsetTag, $source);
+                $removeCharsetTag = true;
+            } else {
+                $insertPosition = strpos($source, '>') + 1;
+                $source = substr($source, 0, $insertPosition) . $charsetTag . substr($source, $insertPosition);
+                $removeCharsetTag = true;
+            }
+        }
+
         // Preserve html entities
         $matches = [];
         preg_match_all('/&[a-zA-Z]*;/', $source, $matches);
@@ -70,6 +97,26 @@ class HTML5DOMDocument extends \DOMDocument
             if ($item->nodeType === XML_PI_NODE) {
                 $this->removeChild($item);
                 break;
+            }
+        }
+        if ($removeCharsetTag) {
+            $metaTagElement = $this->getElementsByTagName('meta')->item(0);
+            if ($metaTagElement !== null) {
+                if ($metaTagElement->getAttribute('data-html5-dom-document-internal-attribute') === 'charset-meta') {
+                    $metaTagElement->parentNode->removeChild($metaTagElement);
+                }
+                if ($removeHeadTag) {
+                    $headElement = $this->getElementsByTagName('head')->item(0);
+                    if ($headElement !== null && $headElement->childNodes->length === 0) {
+                        $headElement->parentNode->removeChild($headElement);
+                    }
+                }
+                if ($removeHtmlTag) {
+                    $htmlElement = $this->getElementsByTagName('html')->item(0);
+                    if ($htmlElement !== null && $htmlElement->childNodes->length === 0) {
+                        $htmlElement->parentNode->removeChild($htmlElement);
+                    }
+                }
             }
         }
         $this->loaded = true;
@@ -157,7 +204,7 @@ class HTML5DOMDocument extends \DOMDocument
             $headElement = $this->getElementsByTagName('head')->item(0);
         }
         $meta = $this->createElement('meta');
-        $meta->setAttribute('data-html5-dom-document-internal-attribute', '1');
+        $meta->setAttribute('data-html5-dom-document-internal-attribute', 'charset-meta');
         $meta->setAttribute('http-equiv', 'content-type');
         $meta->setAttribute('content', 'text/html; charset=utf-8');
         $headElement->appendChild($meta);
@@ -178,7 +225,7 @@ class HTML5DOMDocument extends \DOMDocument
             $meta->parentNode->removeChild($meta);
         }
 
-        $html = str_replace('<meta data-html5-dom-document-internal-attribute="1" http-equiv="content-type" content="text/html; charset=utf-8">', '', $html);
+        $html = str_replace('<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8">', '', $html);
         if ($removeHeadElement) {
             $html = str_replace('<head></head>', '', $html);
         }
