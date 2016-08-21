@@ -15,7 +15,7 @@ namespace IvoPetkov;
 class HTML5DOMElement extends \DOMElement
 {
 
-    function __get($name)
+    public function __get($name)
     {
         if ($name === 'innerHTML') {
             $html = $this->ownerDocument->saveHTML($this);
@@ -28,18 +28,38 @@ class HTML5DOMElement extends \DOMElement
         }
     }
 
-    function getAttributes()
+    private function updateResult($value)
+    {
+        $matches = [];
+        preg_match_all('/html5-dom-document-internal-entity1-(.*?)-end/', $value, $matches);
+        foreach ($matches[0] as $i => $match) {
+            $value = str_replace($match, '&' . $matches[1][$i] . ';', $value);
+        }
+        $matches = [];
+        preg_match_all('/html5-dom-document-internal-entity2-(.*?)-end/', $value, $matches);
+        foreach ($matches[0] as $i => $match) {
+            $value = str_replace($match, '&#' . $matches[1][$i] . ';', $value);
+        }
+        return $value;
+    }
+
+    public function getAttribute($name)
+    {
+        return $this->updateResult(parent::getAttribute($name));
+    }
+
+    public function getAttributes()
     {
         $attributesCount = $this->attributes->length;
         $attributes = [];
         for ($i = 0; $i < $attributesCount; $i++) {
             $attribute = $this->attributes->item($i);
-            $attributes[$attribute->name] = $attribute->value;
+            $attributes[$attribute->name] = $this->updateResult($attribute->value);
         }
         return $attributes;
     }
-    
-    function __toString()
+
+    public function __toString()
     {
         return $this->outerHTML;
     }
