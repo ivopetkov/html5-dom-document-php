@@ -246,21 +246,29 @@ class Test extends PHPUnit_Framework_TestCase
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<html><body>'
-                . '<div id="text1">text1</div>'
+                . '<div id="text1" class="class1">text1</div>'
                 . '<div>text2</div>'
                 . '<div>'
-                . '<div class="text3">text3</div>'
+                . '<div class="text3 class1">text3</div>'
                 . '</div>'
+                . '<span id="text4" class="class1 class2">text4</div>'
                 . '</body></html>');
 
         $this->assertTrue($dom->querySelector('#text1')->innerHTML === 'text1');
 
-        $this->assertTrue($dom->querySelectorAll('*')->length === 6); // html + body + 4 divs
+        $this->assertTrue($dom->querySelectorAll('*')->length === 7); // html + body + 4 divs + 1 span
         $this->assertTrue($dom->querySelectorAll('div')->length === 4); // 4 divs
         $this->assertTrue($dom->querySelectorAll('#text1')->length === 1);
         $this->assertTrue($dom->querySelectorAll('#text1')->item(0)->innerHTML === 'text1');
         $this->assertTrue($dom->querySelectorAll('.text3')->length === 1);
         $this->assertTrue($dom->querySelectorAll('.text3')->item(0)->innerHTML === 'text3');
+        $this->assertTrue($dom->querySelectorAll('div#text1')->item(0)->innerHTML === 'text1');
+        $this->assertTrue($dom->querySelectorAll('span#text4')->item(0)->innerHTML === 'text4');
+        $this->assertTrue($dom->querySelectorAll('div#text4')->length === 0);
+        $this->assertTrue($dom->querySelectorAll('div.class1')->length === 2);
+        $this->assertTrue($dom->querySelectorAll('.class1')->length === 3);
+        $this->assertTrue($dom->querySelectorAll('div.class2')->length === 0);
+        $this->assertTrue($dom->querySelectorAll('span.class2')->length === 1);
 
         $this->assertTrue($dom->querySelectorAll('unknown')->length === 0);
         $this->assertTrue($dom->querySelectorAll('unknown')->item(0) === null);
