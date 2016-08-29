@@ -28,6 +28,29 @@ class HTML5DOMElement extends \DOMElement
         }
     }
 
+    public function __set($name, $value)
+    {
+        if ($name === 'innerHTML') {
+            while ($this->hasChildNodes()) {
+                $this->removeChild($this->firstChild);
+            }
+            $tmpDoc = new \IvoPetkov\HTML5DOMDocument();
+            $tmpDoc->loadHTML('<body>' . $value . '</body>');
+            foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
+                $node = $this->ownerDocument->importNode($node, true);
+                $this->appendChild($node);
+            }
+        } elseif ($name === 'outerHTML') {
+            $tmpDoc = new \IvoPetkov\HTML5DOMDocument();
+            $tmpDoc->loadHTML('<body>' . $value . '</body>');
+            foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
+                $node = $this->ownerDocument->importNode($node, true);
+                $this->parentNode->insertBefore($node, $this);
+            }
+            $this->parentNode->removeChild($this);
+        }
+    }
+
     private function updateResult($value)
     {
         $matches = [];

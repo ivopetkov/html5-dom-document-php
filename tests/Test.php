@@ -282,6 +282,18 @@ class Test extends PHPUnit_Framework_TestCase
                 . '</body></html>');
 
         $this->assertTrue($dom->querySelector('body')->innerHTML === '<div>text1</div>');
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<div>text1</div>');
+        $element = $dom->querySelector('div');
+        $element->innerHTML = 'text2';
+        $this->assertTrue('<!DOCTYPE html><html><body><div>text2</div></body></html>' === $dom->saveHTML());
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<div>text1</div>');
+        $element = $dom->querySelector('div');
+        $element->innerHTML = '<div>text1<div>text2</div></div>';
+        $this->assertTrue('<!DOCTYPE html><html><body><div><div>text1<div>text2</div></div></div></body></html>' === $dom->saveHTML());
     }
 
     /**
@@ -297,6 +309,18 @@ class Test extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($dom->querySelector('div')->outerHTML === '<div>text1</div>');
         $this->assertTrue((string) $dom->querySelector('div') === '<div>text1</div>');
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<div>text1</div>');
+        $element = $dom->querySelector('div');
+        $element->outerHTML = 'text2';
+        $this->assertTrue('<!DOCTYPE html><html><body>text2</body></html>' === $dom->saveHTML());
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<div>text1</div>');
+        $element = $dom->querySelector('div');
+        $element->outerHTML = '<div>text2<div>text3</div></div>';
+        $this->assertTrue('<!DOCTYPE html><html><body><div>text2<div>text3</div></div></body></html>' === $dom->saveHTML());
     }
 
     /**
