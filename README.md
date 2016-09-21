@@ -22,7 +22,7 @@ composer require ivopetkov/html5-dom-document-php
 - Allows inserting HTML code that moves the correct parts to their proper places (head elements are inserted in the head, body elements in the body)
 - Allows querying the DOM with CSS selectors (currently avaiable: *, tagname, tagname#id, tagname.classname, #id, .classname)
 
-## Example
+## Usage
 
 HTML5DOMDocument is really easy to use - just like you should use DOMDocument.
 ```php
