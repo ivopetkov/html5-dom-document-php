@@ -15,12 +15,18 @@ namespace IvoPetkov;
 class HTML5DOMDocument extends \DOMDocument
 {
 
+    /**
+     * Indicates whether an HTML code is loaded
+     * 
+     * @var boolean
+     */
     private $loaded = false;
 
     /**
+     * Creates a new \IvoPetkov\HTML5DOMDocument object
      * 
-     * @param string $version
-     * @param string $encoding
+     * @param string $version The version number of the document as part of the XML declaration.
+     * @param string $encoding The encoding of the document as part of the XML declaration.
      */
     public function __construct($version = null, $encoding = null)
     {
@@ -30,10 +36,10 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Load HTML from a string and adds missing doctype, html and body tags
-     * @param string $source
-     * @param int $options
-     * @throws Exception
-     * @return boolean
+     * 
+     * @param string $source The HTML code
+     * @param int $options Additional Libxml parameters
+     * @return boolean TRUE on success or FALSE on failure
      */
     public function loadHTML($source, $options = 0)
     {
@@ -125,14 +131,20 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Load HTML from a file and adds missing doctype, html and body tags
-     * @param string $filename
-     * @param int $options
+     * 
+     * @param string $filename The path to the HTML file
+     * @param int $options Additional Libxml parameters
      */
     public function loadHTMLFile($filename, $options = 0)
     {
         return $this->loadHTML(file_get_contents($filename), $options);
     }
 
+    /**
+     * Adds the HTML tag to the document if missing
+     * 
+     * @return boolean TRUE on success, FALSE otherwise
+     */
     private function addHtmlElementIfMissing()
     {
         if ($this->getElementsByTagName('html')->item(0) === null) {
@@ -142,6 +154,11 @@ class HTML5DOMDocument extends \DOMDocument
         return false;
     }
 
+    /**
+     * Adds the HEAD tag to the document if missing
+     * 
+     * @return boolean TRUE on success, FALSE otherwise
+     */
     private function addHeadElementIfMissing()
     {
         if ($this->getElementsByTagName('head')->item(0) === null) {
@@ -157,6 +174,11 @@ class HTML5DOMDocument extends \DOMDocument
         return false;
     }
 
+    /**
+     * Adds the BODY tag to the document if missing
+     * 
+     * @return boolean TRUE on success, FALSE otherwise
+     */
     private function addBodyElementIfMissing()
     {
         if ($this->getElementsByTagName('body')->item(0) === null) {
@@ -168,8 +190,9 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Dumps the internal document into a string using HTML formatting
-     * @param \DOMNode $node
-     * @return string
+     * 
+     * @param \DOMNode $node Optional parameter to output a subset of the document.
+     * @return string The document (ot node) HTML code as string
      */
     public function saveHTML(\DOMNode $node = NULL)
     {
@@ -255,17 +278,32 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Dumps the internal document into a file using HTML formatting
-     * @param string $filename
+     * @param string $filename The path to the saved HTML document.
+     * @return int the number of bytes written or FALSE if an error occurred
+     * @throws \InvalidArgumentException
      */
     public function saveHTMLFile($filename)
     {
-        file_put_contents($filename, $this->saveHTML());
+        if (!is_string($filename)) {
+            throw new \InvalidArgumentException('The filename argument must be of type string');
+        }
+        if (!is_writable($filename)) {
+            return false;
+        }
+        $result = $this->saveHTML();
+        file_put_contents($filename, $result);
+        $bytesWritten = filesize($filename);
+        if ($bytesWritten === strlen($result)) {
+            return $bytesWritten;
+        }
+        return false;
     }
 
     /**
      * Returns the first document element matching the selector
-     * @param string $selector
-     * @return \DOMElement|null
+     * 
+     * @param string $selector CSS query selector
+     * @return \DOMElement|null The result DOMElement or null if not found
      */
     public function querySelector($selector)
     {
@@ -275,12 +313,16 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Returns a list of document elements matching the selector
-     * @param string $selector
-     * @return DOMNodeList
-     * @throws \Exception
+     * 
+     * @param string $selector CSS query selector
+     * @return DOMNodeList Returns a list of DOMElements matching the criteria
+     * @throws \InvalidArgumentException
      */
     public function querySelectorAll($selector)
     {
+        if (!is_string($selector)) {
+            throw new \InvalidArgumentException('The selector argument must be of type string');
+        }
         if ($selector === '*') { // all
             return $this->getElementsByTagName('*');
         } elseif (preg_match('/^[a-z]+$/', $selector) === 1) { // tagname
@@ -304,7 +346,7 @@ class HTML5DOMDocument extends \DOMDocument
                 }
             }
             return new \IvoPetkov\HTML5DOMNodeList($result);
-        } elseif (substr($selector, 0, 1) === '#') { // id
+        } elseif (substr($selector, 0, 1) === '#') { // #id
             $element = $this->getElementById(substr($selector, 1));
             return $element !== null ? new \IvoPetkov\HTML5DOMNodeList([$element]) : new \IvoPetkov\HTML5DOMNodeList();
         } elseif (substr($selector, 0, 1) === '.') { // .classname
@@ -319,16 +361,21 @@ class HTML5DOMDocument extends \DOMDocument
             }
             return new \IvoPetkov\HTML5DOMNodeList($result);
         }
-        throw new \Exception('Unsupported selector');
+        throw new \InvalidArgumentException('Unsupported selector');
     }
 
     /**
-     * Creates an element that will be replaces by the new body in insertHTML
-     * @param string $name
-     * @return \DOMElement 
+     * Creates an element that will be replaced by the new body in insertHTML
+     * 
+     * @param string $name The name of the insert target
+     * @return \DOMElement A new DOMElement that must be set in the place where the new body will be inserted
+     * @throws \InvalidArgumentException
      */
     public function createInsertTarget($name)
     {
+        if (!is_string($name)) {
+            throw new \InvalidArgumentException('The name argument must be of type string');
+        }
         if (!$this->loaded) {
             $this->loadHTML('');
         }
@@ -339,11 +386,19 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Inserts a HTML document into the current document. The elements from the head and the body will be moved to their proper locations.
-     * @param string $source
-     * @param string $target afterBodyBegin or beforeBodyEnd or target name
+     * 
+     * @param string $source The HTML code to be inserted
+     * @param string $target Body target position. Available values: afterBodyBegin, beforeBodyEnd or insertTarget name.
+     * @throws \InvalidArgumentException
      */
     public function insertHTML($source, $target = 'beforeBodyEnd')
     {
+        if (!is_string($source)) {
+            throw new \InvalidArgumentException('The source argument must be of type string');
+        }
+        if (!is_string($target)) {
+            throw new \InvalidArgumentException('The target argument must be of type string');
+        }
         if (!$this->loaded) {
             $this->loadHTML('');
         }

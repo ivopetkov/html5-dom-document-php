@@ -10,15 +10,16 @@
 namespace IvoPetkov;
 
 /**
- * 
+ * @property-read int $length The list items count
  */
 class HTML5DOMNodeList extends \ArrayObject
 {
 
     /**
+     * Returns the item at the specified index
      * 
-     * @param int $index
-     * @return \IvoPetkov\HTML5DOMElement|null
+     * @param int $index The item index
+     * @return \IvoPetkov\HTML5DOMElement|null The item at the specified index or null if not existent
      */
     public function item($index)
     {
@@ -26,12 +27,17 @@ class HTML5DOMNodeList extends \ArrayObject
     }
 
     /**
+     * Returns the value for the property specified
      * 
-     * @param string $name
+     * @param string $name The name of the property
      * @return mixed
+     * @throws \InvalidArgumentException
      */
     public function __get($name)
     {
+        if (!is_string($name)) {
+            throw new \InvalidArgumentException('The name argument must be of type string');
+        }
         if ($name === 'length') {
             return sizeof($this);
         } else {

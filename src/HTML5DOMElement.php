@@ -10,13 +10,25 @@
 namespace IvoPetkov;
 
 /**
- * 
+ * @property-read string $innerHTML The HTML code inside the element
+ * @property-read string $outerHTML The HTML code for the element including the code inside
  */
 class HTML5DOMElement extends \DOMElement
 {
 
+    /**
+     * Returns the value for the property specified
+     * 
+     * @param string $name The name of the property
+     * @return string The value of the property specified
+     * @throws \InvalidArgumentException
+     * @throws \Exception
+     */
     public function __get($name)
     {
+        if (!is_string($name)) {
+            throw new \InvalidArgumentException('The name argument must be of type string');
+        }
         if ($name === 'innerHTML') {
             $html = $this->ownerDocument->saveHTML($this);
             $nodeName = $this->nodeName;
@@ -24,12 +36,25 @@ class HTML5DOMElement extends \DOMElement
         } elseif ($name === 'outerHTML') {
             return $this->ownerDocument->saveHTML($this);
         } else {
-            throw new Exception('Undefined property: HTML5DOMElement::$' . $name);
+            throw new \Exception('Undefined property: HTML5DOMElement::$' . $name);
         }
     }
 
+    /**
+     * Sets the value for the property specified
+     * 
+     * @param string $name
+     * @param string $value
+     * @throws \InvalidArgumentException
+     */
     public function __set($name, $value)
     {
+        if (!is_string($name)) {
+            throw new \InvalidArgumentException('The name argument must be of type string');
+        }
+        if (!is_string($value)) {
+            throw new \InvalidArgumentException('The value argument must be of type string');
+        }
         if ($name === 'innerHTML') {
             while ($this->hasChildNodes()) {
                 $this->removeChild($this->firstChild);
@@ -51,6 +76,12 @@ class HTML5DOMElement extends \DOMElement
         }
     }
 
+    /**
+     * Updates the result value before returning it
+     * 
+     * @param string $value
+     * @return string The updated value
+     */
     private function updateResult($value)
     {
         $matches = [];
@@ -66,11 +97,26 @@ class HTML5DOMElement extends \DOMElement
         return $value;
     }
 
+    /**
+     * Returns the value for the attribute name specified
+     * 
+     * @param string $name The attribute name
+     * @return string
+     * @throws \InvalidArgumentException
+     */
     public function getAttribute($name)
     {
+        if (!is_string($name)) {
+            throw new \InvalidArgumentException('The name argument must be of type string');
+        }
         return $this->updateResult(parent::getAttribute($name));
     }
 
+    /**
+     * Returns an array containing all attributes
+     * 
+     * @return array An associative array containing all attributes
+     */
     public function getAttributes()
     {
         $attributesCount = $this->attributes->length;
@@ -82,6 +128,11 @@ class HTML5DOMElement extends \DOMElement
         return $attributes;
     }
 
+    /**
+     * Returns the element outerHTML
+     * 
+     * @return string The element outerHTML
+     */
     public function __toString()
     {
         return $this->outerHTML;
