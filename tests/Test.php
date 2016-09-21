@@ -12,7 +12,7 @@ use IvoPetkov\HTML5DOMDocument;
 /**
  * @runTestsInSeparateProcesses
  */
-class Test extends PHPUnit_Framework_TestCase
+class Test extends HTML5DOMDocumentTestCase
 {
 
     /**
