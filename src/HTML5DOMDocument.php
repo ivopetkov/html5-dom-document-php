@@ -586,7 +586,7 @@ class HTML5DOMDocument extends \DOMDocument
                     $list[] = [$metaTag, $id];
                 }
                 foreach ($idsList as $id => $count) {
-                    if ($count > 1) {
+                    if ($count > 1 && $id !== '') {
                         foreach ($list as $i => $item) {
                             if ($item[1] === $id) {
                                 $node = $item[0];
