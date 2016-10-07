@@ -69,7 +69,6 @@ class Test extends HTML5DOMDocumentTestCase
         $testSource('<!DOCTYPE html><html><head>' . $headContent . '</head></html>', $expectedSource);
         $testSource('<html><head>' . $headContent . '</head></html>', $expectedSource);
         $testSource('<head>' . $headContent . '</head>', $expectedSource);
-        $testSource($headContent, $expectedSource);
     }
 
     /**
@@ -208,6 +207,39 @@ class Test extends HTML5DOMDocumentTestCase
         $dom->insertHTML('<div>text1</div>');
         $expectedSource = '<!DOCTYPE html><html><body>'
                 . '<div>text1</div>'
+                . '</body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+
+        // Text
+        $dom = new HTML5DOMDocument();
+        $dom->insertHTML('text1');
+        $expectedSource = '<!DOCTYPE html><html><body>'
+                . 'text1'
+                . '</body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        // Script tag
+        $dom = new HTML5DOMDocument();
+        $dom->insertHTML('<script>alert(1);</script>');
+        $expectedSource = '<!DOCTYPE html><html><body>'
+                . '<script>alert(1);</script>'
+                . '</body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        // Script tag in the head
+        $dom = new HTML5DOMDocument();
+        $dom->insertHTML('<head><script>alert(1);</script></head>');
+        $expectedSource = '<!DOCTYPE html><html>'
+                . '<head><script>alert(1);</script></head>'
+                . '</html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        // Custom tag
+        $dom = new HTML5DOMDocument();
+        $dom->insertHTML('<component></component>');
+        $expectedSource = '<!DOCTYPE html><html><body>'
+                . '<component></component>'
                 . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }

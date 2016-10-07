@@ -49,6 +49,12 @@ class HTML5DOMDocument extends \DOMDocument
             libxml_use_internal_errors(true);
         }
         $source = trim($source);
+
+        // Add body tag if missing
+        if (isset($source{0}) && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html.*?\>/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
+            $source = '<body>' . $source . '</body>';
+        }
+
         if (stripos($source, '<!DOCTYPE') !== 0) {
             $source = '<!DOCTYPE html>' . $source;
         }
@@ -91,6 +97,7 @@ class HTML5DOMDocument extends \DOMDocument
         foreach ($matches[0] as $match) {
             $source = str_replace($match, 'html5-dom-document-internal-entity2-' . trim($match, '&#;') . '-end', $source);
         }
+
         $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $options);
         if ($internalErrorsOptionValue === false) {
             libxml_use_internal_errors(false);
