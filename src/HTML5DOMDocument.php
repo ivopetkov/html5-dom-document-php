@@ -423,6 +423,8 @@ class HTML5DOMDocument extends \DOMDocument
             return $currentDomDocument->importNode($child, true);
         };
 
+        $removeDuplicateTags = false;
+
         $headElement = $domDocument->getElementsByTagName('head')->item(0);
         if ($headElement !== null) {
             $currentDomHeadElement = $this->getElementsByTagName('head')->item(0);
@@ -439,6 +441,7 @@ class HTML5DOMDocument extends \DOMDocument
                     $currentDomHeadElement->appendChild($newNode);
                 }
             }
+            $removeDuplicateTags = true;
         }
 
         $bodyElement = $domDocument->getElementsByTagName('body')->item(0);
@@ -484,6 +487,66 @@ class HTML5DOMDocument extends \DOMDocument
                     }
                     $targetElement->parentNode->removeChild($targetElement);
                     break;
+                }
+            }
+            $removeDuplicateTags = true;
+        }
+
+        if ($removeDuplicateTags) {
+            $this->removeDuplicateTags();
+        }
+    }
+
+    private function removeDuplicateTags()
+    {
+        $headElements = $this->getElementsByTagName('head');
+        if ($headElements->length > 0) {
+            $headElement = $headElements->item(0);
+            $titleTags = $headElement->getElementsByTagName('title');
+            while ($titleTags->length > 1) {
+                $node = $titleTags->item(0);
+                $node->parentNode->removeChild($node);
+            }
+            $metaTags = $headElement->getElementsByTagName('meta');
+            if ($metaTags->length > 0) {
+                $list = [];
+                $idsList = [];
+                for ($i = 0; $i < $metaTags->length; $i++) {
+                    $metaTag = $metaTags->item($i);
+                    $id = $metaTag->getAttribute('name');
+                    if (isset($id{0})) {
+                        $id = 'name:' . $id;
+                    } else {
+                        $id = $metaTag->getAttribute('property');
+                        if (isset($id{0})) {
+                            $id = 'property:' . $id;
+                        } else {
+                            $id = $metaTag->getAttribute('charset');
+                            if (isset($id{0})) {
+                                $id = 'charset';
+                            }
+                        }
+                    }
+                    if (!isset($idsList[$id])) {
+                        $idsList[$id] = 0;
+                    }
+                    $idsList[$id] ++;
+                    $list[] = [$metaTag, $id];
+                }
+                foreach ($idsList as $id => $count) {
+                    if ($count > 1) {
+                        foreach ($list as $i => $item) {
+                            if ($item[1] === $id) {
+                                $node = $item[0];
+                                $node->parentNode->removeChild($node);
+                                unset($list[$i]);
+                                $count--;
+                            }
+                            if ($count === 1) {
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }

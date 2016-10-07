@@ -442,4 +442,43 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
+    /**
+     * 
+     */
+    public function testDuplicateTags()
+    {
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><html><head>'
+                . '<title>Title1</title>'
+                . '</head></html>');
+        $dom->insertHTML('<head>'
+                . '<title>Title2</title>'
+                . '</head>');
+        $expectedSource = '<!DOCTYPE html><html><head>'
+                . '<title>Title2</title>'
+                . '</head></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><html><head>'
+                . '<meta charset="utf-8">'
+                . '<meta content="index,follow" name="robots">'
+                . '<meta content="html5" name="keywords">'
+                . '<meta content="website" property="og:type">'
+                . '</head></html>');
+        $dom->insertHTML('<head>'
+                . '<meta content="dom" name="keywords">'
+                . '<meta charset="us-ascii">'
+                . '<meta content="video.movie" property="og:type">'
+                . '</head>');
+        $expectedSource = '<!DOCTYPE html><html><head>'
+                . '<meta content="index,follow" name="robots">'
+                . '<meta content="dom" name="keywords">'
+                . '<meta charset="us-ascii">'
+                . '<meta content="video.movie" property="og:type">'
+                . '</head></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+    }
+
 }
