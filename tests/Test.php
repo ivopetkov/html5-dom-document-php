@@ -546,4 +546,62 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
+    /**
+     * 
+     */
+    public function testInvalidArguments1()
+    {
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><body></body></html>');
+        $element = $dom->querySelector('body');
+        $this->setExpectedException('\Exception');
+        $element->missing;
+    }
+
+    /**
+     * 
+     */
+    public function testInvalidArguments2()
+    {
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><body></body></html>');
+        $element = $dom->querySelector('body');
+        $this->setExpectedException('\Exception');
+        $element->missing = 'true';
+    }
+
+    /**
+     * 
+     */
+    public function testInvalidArguments3()
+    {
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><body></body></html>');
+        $element = $dom->querySelector('body');
+        $this->setExpectedException('\InvalidArgumentException');
+        $element->innerHTML = 1;
+    }
+
+    /**
+     * 
+     */
+    public function testInvalidArguments4()
+    {
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><body></body></html>');
+        $element = $dom->querySelector('body');
+        $this->setExpectedException('\InvalidArgumentException');
+        $element->getAttribute(1);
+    }
+
+    /**
+     * 
+     */
+    public function testInvalidArguments5()
+    {
+        $list = new \IvoPetkov\HTML5DOMNodeList();
+        $this->setExpectedException('\Exception');
+        $list->missing;
+    }
+
 }

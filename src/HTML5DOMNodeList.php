@@ -31,17 +31,14 @@ class HTML5DOMNodeList extends \ArrayObject
      * 
      * @param string $name The name of the property
      * @return mixed
-     * @throws \InvalidArgumentException
+     * @throws \Exception
      */
     public function __get($name)
     {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException('The name argument must be of type string');
-        }
         if ($name === 'length') {
             return sizeof($this);
         } else {
-            trigger_error('Undefined property: \IvoPetkov\HTML5DOMNodeList::$' . $name, E_USER_NOTICE);
+            throw new \Exception('Undefined property: \IvoPetkov\HTML5DOMNodeList::$' . $name);
         }
     }
 

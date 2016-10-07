@@ -21,14 +21,10 @@ class HTML5DOMElement extends \DOMElement
      * 
      * @param string $name The name of the property
      * @return string The value of the property specified
-     * @throws \InvalidArgumentException
      * @throws \Exception
      */
     public function __get($name)
     {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException('The name argument must be of type string');
-        }
         if ($name === 'innerHTML') {
             $html = $this->ownerDocument->saveHTML($this);
             $nodeName = $this->nodeName;
@@ -46,12 +42,10 @@ class HTML5DOMElement extends \DOMElement
      * @param string $name
      * @param string $value
      * @throws \InvalidArgumentException
+     * @throws \Exception
      */
     public function __set($name, $value)
     {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException('The name argument must be of type string');
-        }
         if (!is_string($value)) {
             throw new \InvalidArgumentException('The value argument must be of type string');
         }
@@ -73,6 +67,8 @@ class HTML5DOMElement extends \DOMElement
                 $this->parentNode->insertBefore($node, $this);
             }
             $this->parentNode->removeChild($this);
+        } else {
+            throw new \Exception('Undefined property: HTML5DOMElement::$' . $name);
         }
     }
 
