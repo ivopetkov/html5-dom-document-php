@@ -37,9 +37,8 @@ class HTML5DOMNodeList extends \ArrayObject
     {
         if ($name === 'length') {
             return sizeof($this);
-        } else {
-            throw new \Exception('Undefined property: \IvoPetkov\HTML5DOMNodeList::$' . $name);
         }
+        throw new \Exception('Undefined property: \IvoPetkov\HTML5DOMNodeList::$' . $name);
     }
 
 }

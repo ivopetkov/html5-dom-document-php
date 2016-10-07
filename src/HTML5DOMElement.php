@@ -31,9 +31,8 @@ class HTML5DOMElement extends \DOMElement
             return preg_replace('@^<' . $nodeName . '[^>]*>|</' . $nodeName . '>$@', '', $html);
         } elseif ($name === 'outerHTML') {
             return $this->ownerDocument->saveHTML($this);
-        } else {
-            throw new \Exception('Undefined property: HTML5DOMElement::$' . $name);
         }
+        throw new \Exception('Undefined property: HTML5DOMElement::$' . $name);
     }
 
     /**
@@ -59,6 +58,7 @@ class HTML5DOMElement extends \DOMElement
                 $node = $this->ownerDocument->importNode($node, true);
                 $this->appendChild($node);
             }
+            return;
         } elseif ($name === 'outerHTML') {
             $tmpDoc = new \IvoPetkov\HTML5DOMDocument();
             $tmpDoc->loadHTML('<body>' . $value . '</body>');
@@ -67,9 +67,9 @@ class HTML5DOMElement extends \DOMElement
                 $this->parentNode->insertBefore($node, $this);
             }
             $this->parentNode->removeChild($this);
-        } else {
-            throw new \Exception('Undefined property: HTML5DOMElement::$' . $name);
+            return;
         }
+        throw new \Exception('Undefined property: HTML5DOMElement::$' . $name);
     }
 
     /**
