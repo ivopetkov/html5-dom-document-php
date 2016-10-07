@@ -522,4 +522,28 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
+    /**
+     * 
+     */
+    public function testInsertHTMLCopyAttributes()
+    {
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html>'
+                . '<html data-html-custom-1="1">'
+                . '<head data-head-custom-1="1"></head>'
+                . '<body data-body-custom-1="1"></body>'
+                . '</html>');
+        $dom->insertHTML('<html data-html-custom-1="A" data-html-custom-2="B">'
+                . '<head data-head-custom-1="A" data-head-custom-2="B"></head>'
+                . '<body data-body-custom-1="A" data-body-custom-2="B"></body>'
+                . '</html>');
+        $expectedSource = '<!DOCTYPE html>'
+                . '<html data-html-custom-1="A" data-html-custom-2="B">'
+                . '<head data-head-custom-1="A" data-head-custom-2="B"></head>'
+                . '<body data-body-custom-1="A" data-body-custom-2="B"></body>'
+                . '</html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+    }
+
 }

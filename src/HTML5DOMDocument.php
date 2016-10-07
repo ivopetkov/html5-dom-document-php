@@ -456,7 +456,25 @@ class HTML5DOMDocument extends \DOMDocument
             return $currentDomDocument->importNode($child, true);
         };
 
+        $copyAttributes = function($sourceNode, $targetNode) {
+            $attributesCount = $sourceNode->attributes->length;
+            for ($i = 0; $i < $attributesCount; $i++) {
+                $attribute = $sourceNode->attributes->item($i);
+                $targetNode->setAttribute($attribute->name, $attribute->value);
+            }
+        };
+
         $removeDuplicateTags = false;
+
+        $htmlElement = $domDocument->getElementsByTagName('html')->item(0);
+        if ($htmlElement !== null) {
+            $currentDomHTMLElement = $this->getElementsByTagName('html')->item(0);
+            if ($currentDomHTMLElement === null) {
+                $this->addHtmlElementIfMissing();
+                $currentDomHTMLElement = $this->getElementsByTagName('html')->item(0);
+            }
+            $copyAttributes($htmlElement, $currentDomHTMLElement);
+        }
 
         $headElement = $domDocument->getElementsByTagName('head')->item(0);
         if ($headElement !== null) {
@@ -474,6 +492,7 @@ class HTML5DOMDocument extends \DOMDocument
                     $currentDomHeadElement->appendChild($newNode);
                 }
             }
+            $copyAttributes($headElement, $currentDomHeadElement);
             $removeDuplicateTags = true;
         }
 
@@ -522,6 +541,7 @@ class HTML5DOMDocument extends \DOMDocument
                     break;
                 }
             }
+            $copyAttributes($bodyElement, $currentDomBodyElement);
             $removeDuplicateTags = true;
         }
 
