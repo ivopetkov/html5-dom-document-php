@@ -132,6 +132,39 @@ class HTML5DOMDocument extends \DOMDocument
                 }
             }
         }
+
+        // Update dom if there are multiple head tags
+        $headElements = $this->getElementsByTagName('head');
+        if ($headElements->length > 1) {
+            $firstHeadElement = $headElements->item(0);
+            while ($headElements->length > 1) {
+                $nextHeadElement = $headElements->item(1);
+                $nextHeadElementChildren = $nextHeadElement->childNodes;
+                $nextHeadElementChildrenCount = $nextHeadElementChildren->length;
+                for ($i = 0; $i < $nextHeadElementChildrenCount; $i++) {
+                    $firstHeadElement->appendChild($nextHeadElementChildren->item(0));
+                }
+                $nextHeadElement->parentNode->removeChild($nextHeadElement);
+            }
+        }
+
+        // Update dom if there are multiple body tags
+        $bodyElements = $this->getElementsByTagName('body');
+        if ($bodyElements->length > 1) {
+            $firstBodyElement = $bodyElements->item(0);
+            while ($bodyElements->length > 1) {
+                $nextBodyElement = $bodyElements->item(1);
+                $nextBodyElementChildren = $nextBodyElement->childNodes;
+                $nextBodyElementChildrenCount = $nextBodyElementChildren->length;
+                for ($i = 0; $i < $nextBodyElementChildrenCount; $i++) {
+                    $firstBodyElement->appendChild($nextBodyElementChildren->item(0));
+                }
+                $nextBodyElement->parentNode->removeChild($nextBodyElement);
+            }
+        }
+
+        $this->removeDuplicateTags();
+
         $this->loaded = true;
         return true;
     }
@@ -499,9 +532,8 @@ class HTML5DOMDocument extends \DOMDocument
 
     private function removeDuplicateTags()
     {
-        $headElements = $this->getElementsByTagName('head');
-        if ($headElements->length > 0) {
-            $headElement = $headElements->item(0);
+        $headElement = $this->getElementsByTagName('head')->item(0);
+        if ($headElement !== null) {
             $titleTags = $headElement->getElementsByTagName('title');
             while ($titleTags->length > 1) {
                 $node = $titleTags->item(0);

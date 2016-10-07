@@ -481,4 +481,45 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
+    /**
+     * 
+     */
+    public function testMultipleHeadAndBodyTags()
+    {
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><html>'
+                . '<head>'
+                . '<title>Title1</title>'
+                . '<meta charset="utf-8">'
+                . '</head>'
+                . '<head>'
+                . '<title>Title2</title>'
+                . '<meta content="index,follow" name="robots">'
+                . '</head>'
+                . '<body>'
+                . 'Text1'
+                . '<div>TextA</div>'
+                . '</body>'
+                . '<body>'
+                . 'Text2'
+                . '<div>TextB</div>'
+                . '</body>'
+                . '</html>');
+        $expectedSource = '<!DOCTYPE html><html>'
+                . '<head>'
+                . '<meta charset="utf-8">'
+                . '<title>Title2</title>'
+                . '<meta content="index,follow" name="robots">'
+                . '</head>'
+                . '<body>'
+                . 'Text1'
+                . '<div>TextA</div>'
+                . 'Text2'
+                . '<div>TextB</div>'
+                . '</body>'
+                . '</html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+    }
+
 }
