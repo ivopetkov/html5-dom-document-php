@@ -16,6 +16,8 @@ namespace IvoPetkov;
 class HTML5DOMElement extends \DOMElement
 {
 
+    use \IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors;
+
     /**
      * Returns the value for the property specified
      * 
@@ -135,19 +137,18 @@ class HTML5DOMElement extends \DOMElement
     }
 
     /**
-     * Returns the first document element matching the selector
+     * Returns the first child element matching the selector
      * 
      * @param string $selector CSS query selector
      * @return \DOMElement|null The result DOMElement or null if not found
      */
     public function querySelector($selector)
     {
-        $result = $this->querySelectorAll($selector);
-        return $result->item(0);
+        return $this->internalQuerySelector($selector);
     }
 
     /**
-     * Returns a list of document elements matching the selector
+     * Returns a list of children elements matching the selector
      * 
      * @param string $selector CSS query selector
      * @return DOMNodeList Returns a list of DOMElements matching the criteria
@@ -155,47 +156,7 @@ class HTML5DOMElement extends \DOMElement
      */
     public function querySelectorAll($selector)
     {
-        if (!is_string($selector)) {
-            throw new \InvalidArgumentException('The selector argument must be of type string');
-        }
-        if ($selector === '*') { // all
-            return $this->getElementsByTagName('*');
-        } elseif (preg_match('/^[a-z]+$/', $selector) === 1) { // tagname
-            return $this->getElementsByTagName($selector);
-        } elseif (preg_match('/^[a-z]+#.+$/', $selector) === 1) { // tagname#id
-            $parts = explode('#', $selector, 2);
-            $element = $this->ownerDocument->getElementById($parts[1]);
-            if ($element && $element->tagName === $parts[0]) {
-                return new \IvoPetkov\HTML5DOMNodeList([$element]);
-            }
-            return new \IvoPetkov\HTML5DOMNodeList();
-        } elseif (preg_match('/^[a-z]+\..+$/', $selector) === 1) { // tagname.classname
-            $parts = explode('.', $selector, 2);
-            $result = [];
-            $selectorClass = $parts[1];
-            $elements = $this->getElementsByTagName($parts[0]);
-            foreach ($elements as $element) {
-                $classAttribute = $element->getAttribute('class');
-                if ($classAttribute === $selectorClass || strpos($classAttribute, $selectorClass . ' ') === 0 || substr($classAttribute, -(strlen($selectorClass) + 1)) === ' ' . $selectorClass || strpos($classAttribute, ' ' . $selectorClass . ' ') !== false) {
-                    $result[] = $element;
-                }
-            }
-            return new \IvoPetkov\HTML5DOMNodeList($result);
-        } elseif (substr($selector, 0, 1) === '#') { // #id
-            $element = $this->ownerDocument->getElementById(substr($selector, 1));
-            return $element !== null ? new \IvoPetkov\HTML5DOMNodeList([$element]) : new \IvoPetkov\HTML5DOMNodeList();
-        } elseif (substr($selector, 0, 1) === '.') { // .classname
-            $elements = $this->getElementsByTagName('*');
-            $result = [];
-            $selectorClass = substr($selector, 1);
-            foreach ($elements as $element) {
-                $classAttribute = $element->getAttribute('class');
-                if ($classAttribute === $selectorClass || strpos($classAttribute, $selectorClass . ' ') === 0 || substr($classAttribute, -(strlen($selectorClass) + 1)) === ' ' . $selectorClass || strpos($classAttribute, ' ' . $selectorClass . ' ') !== false) {
-                    $result[] = $element;
-                }
-            }
-            return new \IvoPetkov\HTML5DOMNodeList($result);
-        }
-        throw new \InvalidArgumentException('Unsupported selector');
+        return $this->internalQuerySelectorAll($selector);
     }
+
 }

@@ -144,6 +144,38 @@ _Returns_
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The element outerHTML
 
+```php
+public \DOMElement|null querySelector ( string $selector )
+```
+
+Returns the first child element matching the selector
+
+_Parameters_
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$selector`
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CSS query selector
+
+_Returns_
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The result DOMElement or null if not found
+
+```php
+public DOMNodeList querySelectorAll ( string $selector )
+```
+
+Returns a list of children elements matching the selector
+
+_Parameters_
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$selector`
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CSS query selector
+
+_Returns_
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of DOMElements matching the criteria
+
 ## Examples
 
 Querying the document with CSS selectors and getting the innerHTML and the outerHTML of the elements.
