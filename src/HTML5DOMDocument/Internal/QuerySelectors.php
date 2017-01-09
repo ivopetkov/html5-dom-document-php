@@ -13,7 +13,7 @@ trait QuerySelectors
      */
     private function internalQuerySelector($selector)
     {
-        $result = $this->internalQuerySelectorAll($selector);
+        $result = $this->internalQuerySelectorAll($selector, 1);
         return $result->item(0);
     }
 
@@ -21,10 +21,11 @@ trait QuerySelectors
      * Returns a list of document elements matching the selector
      * 
      * @param string $selector CSS query selector
+     * @param int|null $preferredLimit Preferred maximum number of elements to return
      * @return DOMNodeList Returns a list of DOMElements matching the criteria
      * @throws \InvalidArgumentException
      */
-    private function internalQuerySelectorAll($selector)
+    private function internalQuerySelectorAll($selector, $preferredLimit = null)
     {
         if (!is_string($selector)) {
             throw new \InvalidArgumentException('The selector argument must be of type string');
@@ -64,6 +65,9 @@ trait QuerySelectors
                 $classAttribute = $element->getAttribute('class');
                 if ($classAttribute === $selectorClass || strpos($classAttribute, $selectorClass . ' ') === 0 || substr($classAttribute, -(strlen($selectorClass) + 1)) === ' ' . $selectorClass || strpos($classAttribute, ' ' . $selectorClass . ' ') !== false) {
                     $result[] = $element;
+                    if ($preferredLimit !== null && sizeof($result) >= $this->$preferredLimit) {
+                        break;
+                    }
                 }
             }
             return new \IvoPetkov\HTML5DOMNodeList($result);
@@ -78,6 +82,9 @@ trait QuerySelectors
                 $classAttribute = $element->getAttribute('class');
                 if ($classAttribute === $selectorClass || strpos($classAttribute, $selectorClass . ' ') === 0 || substr($classAttribute, -(strlen($selectorClass) + 1)) === ' ' . $selectorClass || strpos($classAttribute, ' ' . $selectorClass . ' ') !== false) {
                     $result[] = $element;
+                    if ($preferredLimit !== null && sizeof($result) >= $this->$preferredLimit) {
+                        break;
+                    }
                 }
             }
             return new \IvoPetkov\HTML5DOMNodeList($result);
