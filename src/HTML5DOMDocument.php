@@ -510,6 +510,12 @@ class HTML5DOMDocument extends \DOMDocument
         }
     }
 
+    /**
+     * Removes duplicate nodes.
+     *  - The first title element will remain if multiple
+     *  - Meta tags checked by name or property attributes
+     *  - Only the first element with a specified id will remain if multiple with the same id are set
+     */
     private function removeDuplicateTags()
     {
         $headElement = $this->getElementsByTagName('head')->item(0);
