@@ -82,15 +82,17 @@ class HTML5DOMElement extends \DOMElement
      */
     private function updateResult($value)
     {
-        $matches = [];
-        preg_match_all('/html5-dom-document-internal-entity1-(.*?)-end/', $value, $matches);
-        foreach ($matches[0] as $i => $match) {
-            $value = str_replace($match, html_entity_decode('&' . $matches[1][$i] . ';'), $value);
-        }
-        $matches = [];
-        preg_match_all('/html5-dom-document-internal-entity2-(.*?)-end/', $value, $matches);
-        foreach ($matches[0] as $i => $match) {
-            $value = str_replace($match, html_entity_decode('&#' . $matches[1][$i] . ';'), $value);
+        if (strpos($value, 'html5-dom-document-internal-entity') !== false) {
+            $matches = [];
+            preg_match_all('/html5-dom-document-internal-entity1-(.*?)-end/', $value, $matches);
+            foreach ($matches[0] as $i => $match) {
+                $value = str_replace($match, html_entity_decode('&' . $matches[1][$i] . ';'), $value);
+            }
+            $matches = [];
+            preg_match_all('/html5-dom-document-internal-entity2-(.*?)-end/', $value, $matches);
+            foreach ($matches[0] as $i => $match) {
+                $value = str_replace($match, html_entity_decode('&#' . $matches[1][$i] . ';'), $value);
+            }
         }
         return $value;
     }

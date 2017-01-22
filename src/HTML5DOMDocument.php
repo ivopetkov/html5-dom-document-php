@@ -57,7 +57,7 @@ class HTML5DOMDocument extends \DOMDocument
             $source = '<body>' . $source . '</body>';
         }
 
-        if (stripos($source, '<!DOCTYPE') !== 0) {
+        if (strtoupper(substr($source, 0, 9)) !== '<!DOCTYPE') {
             $source = '<!DOCTYPE html>' . $source;
         }
 
@@ -89,16 +89,8 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         // Preserve html entities
-        $matches = [];
-        preg_match_all('/&[a-zA-Z]*;/', $source, $matches);
-        foreach ($matches[0] as $match) {
-            $source = str_replace($match, 'html5-dom-document-internal-entity1-' . trim($match, '&;') . '-end', $source);
-        }
-        $matches = [];
-        preg_match_all('/&#[0-9]*;/', $source, $matches);
-        foreach ($matches[0] as $match) {
-            $source = str_replace($match, 'html5-dom-document-internal-entity2-' . trim($match, '&#;') . '-end', $source);
-        }
+        $source = preg_replace('/&([a-zA-Z]*);/', 'html5-dom-document-internal-entity1-$1-end', $source);
+        $source = preg_replace('/&#([0-9]*);/', 'html5-dom-document-internal-entity2-$1-end', $source);
 
         $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $options);
         if ($internalErrorsOptionValue === false) {
@@ -295,24 +287,15 @@ class HTML5DOMDocument extends \DOMDocument
             $html = str_replace('<head></head>', '', $html);
         }
         $html = str_replace('html5-dom-document-internal-content', '', $html);
-        $matches = [];
-        preg_match_all('/html5-dom-document-internal-entity1-(.*?)-end/', $html, $matches);
-        foreach ($matches[0] as $i => $match) {
-            $html = str_replace($match, '&' . $matches[1][$i] . ';', $html);
-        }
-        $matches = [];
-        preg_match_all('/html5-dom-document-internal-entity2-(.*?)-end/', $html, $matches);
-        foreach ($matches[0] as $i => $match) {
-            $html = str_replace($match, '&#' . $matches[1][$i] . ';', $html);
+        if (strpos($html, 'html5-dom-document-internal-entity') !== false) {
+            $html = preg_replace('/html5-dom-document-internal-entity1-(.*?)-end/', '&$1;', $html);
+            $html = preg_replace('/html5-dom-document-internal-entity2-(.*?)-end/', '&#$1;', $html);
         }
         if ($removeHtmlElement) {
             $html = str_replace('<html></html>', '', $html);
         }
 
-        $voidElementsList = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
-        foreach ($voidElementsList as $elementName) {
-            $html = str_replace('</' . $elementName . '>', '', $html);
-        }
+        $html = str_replace(['</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>'], '', $html);
         // Remove the whitespace between the doctype and html tag
         $html = preg_replace('/\>\s\<html/', '><html', $html, 1);
         return trim($html);
