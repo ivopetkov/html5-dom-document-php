@@ -237,15 +237,20 @@ class HTML5DOMDocument extends \DOMDocument
         if ($bodyElement !== null) { // This preserves the whitespace between the HTML tags
             $bodyElements = $bodyElement->getElementsByTagName('*');
             $bodyElementsCount = $bodyElements->length;
+            $tempNodes = [];
             $tempTextNode = $this->createTextNode('html5-dom-document-internal-content');
             for ($i = 0; $i < $bodyElementsCount; $i++) {
-                $bodyElement = $bodyElements->item($i);
-                $bodyElement->parentNode->insertBefore(clone($tempTextNode), $bodyElement);
-                if ($bodyElement->nextSibling !== null) {
-                    $bodyElement->parentNode->insertBefore(clone($tempTextNode), $bodyElement->nextSibling);
+                $element = $bodyElements->item($i);
+                $newTextNode1 = clone($tempTextNode);
+                $newTextNode2 = clone($tempTextNode);
+                $parentNode = $element->parentNode;
+                $parentNode->insertBefore($newTextNode1, $element);
+                if (($nextSibling = $element->nextSibling) !== null) {
+                    $parentNode->insertBefore($newTextNode2, $nextSibling);
                 } else {
-                    $bodyElement->parentNode->appendChild(clone($tempTextNode));
+                    $parentNode->appendChild($newTextNode2);
                 }
+                $tempNodes[] = [$parentNode, $newTextNode1, $newTextNode2];
             }
         }
 
@@ -270,11 +275,11 @@ class HTML5DOMDocument extends \DOMDocument
         $html = parent::saveHTML($node);
 
         if ($bodyElement !== null) {
-            for ($i = 0; $i < $bodyElementsCount; $i++) {
-                $bodyElement = $bodyElements->item($i);
-                $bodyElement->parentNode->removeChild($bodyElement->previousSibling);
-                $bodyElement->parentNode->removeChild($bodyElement->nextSibling);
+            foreach ($tempNodes as $tempNodesData) {
+                $tempNodesData[0]->removeChild($tempNodesData[1]);
+                $tempNodesData[0]->removeChild($tempNodesData[2]);
             }
+            unset($tempNodes);
         }
 
         if ($removeHeadElement) {
@@ -283,20 +288,24 @@ class HTML5DOMDocument extends \DOMDocument
             $meta->parentNode->removeChild($meta);
         }
 
-        $html = str_replace('<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8">', '', $html);
-        if ($removeHeadElement) {
-            $html = str_replace('<head></head>', '', $html);
-        }
-        $html = str_replace('html5-dom-document-internal-content', '', $html);
         if (strpos($html, 'html5-dom-document-internal-entity') !== false) {
             $html = preg_replace('/html5-dom-document-internal-entity1-(.*?)-end/', '&$1;', $html);
             $html = preg_replace('/html5-dom-document-internal-entity2-(.*?)-end/', '&#$1;', $html);
         }
-        if ($removeHtmlElement) {
-            $html = str_replace('<html></html>', '', $html);
-        }
 
-        $html = str_replace(['</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>'], '', $html);
+        $codeToRemove = [
+            'html5-dom-document-internal-content',
+            '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8">',
+            '</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>'
+        ];
+        if ($removeHeadElement) {
+            $codeToRemove[] = '<head></head>';
+        }
+        if ($removeHtmlElement) {
+            $codeToRemove[] = '<html></html>';
+        }
+        $html = str_replace($codeToRemove, '', $html);
+
         // Remove the whitespace between the doctype and html tag
         $html = preg_replace('/\>\s\<html/', '><html', $html, 1);
         return trim($html);
