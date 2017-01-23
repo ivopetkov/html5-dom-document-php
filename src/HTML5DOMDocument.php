@@ -234,16 +234,17 @@ class HTML5DOMDocument extends \DOMDocument
             return '<!DOCTYPE html>';
         }
         $bodyElement = $this->getElementsByTagName('body')->item(0);
-        if ($bodyElement !== null) {
+        if ($bodyElement !== null) { // This preserves the whitespace between the HTML tags
             $bodyElements = $bodyElement->getElementsByTagName('*');
             $bodyElementsCount = $bodyElements->length;
+            $tempTextNode = $this->createTextNode('html5-dom-document-internal-content');
             for ($i = 0; $i < $bodyElementsCount; $i++) {
                 $bodyElement = $bodyElements->item($i);
-                $bodyElement->parentNode->insertBefore($this->createTextNode('html5-dom-document-internal-content'), $bodyElement);
+                $bodyElement->parentNode->insertBefore(clone($tempTextNode), $bodyElement);
                 if ($bodyElement->nextSibling !== null) {
-                    $bodyElement->parentNode->insertBefore($this->createTextNode('html5-dom-document-internal-content'), $bodyElement->nextSibling);
+                    $bodyElement->parentNode->insertBefore(clone($tempTextNode), $bodyElement->nextSibling);
                 } else {
-                    $bodyElement->parentNode->appendChild($this->createTextNode('html5-dom-document-internal-content'));
+                    $bodyElement->parentNode->appendChild(clone($tempTextNode));
                 }
             }
         }
