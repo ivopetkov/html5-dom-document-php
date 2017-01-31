@@ -65,7 +65,7 @@ trait QuerySelectors
                 $classAttribute = $element->getAttribute('class');
                 if ($classAttribute === $selectorClass || strpos($classAttribute, $selectorClass . ' ') === 0 || substr($classAttribute, -(strlen($selectorClass) + 1)) === ' ' . $selectorClass || strpos($classAttribute, ' ' . $selectorClass . ' ') !== false) {
                     $result[] = $element;
-                    if ($preferredLimit !== null && sizeof($result) >= $this->$preferredLimit) {
+                    if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
                         break;
                     }
                 }
@@ -82,7 +82,7 @@ trait QuerySelectors
                 $classAttribute = $element->getAttribute('class');
                 if ($classAttribute === $selectorClass || strpos($classAttribute, $selectorClass . ' ') === 0 || substr($classAttribute, -(strlen($selectorClass) + 1)) === ' ' . $selectorClass || strpos($classAttribute, ' ' . $selectorClass . ' ') !== false) {
                     $result[] = $element;
-                    if ($preferredLimit !== null && sizeof($result) >= $this->$preferredLimit) {
+                    if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
                         break;
                     }
                 }
