@@ -47,16 +47,16 @@ trait QuerySelectors
 
         if ($selector === '*') { // all
             return $this->getElementsByTagName('*');
-        } elseif (preg_match('/^[a-z]+$/', $selector) === 1) { // tagname
+        } elseif (preg_match('/^[a-z0-9]+$/', $selector) === 1) { // tagname
             return $this->getElementsByTagName($selector);
-        } elseif (preg_match('/^[a-z]+#.+$/', $selector) === 1) { // tagname#id
+        } elseif (preg_match('/^[a-z0-9]+#.+$/', $selector) === 1) { // tagname#id
             $parts = explode('#', $selector, 2);
             $element = $getElementById($parts[1]);
             if ($element && $element->tagName === $parts[0]) {
                 return new \IvoPetkov\HTML5DOMNodeList([$element]);
             }
             return new \IvoPetkov\HTML5DOMNodeList();
-        } elseif (preg_match('/^[a-z]+\..+$/', $selector) === 1) { // tagname.classname
+        } elseif (preg_match('/^[a-z0-9]+\..+$/', $selector) === 1) { // tagname.classname
             $parts = explode('.', $selector, 2);
             $result = [];
             $selectorClass = $parts[1];

@@ -278,6 +278,7 @@ class Test extends HTML5DOMDocumentTestCase
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<html><body>'
+                . '<h1>text0</h1>'
                 . '<div id="text1" class="class1">text1</div>'
                 . '<div>text2</div>'
                 . '<div>'
@@ -288,7 +289,8 @@ class Test extends HTML5DOMDocumentTestCase
 
         $this->assertTrue($dom->querySelector('#text1')->innerHTML === 'text1');
 
-        $this->assertTrue($dom->querySelectorAll('*')->length === 7); // html + body + 4 divs + 1 span
+        $this->assertTrue($dom->querySelectorAll('*')->length === 8); // html + body + 1 h1 + 4 divs + 1 span
+        $this->assertTrue($dom->querySelectorAll('h1')->item(0)->innerHTML === 'text0');
         $this->assertTrue($dom->querySelectorAll('div')->length === 4); // 4 divs
         $this->assertTrue($dom->querySelectorAll('#text1')->length === 1);
         $this->assertTrue($dom->querySelectorAll('#text1')->item(0)->innerHTML === 'text1');
