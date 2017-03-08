@@ -450,6 +450,7 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         $bodyElement = $domDocument->getElementsByTagName('body')->item(0);
+        $bodyElementChildrenCount = 0;
         if ($bodyElement !== null) {
             $currentDomBodyElement = $this->getElementsByTagName('body')->item(0);
             if ($currentDomBodyElement === null) {
@@ -459,42 +460,44 @@ class HTML5DOMDocument extends \DOMDocument
             }
             $bodyElementChildren = $bodyElement->childNodes;
             $bodyElementChildrenCount = $bodyElementChildren->length;
-            if ($target === 'afterBodyBegin') {
-                for ($i = $bodyElementChildrenCount - 1; $i >= 0; $i--) {
-                    $newNode = $getNewChild($bodyElementChildren->item($i));
-                    if ($newNode !== null) {
-                        if ($currentDomBodyElement->firstChild === null) {
-                            $currentDomBodyElement->appendChild($newNode);
-                        } else {
-                            $currentDomBodyElement->insertBefore($newNode, $currentDomBodyElement->firstChild);
-                        }
-                    }
-                }
-            } else if ($target === 'beforeBodyEnd') {
-                for ($i = 0; $i < $bodyElementChildrenCount; $i++) {
-                    $newNode = $getNewChild($bodyElementChildren->item($i));
-                    if ($newNode !== null) {
+            $copyAttributes($bodyElement, $currentDomBodyElement);
+        }
+        if ($target === 'afterBodyBegin') {
+            for ($i = $bodyElementChildrenCount - 1; $i >= 0; $i--) {
+                $newNode = $getNewChild($bodyElementChildren->item($i));
+                if ($newNode !== null) {
+                    if ($currentDomBodyElement->firstChild === null) {
                         $currentDomBodyElement->appendChild($newNode);
+                    } else {
+                        $currentDomBodyElement->insertBefore($newNode, $currentDomBodyElement->firstChild);
                     }
-                }
-            } else {
-                $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
-                $targetElementsCount = $targetElements->length;
-                for ($j = 0; $j < $targetElementsCount; $j++) {
-                    $targetElement = $targetElements->item($j);
-                    if ($targetElement->getAttribute('name') === $target) {
-                        for ($i = 0; $i < $bodyElementChildrenCount; $i++) {
-                            $newNode = $getNewChild($bodyElementChildren->item($i));
-                            if ($newNode !== null) {
-                                $targetElement->parentNode->insertBefore($newNode, $targetElement);
-                            }
-                        }
-                    }
-                    $targetElement->parentNode->removeChild($targetElement);
-                    break;
                 }
             }
-            $copyAttributes($bodyElement, $currentDomBodyElement);
+        } else if ($target === 'beforeBodyEnd') {
+            for ($i = 0; $i < $bodyElementChildrenCount; $i++) {
+                $newNode = $getNewChild($bodyElementChildren->item($i));
+                if ($newNode !== null) {
+                    $currentDomBodyElement->appendChild($newNode);
+                }
+            }
+        } else {
+            $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
+            $targetElementsCount = $targetElements->length;
+            for ($j = 0; $j < $targetElementsCount; $j++) {
+                $targetElement = $targetElements->item($j);
+                if ($targetElement->getAttribute('name') === $target) {
+                    for ($i = 0; $i < $bodyElementChildrenCount; $i++) {
+                        $newNode = $getNewChild($bodyElementChildren->item($i));
+                        if ($newNode !== null) {
+                            $targetElement->parentNode->insertBefore($newNode, $targetElement);
+                        }
+                    }
+                }
+                $targetElement->parentNode->removeChild($targetElement);
+                break;
+            }
+        }
+        if ($bodyElementChildrenCount > 0) {
             $removeDuplicateTags = true;
         }
 
