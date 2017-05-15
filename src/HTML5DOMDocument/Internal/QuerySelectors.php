@@ -45,10 +45,23 @@ trait QuerySelectors
             return null;
         };
 
+        $matches = null;
         if ($selector === '*') { // all
             return $this->getElementsByTagName('*');
         } elseif (preg_match('/^[a-z0-9]+$/', $selector) === 1) { // tagname
             return $this->getElementsByTagName($selector);
+        } elseif (preg_match('/^([a-z0-9]+)\[(.+)\=\"(.+)\"\]$/', $selector, $matches) === 1) { // tagname[attribute="value"]
+            $result = [];
+            $elements = $this->getElementsByTagName($matches[1]);
+            foreach ($elements as $element) {
+                if ($element->getAttribute($matches[2]) === $matches[3]) {
+                    $result[] = $element;
+                    if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
+                        break;
+                    }
+                }
+            }
+            return new \IvoPetkov\HTML5DOMNodeList($result);
         } elseif (preg_match('/^[a-z0-9]+#.+$/', $selector) === 1) { // tagname#id
             $parts = explode('#', $selector, 2);
             $element = $getElementById($parts[1]);
