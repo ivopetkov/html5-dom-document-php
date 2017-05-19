@@ -50,9 +50,9 @@ trait QuerySelectors
             return $this->getElementsByTagName('*');
         } elseif (preg_match('/^[a-z0-9]+$/', $selector) === 1) { // tagname
             return $this->getElementsByTagName($selector);
-        } elseif (preg_match('/^([a-z0-9]+)\[(.+)\=\"(.+)\"\]$/', $selector, $matches) === 1) { // tagname[attribute="value"]
+        } elseif (preg_match('/^([a-z0-9]*)\[(.+)\=\"(.+)\"\]$/', $selector, $matches) === 1) { // [attribute="value"] or tagname[attribute="value"]
             $result = [];
-            $elements = $this->getElementsByTagName($matches[1]);
+            $elements = strlen($matches[1]) > 0 ? $this->getElementsByTagName($matches[1]) : $this->getElementsByTagName('*');
             foreach ($elements as $element) {
                 if ($element->getAttribute($matches[2]) === $matches[3]) {
                     $result[] = $element;

@@ -298,6 +298,8 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($dom->querySelectorAll('.text3')->item(0)->innerHTML === 'text3');
         $this->assertTrue($dom->querySelectorAll('div#text1')->item(0)->innerHTML === 'text1');
         $this->assertTrue($dom->querySelectorAll('span#text4')->item(0)->innerHTML === 'text4');
+        $this->assertTrue($dom->querySelectorAll('[id="text4"]')->item(0)->innerHTML === 'text4');
+        $this->assertTrue($dom->querySelectorAll('span[id="text4"]')->item(0)->innerHTML === 'text4');
         $this->assertTrue($dom->querySelectorAll('div#text4')->length === 0);
         $this->assertTrue($dom->querySelectorAll('div.class1')->length === 2);
         $this->assertTrue($dom->querySelectorAll('.class1')->length === 3);
@@ -338,6 +340,8 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('.text3')->item(0)->innerHTML === 'text3');
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('div#text1')->item(0)->innerHTML === 'text1');
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('span#text4')->item(0)->innerHTML === 'text4');
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[id="text4"]')->item(0)->innerHTML === 'text4');
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('span[id="text4"]')->item(0)->innerHTML === 'text4');
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('div#text4')->length === 0);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('div.class1')->length === 2);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('.class1')->length === 3);
