@@ -28,10 +28,27 @@ class HTML5DOMElement extends \DOMElement
     public function __get($name)
     {
         if ($name === 'innerHTML') {
+            if ($this->firstChild === null) {
+                return '';
+            }
             $html = $this->ownerDocument->saveHTML($this);
             $nodeName = $this->nodeName;
             return preg_replace('@^<' . $nodeName . '[^>]*>|</' . $nodeName . '>$@', '', $html);
         } elseif ($name === 'outerHTML') {
+            if ($this->firstChild === null) {
+                $nodeName = $this->nodeName;
+                $attributes = $this->getAttributes();
+                $result = '<' . $nodeName . '';
+                foreach ($attributes as $name => $value) {
+                    $result .= ' ' . $name . '="' . htmlentities($value) . '"';
+                }
+                if (array_search($nodeName, ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr']) === false) {
+                    $result .= '></' . $nodeName . '>';
+                } else {
+                    $result .= '/>';
+                }
+                return $result;
+            }
             return $this->ownerDocument->saveHTML($this);
         }
         throw new \Exception('Undefined property: HTML5DOMElement::$' . $name);

@@ -390,11 +390,17 @@ class Test extends HTML5DOMDocumentTestCase
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<html><body>'
-                . '<div>text1</div>'
+                . '<div>text1</div><span title="hi"></span><br/>'
                 . '</body></html>');
 
         $this->assertTrue($dom->querySelector('div')->outerHTML === '<div>text1</div>');
         $this->assertTrue((string) $dom->querySelector('div') === '<div>text1</div>');
+
+        $this->assertTrue($dom->querySelector('span')->outerHTML === '<span title="hi"></span>');
+        $this->assertTrue((string) $dom->querySelector('span') === '<span title="hi"></span>');
+
+        $this->assertTrue($dom->querySelector('br')->outerHTML === '<br/>');
+        $this->assertTrue((string) $dom->querySelector('br') === '<br/>');
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<div>text1</div>');
