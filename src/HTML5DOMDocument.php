@@ -92,7 +92,7 @@ class HTML5DOMDocument extends \DOMDocument
         $source = preg_replace('/&([a-zA-Z]*);/', 'html5-dom-document-internal-entity1-$1-end', $source);
         $source = preg_replace('/&#([0-9]*);/', 'html5-dom-document-internal-entity2-$1-end', $source);
 
-        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $options);
+        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, is_array($options) ? 0 : $options); //todo dont use array
         if ($internalErrorsOptionValue === false) {
             libxml_use_internal_errors(false);
         }
@@ -157,9 +157,13 @@ class HTML5DOMDocument extends \DOMDocument
             }
         }
 
-        $this->removeDuplicateTitleTags();
-        $this->removeDuplicateMetatags();
-        $this->removeElementsWithDuplicateIDs();
+        if (is_array($options) && isset($options['_internal_disable_duplicates_removal'])) {
+            
+        } else {
+            $this->removeDuplicateTitleTags();
+            $this->removeDuplicateMetatags();
+            $this->removeElementsWithDuplicateIDs();
+        }
 
         $this->loaded = true;
         return true;
@@ -235,14 +239,40 @@ class HTML5DOMDocument extends \DOMDocument
         if (!$this->loaded) {
             return '<!DOCTYPE html>';
         }
-        $bodyElement = $this->getElementsByTagName('body')->item(0);
-        if ($bodyElement !== null) { // This preserves the whitespace between the HTML tags
-            $bodyElements = $bodyElement->getElementsByTagName('*');
-            $bodyElementsCount = $bodyElements->length;
+        if ($node !== null) {
+            $isInBody = false;
+            $isInHead = false;
+            $parentNode = $node;
+            for ($i = 0; $i < 1000; $i++) {
+                $parentNode = $parentNode->parentNode;
+                if ($parentNode === null) {
+                    break;
+                }
+                if ($parentNode->nodeName === 'body') {
+                    $isInBody = true;
+                    break;
+                } elseif ($parentNode->nodeName === 'head') {
+                    $isInHead = true;
+                    break;
+                }
+            }
+            if ($isInBody) {
+                $contentElement = $node; // update node children
+            } elseif ($isInHead) {
+                $contentElement = null; // dont update any children
+            } else { // can be body or html element
+                $contentElement = $this->getElementsByTagName('body')->item(0); // update body children
+            }
+        } else {
+            $contentElement = $this->getElementsByTagName('body')->item(0); // update body children
+        }
+        if ($contentElement !== null) { // This preserves the whitespace between the HTML tags
+            $contentElements = $contentElement->getElementsByTagName('*');
+            $contentElementsCount = $contentElements->length;
             $tempNodes = [];
             $tempTextNode = $this->createTextNode('html5-dom-document-internal-content');
-            for ($i = 0; $i < $bodyElementsCount; $i++) {
-                $element = $bodyElements->item($i);
+            for ($i = 0; $i < $contentElementsCount; $i++) {
+                $element = $contentElements->item($i);
                 $newTextNode1 = clone($tempTextNode);
                 $newTextNode2 = clone($tempTextNode);
                 $parentNode = $element->parentNode;
@@ -276,7 +306,7 @@ class HTML5DOMDocument extends \DOMDocument
 
         $html = parent::saveHTML($node);
 
-        if ($bodyElement !== null) {
+        if (isset($tempNodes)) {
             foreach ($tempNodes as $tempNodesData) {
                 $tempNodesData[0]->removeChild($tempNodesData[1]);
                 $tempNodesData[0]->removeChild($tempNodesData[2]);
@@ -398,7 +428,7 @@ class HTML5DOMDocument extends \DOMDocument
             $this->loadHTML('');
         }
         $domDocument = new HTML5DOMDocument();
-        $domDocument->loadHTML($source);
+        $domDocument->loadHTML($source, ['_internal_disable_duplicates_removal' => true]);
 
         $currentDomDocument = &$this;
         $getNewChild = function($child) use ($currentDomDocument) {
