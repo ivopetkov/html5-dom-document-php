@@ -430,12 +430,28 @@ class HTML5DOMDocument extends \DOMDocument
         $domDocument = new HTML5DOMDocument();
         $domDocument->loadHTML($source, ['_internal_disable_duplicates_removal' => true]);
 
+        $doubleCheckIfNodeExists = function($domDocument, $name, $id) { // getElementById returns and element even if it's removed from the DOM
+            $list = $domDocument->getElementsByTagName($name);
+            foreach ($list as $node) {
+                $nodeID = $node->getAttribute('id');
+                if ($nodeID !== '' && $nodeID === $id) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
         $currentDomDocument = &$this;
-        $getNewChild = function($child) use ($currentDomDocument) {
+        $getNewChild = function($child) use ($currentDomDocument, $doubleCheckIfNodeExists) {
             if ($child instanceof \DOMElement) {
                 $id = $child->getAttribute('id');
-                if ($id !== '' && $currentDomDocument->getElementById($id) !== null) {
-                    return null;
+                if ($id !== '') {
+                    $otherElement = $currentDomDocument->getElementById($id);
+                    if ($otherElement !== null) {
+                        if ($doubleCheckIfNodeExists($currentDomDocument, $otherElement->nodeName, $id)) {
+                            return null;
+                        }
+                    }
                 }
             }
             if ($child->firstChild !== null) {
@@ -443,11 +459,11 @@ class HTML5DOMDocument extends \DOMDocument
                 foreach ($childChildren as $childChild) {
                     $id = $childChild->getAttribute('id');
                     if ($id !== '') {
-                        if ($currentDomDocument->getElementById($id) !== null) {
-                            if ($currentDomDocument->getElementById($id)->parentNode === null) { // handling internal bug that finds an element that is already removed
-                                continue;
+                        $otherElement = $currentDomDocument->getElementById($id);
+                        if ($otherElement !== null) {
+                            if ($doubleCheckIfNodeExists($currentDomDocument, $otherElement->nodeName, $id)) {
+                                $childChild->parentNode->removeChild($childChild);
                             }
-                            $childChild->parentNode->removeChild($childChild);
                         }
                     }
                 }
