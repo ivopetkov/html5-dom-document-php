@@ -444,6 +444,9 @@ class HTML5DOMDocument extends \DOMDocument
                     $id = $childChild->getAttribute('id');
                     if ($id !== '') {
                         if ($currentDomDocument->getElementById($id) !== null) {
+                            if ($currentDomDocument->getElementById($id)->parentNode === null) { // handling internal bug that finds an element that is already removed
+                                continue;
+                            }
                             $childChild->parentNode->removeChild($childChild);
                         }
                     }
