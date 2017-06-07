@@ -469,6 +469,8 @@ class Test extends HTML5DOMDocumentTestCase
                 . 'hello<div id="text1">text1</div>'
                 . '<div id="text2">text2</div>'
                 . '<div id="text3">text3</div>'
+                . '<div><span id="span1">hi1</span></div>'
+                . '<span id="span2">hi2</span>'
                 . '</body></html>');
         $dom->insertHTML('<!DOCTYPE html><html><head>'
                 . '<script id="script0">var script0=1;</script>'
@@ -478,6 +480,8 @@ class Test extends HTML5DOMDocumentTestCase
                 . '<div id="text0">text0</div>'
                 . '<div id="text2">text2</div>'
                 . '<div id="text4">text4</div>'
+                . '<span id="span1">hi11</span>'
+                . '<div><span id="span1">hi22</span></div>'
                 . '</body></html>');
         $expectedSource = '<!DOCTYPE html><html><head>'
                 . '<script id="script1">var script1=1;</script>'
@@ -488,8 +492,11 @@ class Test extends HTML5DOMDocumentTestCase
                 . 'hello<div id="text1">text1</div>'
                 . '<div id="text2">text2</div>'
                 . '<div id="text3">text3</div>'
+                . '<div><span id="span1">hi1</span></div>'
+                . '<span id="span2">hi2</span>'
                 . '<div id="text0">text0</div>'
                 . '<div id="text4">text4</div>'
+                . '<div></div>'
                 . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }

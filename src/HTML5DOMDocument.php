@@ -157,7 +157,9 @@ class HTML5DOMDocument extends \DOMDocument
             }
         }
 
-        $this->removeDuplicateTags();
+        $this->removeDuplicateTitleTags();
+        $this->removeDuplicateMetatags();
+        $this->removeElementsWithDuplicateIDs();
 
         $this->loaded = true;
         return true;
@@ -406,6 +408,17 @@ class HTML5DOMDocument extends \DOMDocument
                     return null;
                 }
             }
+            if ($child->firstChild !== null) {
+                $childChildren = $child->getElementsByTagName('*');
+                foreach ($childChildren as $childChild) {
+                    $id = $childChild->getAttribute('id');
+                    if ($id !== '') {
+                        if ($currentDomDocument->getElementById($id) !== null) {
+                            $childChild->parentNode->removeChild($childChild);
+                        }
+                    }
+                }
+            }
             return $currentDomDocument->importNode($child, true);
         };
 
@@ -417,7 +430,7 @@ class HTML5DOMDocument extends \DOMDocument
             }
         };
 
-        $removeDuplicateTags = false;
+        $headElementChanged = false;
 
         $htmlElement = $domDocument->getElementsByTagName('html')->item(0);
         if ($htmlElement !== null) {
@@ -446,7 +459,9 @@ class HTML5DOMDocument extends \DOMDocument
                 }
             }
             $copyAttributes($headElement, $currentDomHeadElement);
-            $removeDuplicateTags = true;
+            if ($headElementChildrenCount > 0) {
+                $headElementChanged = true;
+            }
         }
 
         $bodyElement = $domDocument->getElementsByTagName('body')->item(0);
@@ -497,22 +512,17 @@ class HTML5DOMDocument extends \DOMDocument
                 break;
             }
         }
-        if ($bodyElementChildrenCount > 0) {
-            $removeDuplicateTags = true;
-        }
 
-        if ($removeDuplicateTags) {
-            $this->removeDuplicateTags();
+        if ($headElementChanged) {
+            $this->removeDuplicateTitleTags();
+            $this->removeDuplicateMetatags();
         }
     }
 
     /**
-     * Removes duplicate nodes.
-     *  - The first title element will remain if multiple
-     *  - Meta tags checked by name or property attributes
-     *  - Only the first element with a specified id will remain if multiple with the same id are set
+     * The last title element will remain if multiple.
      */
-    private function removeDuplicateTags()
+    private function removeDuplicateTitleTags()
     {
         $headElement = $this->getElementsByTagName('head')->item(0);
         if ($headElement !== null) {
@@ -521,6 +531,16 @@ class HTML5DOMDocument extends \DOMDocument
                 $node = $titleTags->item(0);
                 $node->parentNode->removeChild($node);
             }
+        }
+    }
+
+    /**
+     * Removes duplicate meta tags. Meta tags checked by name or property attributes.
+     */
+    private function removeDuplicateMetatags()
+    {
+        $headElement = $this->getElementsByTagName('head')->item(0);
+        if ($headElement !== null) {
             $metaTags = $headElement->getElementsByTagName('meta');
             if ($metaTags->length > 0) {
                 $list = [];
@@ -561,6 +581,25 @@ class HTML5DOMDocument extends \DOMDocument
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * Only the first element with a specified id will remain if multiple with the same id are set.
+     */
+    private function removeElementsWithDuplicateIDs()
+    {
+        $allElements = $this->getElementsByTagName('*');
+        $passedIDs = [];
+        foreach ($allElements as $element) {
+            $id = $element->getAttribute('id');
+            if ($id !== '') {
+                if (isset($passedIDs[$id])) {
+                    $element->parentNode->removeChild($element);
+                } else {
+                    $passedIDs[$id] = 1;
                 }
             }
         }
