@@ -53,7 +53,7 @@ class HTML5DOMDocument extends \DOMDocument
         $source = trim($source);
 
         // Add body tag if missing
-        if (isset($source{0}) && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html.*?\>/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
+        if ($source !== '' && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html.*?\>/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
             $source = '<body>' . $source . '</body>';
         }
 
@@ -479,7 +479,8 @@ class HTML5DOMDocument extends \DOMDocument
             }
         };
 
-        $headElementChanged = false;
+        $headTitlesElementsChanged = false;
+        $headMetaElementsChanged = false;
 
         $htmlElement = $domDocument->getElementsByTagName('html')->item(0);
         if ($htmlElement !== null) {
@@ -505,12 +506,16 @@ class HTML5DOMDocument extends \DOMDocument
                 $newNode = $getNewChild($headElementChildren->item($i));
                 if ($newNode !== null) {
                     $currentDomHeadElement->appendChild($newNode);
+                    $nodeName = $newNode->nodeName;
+                    if (!$headTitlesElementsChanged && $nodeName === 'title') {
+                        $headTitlesElementsChanged = true;
+                    }
+                    if (!$headMetaElementsChanged && $nodeName === 'meta') {
+                        $headMetaElementsChanged = true;
+                    }
                 }
             }
             $copyAttributes($headElement, $currentDomHeadElement);
-            if ($headElementChildrenCount > 0) {
-                $headElementChanged = true;
-            }
         }
 
         $bodyElement = $domDocument->getElementsByTagName('body')->item(0);
@@ -562,8 +567,10 @@ class HTML5DOMDocument extends \DOMDocument
             }
         }
 
-        if ($headElementChanged) {
+        if ($headTitlesElementsChanged) {
             $this->removeDuplicateTitleTags();
+        }
+        if ($headMetaElementsChanged) {
             $this->removeDuplicateMetatags();
         }
     }
@@ -597,15 +604,15 @@ class HTML5DOMDocument extends \DOMDocument
                 for ($i = 0; $i < $metaTags->length; $i++) {
                     $metaTag = $metaTags->item($i);
                     $id = $metaTag->getAttribute('name');
-                    if (isset($id{0})) {
+                    if ($id !== '') {
                         $id = 'name:' . $id;
                     } else {
                         $id = $metaTag->getAttribute('property');
-                        if (isset($id{0})) {
+                        if ($id !== '') {
                             $id = 'property:' . $id;
                         } else {
                             $id = $metaTag->getAttribute('charset');
-                            if (isset($id{0})) {
+                            if ($id !== '') {
                                 $id = 'charset';
                             }
                         }
