@@ -134,7 +134,8 @@ class HTML5DOMElement extends \DOMElement
         if (!is_string($name)) {
             throw new \InvalidArgumentException('The name argument must be of type string');
         }
-        return $this->updateResult(parent::getAttribute($name));
+        $value = parent::getAttribute($name);
+        return $value !== '' ? $this->updateResult($value) : '';
     }
 
     /**
@@ -148,7 +149,8 @@ class HTML5DOMElement extends \DOMElement
         $attributes = [];
         for ($i = 0; $i < $attributesCount; $i++) {
             $attribute = $this->attributes->item($i);
-            $attributes[$attribute->name] = $this->updateResult($attribute->value);
+            $value = $attribute->value;
+            $attributes[$attribute->name] = $value !== '' ? $this->updateResult($attribute->value) : '';
         }
         return $attributes;
     }
