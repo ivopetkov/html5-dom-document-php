@@ -18,6 +18,13 @@ class HTML5DOMDocument extends \DOMDocument
     use \IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors;
 
     /**
+     * Used to store information about the results of saveHTML. If those results are passed to loadHTML some optimizations are applied.
+     * 
+     * @var array
+     */
+    static private $savedHTML = [];
+
+    /**
      * Indicates whether an HTML code is loaded
      * 
      * @var boolean
@@ -45,6 +52,7 @@ class HTML5DOMDocument extends \DOMDocument
      */
     public function loadHTML($source, $options = 0)
     {
+        $isSavedHTML = isset(self::$savedHTML[md5($source)]);
         // Enables libxml errors handling
         $internalErrorsOptionValue = libxml_use_internal_errors();
         if ($internalErrorsOptionValue === false) {
@@ -127,42 +135,44 @@ class HTML5DOMDocument extends \DOMDocument
             }
         }
 
-        // Update dom if there are multiple head tags
-        $headElements = $this->getElementsByTagName('head');
-        if ($headElements->length > 1) {
-            $firstHeadElement = $headElements->item(0);
-            while ($headElements->length > 1) {
-                $nextHeadElement = $headElements->item(1);
-                $nextHeadElementChildren = $nextHeadElement->childNodes;
-                $nextHeadElementChildrenCount = $nextHeadElementChildren->length;
-                for ($i = 0; $i < $nextHeadElementChildrenCount; $i++) {
-                    $firstHeadElement->appendChild($nextHeadElementChildren->item(0));
+        if (!$isSavedHTML) {
+            // Update dom if there are multiple head tags
+            $headElements = $this->getElementsByTagName('head');
+            if ($headElements->length > 1) {
+                $firstHeadElement = $headElements->item(0);
+                while ($headElements->length > 1) {
+                    $nextHeadElement = $headElements->item(1);
+                    $nextHeadElementChildren = $nextHeadElement->childNodes;
+                    $nextHeadElementChildrenCount = $nextHeadElementChildren->length;
+                    for ($i = 0; $i < $nextHeadElementChildrenCount; $i++) {
+                        $firstHeadElement->appendChild($nextHeadElementChildren->item(0));
+                    }
+                    $nextHeadElement->parentNode->removeChild($nextHeadElement);
                 }
-                $nextHeadElement->parentNode->removeChild($nextHeadElement);
             }
-        }
 
-        // Update dom if there are multiple body tags
-        $bodyElements = $this->getElementsByTagName('body');
-        if ($bodyElements->length > 1) {
-            $firstBodyElement = $bodyElements->item(0);
-            while ($bodyElements->length > 1) {
-                $nextBodyElement = $bodyElements->item(1);
-                $nextBodyElementChildren = $nextBodyElement->childNodes;
-                $nextBodyElementChildrenCount = $nextBodyElementChildren->length;
-                for ($i = 0; $i < $nextBodyElementChildrenCount; $i++) {
-                    $firstBodyElement->appendChild($nextBodyElementChildren->item(0));
+            // Update dom if there are multiple body tags
+            $bodyElements = $this->getElementsByTagName('body');
+            if ($bodyElements->length > 1) {
+                $firstBodyElement = $bodyElements->item(0);
+                while ($bodyElements->length > 1) {
+                    $nextBodyElement = $bodyElements->item(1);
+                    $nextBodyElementChildren = $nextBodyElement->childNodes;
+                    $nextBodyElementChildrenCount = $nextBodyElementChildren->length;
+                    for ($i = 0; $i < $nextBodyElementChildrenCount; $i++) {
+                        $firstBodyElement->appendChild($nextBodyElementChildren->item(0));
+                    }
+                    $nextBodyElement->parentNode->removeChild($nextBodyElement);
                 }
-                $nextBodyElement->parentNode->removeChild($nextBodyElement);
             }
-        }
 
-        if (is_array($options) && isset($options['_internal_disable_duplicates_removal'])) {
-            
-        } else {
-            $this->removeDuplicateTitleTags();
-            $this->removeDuplicateMetatags();
-            $this->removeElementsWithDuplicateIDs();
+            if (is_array($options) && isset($options['_internal_disable_duplicates_removal'])) {
+                
+            } else {
+                $this->removeDuplicateTitleTags();
+                $this->removeDuplicateMetatags();
+                $this->removeElementsWithDuplicateIDs();
+            }
         }
 
         $this->loaded = true;
@@ -339,8 +349,9 @@ class HTML5DOMDocument extends \DOMDocument
         $html = str_replace($codeToRemove, '', $html);
 
         // Remove the whitespace between the doctype and html tag
-        $html = preg_replace('/\>\s\<html/', '><html', $html, 1);
-        return trim($html);
+        $html = trim(preg_replace('/\>\s\<html/', '><html', $html, 1));
+        self::$savedHTML[md5($html)] = 1;
+        return $html;
     }
 
     /**
