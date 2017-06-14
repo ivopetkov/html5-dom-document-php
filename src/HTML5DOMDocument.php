@@ -142,7 +142,7 @@ class HTML5DOMDocument extends \DOMDocument
                     $nextHeadElementChildren = $nextHeadElement->childNodes;
                     $nextHeadElementChildrenCount = $nextHeadElementChildren->length;
                     for ($i = 0; $i < $nextHeadElementChildrenCount; $i++) {
-                        $firstHeadElement->appendChild($nextHeadElementChildren[0]);
+                        $firstHeadElement->appendChild($nextHeadElementChildren->item(0));
                     }
                     $nextHeadElement->parentNode->removeChild($nextHeadElement);
                 }
@@ -157,7 +157,7 @@ class HTML5DOMDocument extends \DOMDocument
                     $nextBodyElementChildren = $nextBodyElement->childNodes;
                     $nextBodyElementChildrenCount = $nextBodyElementChildren->length;
                     for ($i = 0; $i < $nextBodyElementChildrenCount; $i++) {
-                        $firstBodyElement->appendChild($nextBodyElementChildren[0]);
+                        $firstBodyElement->appendChild($nextBodyElementChildren->item(0));
                     }
                     $nextBodyElement->parentNode->removeChild($nextBodyElement);
                 }
