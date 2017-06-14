@@ -19,6 +19,18 @@ class HTML5DOMElement extends \DOMElement
     use \IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors;
 
     /**
+     *
+     * @var array 
+     */
+    static private $foundEntitiesCache = [[], []];
+
+    /**
+     *
+     * @var array 
+     */
+    static private $newObjectsCache = [];
+
+    /**
      * Returns the value for the property specified
      * 
      * @param string $name The name of the property
@@ -71,7 +83,10 @@ class HTML5DOMElement extends \DOMElement
             while ($this->hasChildNodes()) {
                 $this->removeChild($this->firstChild);
             }
-            $tmpDoc = new \IvoPetkov\HTML5DOMDocument();
+            if (!isset(self::$newObjectsCache['html5domdocument'])) {
+                self::$newObjectsCache['html5domdocument'] = new \IvoPetkov\HTML5DOMDocument();
+            }
+            $tmpDoc = clone(self::$newObjectsCache['html5domdocument']);
             $tmpDoc->loadHTML('<body>' . $value . '</body>');
             foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
                 $node = $this->ownerDocument->importNode($node, true);
@@ -79,7 +94,10 @@ class HTML5DOMElement extends \DOMElement
             }
             return;
         } elseif ($name === 'outerHTML') {
-            $tmpDoc = new \IvoPetkov\HTML5DOMDocument();
+            if (!isset(self::$newObjectsCache['html5domdocument'])) {
+                self::$newObjectsCache['html5domdocument'] = new \IvoPetkov\HTML5DOMDocument();
+            }
+            $tmpDoc = clone(self::$newObjectsCache['html5domdocument']);
             $tmpDoc->loadHTML('<body>' . $value . '</body>');
             foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
                 $node = $this->ownerDocument->importNode($node, true);
@@ -99,22 +117,21 @@ class HTML5DOMElement extends \DOMElement
      */
     private function updateResult($value)
     {
+
+        $value = str_replace(self::$foundEntitiesCache[0], self::$foundEntitiesCache[1], $value);
         if (strstr($value, 'html5-dom-document-internal-entity') !== false) {
             $search = [];
             $replace = [];
             $matches = [];
-            preg_match_all('/html5-dom-document-internal-entity1-(.*?)-end/', $value, $matches);
+            preg_match_all('/html5-dom-document-internal-entity([12])-(.*?)-end/', $value, $matches);
+            $matches[0] = array_unique($matches[0]);
             foreach ($matches[0] as $i => $match) {
                 $search[] = $match;
-                $replace[] = html_entity_decode('&' . $matches[1][$i] . ';');
-            }
-            $matches = [];
-            preg_match_all('/html5-dom-document-internal-entity2-(.*?)-end/', $value, $matches);
-            foreach ($matches[0] as $i => $match) {
-                $search[] = $match;
-                $replace[] = html_entity_decode('&#' . $matches[1][$i] . ';');
+                $replace[] = html_entity_decode(($matches[1][$i] === '1' ? '&' : '&#') . $matches[2][$i] . ';');
             }
             $value = str_replace($search, $replace, $value);
+            self::$foundEntitiesCache[0] = array_merge(self::$foundEntitiesCache[0], $search);
+            self::$foundEntitiesCache[1] = array_merge(self::$foundEntitiesCache[1], $replace);
             unset($search);
             unset($replace);
             unset($matches);
@@ -135,7 +152,7 @@ class HTML5DOMElement extends \DOMElement
             throw new \InvalidArgumentException('The name argument must be of type string');
         }
         $value = parent::getAttribute($name);
-        return $value !== '' ? $this->updateResult($value) : '';
+        return $value !== '' ? (strstr($value, 'html5-dom-document-internal-entity') !== false ? $this->updateResult($value) : $value) : '';
     }
 
     /**
@@ -145,12 +162,10 @@ class HTML5DOMElement extends \DOMElement
      */
     public function getAttributes()
     {
-        $attributesCount = $this->attributes->length;
         $attributes = [];
-        for ($i = 0; $i < $attributesCount; $i++) {
-            $attribute = $this->attributes->item($i);
+        foreach ($this->attributes as $attributeName => $attribute) {
             $value = $attribute->value;
-            $attributes[$attribute->name] = $value !== '' ? $this->updateResult($attribute->value) : '';
+            $attributes[$attributeName] = $value !== '' ? (strstr($value, 'html5-dom-document-internal-entity') !== false ? $this->updateResult($value) : $value) : '';
         }
         return $attributes;
     }

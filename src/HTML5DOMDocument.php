@@ -25,6 +25,12 @@ class HTML5DOMDocument extends \DOMDocument
     static private $savedHTML = [];
 
     /**
+     *
+     * @var array 
+     */
+    static private $newObjectsCache = [];
+
+    /**
      * Indicates whether an HTML code is loaded
      * 
      * @var boolean
@@ -58,6 +64,7 @@ class HTML5DOMDocument extends \DOMDocument
         if ($internalErrorsOptionValue === false) {
             libxml_use_internal_errors(true);
         }
+
         $source = trim($source);
 
         // Add body tag if missing
@@ -70,7 +77,6 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         // Adds temporary head tag
-        $removeCharsetTag = false;
         $charsetTag = '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8" />';
         $matches = [];
         preg_match('/\<head.*?\>/', $source, $matches);
@@ -81,18 +87,15 @@ class HTML5DOMDocument extends \DOMDocument
             $removeHtmlTag = false;
             $insertPosition = strpos($source, $matches[0]) + strlen($matches[0]);
             $source = substr($source, 0, $insertPosition) . $charsetTag . substr($source, $insertPosition);
-            $removeCharsetTag = true;
         } else {
             $matches = [];
             preg_match('/\<html.*?\>/', $source, $matches);
             if (isset($matches[0])) { // has html tag
                 $removeHtmlTag = false;
                 $source = str_replace($matches[0], $matches[0] . $charsetTag, $source);
-                $removeCharsetTag = true;
             } else {
                 $insertPosition = strpos($source, '>') + 1;
                 $source = substr($source, 0, $insertPosition) . $charsetTag . substr($source, $insertPosition);
-                $removeCharsetTag = true;
             }
         }
 
@@ -114,23 +117,17 @@ class HTML5DOMDocument extends \DOMDocument
                 break;
             }
         }
-        if ($removeCharsetTag) {
-            $metaTagElement = $this->getElementsByTagName('meta')->item(0);
-            if ($metaTagElement !== null) {
-                if ($metaTagElement->getAttribute('data-html5-dom-document-internal-attribute') === 'charset-meta') {
-                    $metaTagElement->parentNode->removeChild($metaTagElement);
+        $metaTagElement = $this->getElementsByTagName('meta')->item(0);
+        if ($metaTagElement !== null) {
+            if ($metaTagElement->getAttribute('data-html5-dom-document-internal-attribute') === 'charset-meta') {
+                $headElement = $metaTagElement->parentNode;
+                $htmlElement = $headElement->parentNode;
+                $metaTagElement->parentNode->removeChild($metaTagElement);
+                if ($removeHeadTag && $headElement->firstChild === null) {
+                    $headElement->parentNode->removeChild($headElement);
                 }
-                if ($removeHeadTag) {
-                    $headElement = $this->getElementsByTagName('head')->item(0);
-                    if ($headElement !== null && $headElement->childNodes->length === 0) {
-                        $headElement->parentNode->removeChild($headElement);
-                    }
-                }
-                if ($removeHtmlTag) {
-                    $htmlElement = $this->getElementsByTagName('html')->item(0);
-                    if ($htmlElement !== null && $htmlElement->childNodes->length === 0) {
-                        $htmlElement->parentNode->removeChild($htmlElement);
-                    }
+                if ($removeHtmlTag && $htmlElement->firstChild === null) {
+                    $htmlElement->parentNode->removeChild($htmlElement);
                 }
             }
         }
@@ -145,7 +142,7 @@ class HTML5DOMDocument extends \DOMDocument
                     $nextHeadElementChildren = $nextHeadElement->childNodes;
                     $nextHeadElementChildrenCount = $nextHeadElementChildren->length;
                     for ($i = 0; $i < $nextHeadElementChildrenCount; $i++) {
-                        $firstHeadElement->appendChild($nextHeadElementChildren->item(0));
+                        $firstHeadElement->appendChild($nextHeadElementChildren[0]);
                     }
                     $nextHeadElement->parentNode->removeChild($nextHeadElement);
                 }
@@ -160,7 +157,7 @@ class HTML5DOMDocument extends \DOMDocument
                     $nextBodyElementChildren = $nextBodyElement->childNodes;
                     $nextBodyElementChildrenCount = $nextBodyElementChildren->length;
                     for ($i = 0; $i < $nextBodyElementChildrenCount; $i++) {
-                        $firstBodyElement->appendChild($nextBodyElementChildren->item(0));
+                        $firstBodyElement->appendChild($nextBodyElementChildren[0]);
                     }
                     $nextBodyElement->parentNode->removeChild($nextBodyElement);
                 }
@@ -197,8 +194,11 @@ class HTML5DOMDocument extends \DOMDocument
      */
     private function addHtmlElementIfMissing()
     {
-        if ($this->getElementsByTagName('html')->item(0) === null) {
-            $this->appendChild(new \DOMElement('html'));
+        if ($this->getElementsByTagName('html')->length === 0) {
+            if (!isset(self::$newObjectsCache['htmlelement'])) {
+                self::$newObjectsCache['htmlelement'] = new \DOMElement('html');
+            }
+            $this->appendChild(clone(self::$newObjectsCache['htmlelement']));
             return true;
         }
         return false;
@@ -211,10 +211,13 @@ class HTML5DOMDocument extends \DOMDocument
      */
     private function addHeadElementIfMissing()
     {
-        if ($this->getElementsByTagName('head')->item(0) === null) {
+        if ($this->getElementsByTagName('head')->length === 0) {
             $htmlElement = $this->getElementsByTagName('html')->item(0);
-            $headElement = new \DOMElement('head');
-            if ($htmlElement->childNodes->length === 0) {
+            if (!isset(self::$newObjectsCache['headelement'])) {
+                self::$newObjectsCache['headelement'] = new \DOMElement('head');
+            }
+            $headElement = clone(self::$newObjectsCache['headelement']);
+            if ($htmlElement->firstChild === null) {
                 $htmlElement->appendChild($headElement);
             } else {
                 $htmlElement->insertBefore($headElement, $htmlElement->firstChild);
@@ -231,8 +234,11 @@ class HTML5DOMDocument extends \DOMDocument
      */
     private function addBodyElementIfMissing()
     {
-        if ($this->getElementsByTagName('body')->item(0) === null) {
-            $this->getElementsByTagName('html')->item(0)->appendChild(new \DOMElement('body'));
+        if ($this->getElementsByTagName('body')->length === 0) {
+            if (!isset(self::$newObjectsCache['bodyelement'])) {
+                self::$newObjectsCache['bodyelement'] = new \DOMElement('body');
+            }
+            $this->getElementsByTagName('html')->item(0)->appendChild(clone(self::$newObjectsCache['bodyelement']));
             return true;
         }
         return false;
@@ -278,19 +284,17 @@ class HTML5DOMDocument extends \DOMDocument
         }
         if ($contentElement !== null) { // This preserves the whitespace between the HTML tags
             $contentElements = $contentElement->getElementsByTagName('*');
-            $contentElementsCount = $contentElements->length;
             $tempNodes = [];
             $tempTextNode = $this->createTextNode('html5-dom-document-internal-content');
-            for ($i = 0; $i < $contentElementsCount; $i++) {
-                $element = $contentElements->item($i);
+            foreach ($contentElements as $element) {
                 $newTextNode1 = clone($tempTextNode);
-                $newTextNode2 = clone($tempTextNode);
                 $parentNode = $element->parentNode;
                 $parentNode->insertBefore($newTextNode1, $element);
-                if (($nextSibling = $element->nextSibling) !== null) {
-                    $parentNode->insertBefore($newTextNode2, $nextSibling);
-                } else {
+                if ($element->nextSibling === null) {
+                    $newTextNode2 = clone($tempTextNode);
                     $parentNode->appendChild($newTextNode2);
+                } else {
+                    $newTextNode2 = null;
                 }
                 $tempNodes[] = [$parentNode, $newTextNode1, $newTextNode2];
             }
@@ -319,7 +323,9 @@ class HTML5DOMDocument extends \DOMDocument
         if (isset($tempNodes)) {
             foreach ($tempNodes as $tempNodesData) {
                 $tempNodesData[0]->removeChild($tempNodesData[1]);
-                $tempNodesData[0]->removeChild($tempNodesData[2]);
+                if ($tempNodesData[2] !== null) {
+                    $tempNodesData[0]->removeChild($tempNodesData[2]);
+                }
             }
             unset($tempNodes);
         }
@@ -438,7 +444,11 @@ class HTML5DOMDocument extends \DOMDocument
         if (!$this->loaded) {
             $this->loadHTML('');
         }
-        $domDocument = new HTML5DOMDocument();
+
+        if (!isset(self::$newObjectsCache['html5domdocument'])) {
+            self::$newObjectsCache['html5domdocument'] = new HTML5DOMDocument();
+        }
+        $domDocument = clone(self::$newObjectsCache['html5domdocument']);
         $domDocument->loadHTML($source, ['_internal_disable_duplicates_removal' => true]);
 
         $doubleCheckIfNodeExists = function($domDocument, $name, $id) { // getElementById returns and element even if it's removed from the DOM
@@ -483,28 +493,30 @@ class HTML5DOMDocument extends \DOMDocument
         };
 
         $copyAttributes = function($sourceNode, $targetNode) {
-            $attributesCount = $sourceNode->attributes->length;
-            for ($i = 0; $i < $attributesCount; $i++) {
-                $attribute = $sourceNode->attributes->item($i);
-                $targetNode->setAttribute($attribute->name, $attribute->value);
+            foreach ($sourceNode->attributes as $attributeName => $attribute) {
+                $targetNode->setAttribute($attributeName, $attribute->value);
             }
         };
 
         $headTitlesElementsChanged = false;
         $headMetaElementsChanged = false;
 
-        $htmlElement = $domDocument->getElementsByTagName('html')->item(0);
-        if ($htmlElement !== null) {
-            $currentDomHTMLElement = $this->getElementsByTagName('html')->item(0);
-            if ($currentDomHTMLElement === null) {
-                $this->addHtmlElementIfMissing();
+        $domDocumentHtmlTags = $domDocument->getElementsByTagName('html');
+        if ($domDocumentHtmlTags->length > 0) {
+            $htmlElement = $domDocumentHtmlTags->item(0);
+            if ($htmlElement->attributes->length > 0) {
                 $currentDomHTMLElement = $this->getElementsByTagName('html')->item(0);
+                if ($currentDomHTMLElement === null) {
+                    $this->addHtmlElementIfMissing();
+                    $currentDomHTMLElement = $this->getElementsByTagName('html')->item(0);
+                }
+                $copyAttributes($htmlElement, $currentDomHTMLElement);
             }
-            $copyAttributes($htmlElement, $currentDomHTMLElement);
         }
 
-        $headElement = $domDocument->getElementsByTagName('head')->item(0);
-        if ($headElement !== null) {
+        $domDocumentHeadTags = $domDocument->getElementsByTagName('head');
+        if ($domDocumentHeadTags->length > 0) {
+            $headElement = $domDocumentHeadTags->item(0);
             $currentDomHeadElement = $this->getElementsByTagName('head')->item(0);
             if ($currentDomHeadElement === null) {
                 $this->addHtmlElementIfMissing();
@@ -512,9 +524,8 @@ class HTML5DOMDocument extends \DOMDocument
                 $currentDomHeadElement = $this->getElementsByTagName('head')->item(0);
             }
             $headElementChildren = $headElement->childNodes;
-            $headElementChildrenCount = $headElementChildren->length;
-            for ($i = 0; $i < $headElementChildrenCount; $i++) {
-                $newNode = $getNewChild($headElementChildren->item($i));
+            foreach ($headElementChildren as $headElementChild) {
+                $newNode = $getNewChild($headElementChild);
                 if ($newNode !== null) {
                     $currentDomHeadElement->appendChild($newNode);
                     $nodeName = $newNode->nodeName;
@@ -526,12 +537,14 @@ class HTML5DOMDocument extends \DOMDocument
                     }
                 }
             }
-            $copyAttributes($headElement, $currentDomHeadElement);
+            if ($headElement->attributes->length > 0) {
+                $copyAttributes($headElement, $currentDomHeadElement);
+            }
         }
 
-        $bodyElement = $domDocument->getElementsByTagName('body')->item(0);
-        $bodyElementChildrenCount = 0;
-        if ($bodyElement !== null) {
+        $domDocumentBodyTags = $domDocument->getElementsByTagName('body');
+        if ($domDocumentBodyTags->length > 0) {
+            $bodyElement = $domDocumentBodyTags->item(0);
             $currentDomBodyElement = $this->getElementsByTagName('body')->item(0);
             if ($currentDomBodyElement === null) {
                 $this->addHtmlElementIfMissing();
@@ -539,42 +552,43 @@ class HTML5DOMDocument extends \DOMDocument
                 $currentDomBodyElement = $this->getElementsByTagName('body')->item(0);
             }
             $bodyElementChildren = $bodyElement->childNodes;
-            $bodyElementChildrenCount = $bodyElementChildren->length;
-            $copyAttributes($bodyElement, $currentDomBodyElement);
-        }
-        if ($target === 'afterBodyBegin') {
-            for ($i = $bodyElementChildrenCount - 1; $i >= 0; $i--) {
-                $newNode = $getNewChild($bodyElementChildren->item($i));
-                if ($newNode !== null) {
-                    if ($currentDomBodyElement->firstChild === null) {
-                        $currentDomBodyElement->appendChild($newNode);
-                    } else {
-                        $currentDomBodyElement->insertBefore($newNode, $currentDomBodyElement->firstChild);
-                    }
-                }
+            if ($bodyElement->attributes->length > 0) {
+                $copyAttributes($bodyElement, $currentDomBodyElement);
             }
-        } else if ($target === 'beforeBodyEnd') {
-            for ($i = 0; $i < $bodyElementChildrenCount; $i++) {
-                $newNode = $getNewChild($bodyElementChildren->item($i));
-                if ($newNode !== null) {
-                    $currentDomBodyElement->appendChild($newNode);
-                }
-            }
-        } else {
-            $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
-            $targetElementsCount = $targetElements->length;
-            for ($j = 0; $j < $targetElementsCount; $j++) {
-                $targetElement = $targetElements->item($j);
-                if ($targetElement->getAttribute('name') === $target) {
-                    for ($i = 0; $i < $bodyElementChildrenCount; $i++) {
-                        $newNode = $getNewChild($bodyElementChildren->item($i));
-                        if ($newNode !== null) {
-                            $targetElement->parentNode->insertBefore($newNode, $targetElement);
+
+            if ($target === 'afterBodyBegin') {
+                $bodyElementChildrenCount = $bodyElementChildren->length;
+                for ($i = $bodyElementChildrenCount - 1; $i >= 0; $i--) {
+                    $newNode = $getNewChild($bodyElementChildren->item($i));
+                    if ($newNode !== null) {
+                        if ($currentDomBodyElement->firstChild === null) {
+                            $currentDomBodyElement->appendChild($newNode);
+                        } else {
+                            $currentDomBodyElement->insertBefore($newNode, $currentDomBodyElement->firstChild);
                         }
                     }
                 }
-                $targetElement->parentNode->removeChild($targetElement);
-                break;
+            } else if ($target === 'beforeBodyEnd') {
+                foreach ($bodyElementChildren as $bodyElementChild) {
+                    $newNode = $getNewChild($bodyElementChild);
+                    if ($newNode !== null) {
+                        $currentDomBodyElement->appendChild($newNode);
+                    }
+                }
+            } else {
+                $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
+                foreach ($targetElements as $targetElement) {
+                    if ($targetElement->getAttribute('name') === $target) {
+                        foreach ($bodyElementChildren as $bodyElementChild) {
+                            $newNode = $getNewChild($bodyElementChild);
+                            if ($newNode !== null) {
+                                $targetElement->parentNode->insertBefore($newNode, $targetElement);
+                            }
+                        }
+                    }
+                    $targetElement->parentNode->removeChild($targetElement);
+                    break;
+                }
             }
         }
 
@@ -591,11 +605,13 @@ class HTML5DOMDocument extends \DOMDocument
      */
     private function removeDuplicateTitleTags()
     {
-        $headElement = $this->getElementsByTagName('head')->item(0);
-        if ($headElement !== null) {
+        $headElements = $this->getElementsByTagName('head');
+        if ($headElements->length > 0) {
+            $headElement = $headElements->item(0);
             $titleTags = $headElement->getElementsByTagName('title');
-            while ($titleTags->length > 1) {
-                $node = $titleTags->item(0);
+            $titleTagsCount = $titleTags->length;
+            for ($i = 0; $i < $titleTagsCount - 1; $i++) {
+                $node = $titleTags->item($i);
                 $node->parentNode->removeChild($node);
             }
         }
@@ -606,14 +622,16 @@ class HTML5DOMDocument extends \DOMDocument
      */
     private function removeDuplicateMetatags()
     {
-        $headElement = $this->getElementsByTagName('head')->item(0);
-        if ($headElement !== null) {
+        $headElements = $this->getElementsByTagName('head');
+        if ($headElements->length > 0) {
+            $headElement = $headElements->item(0);
             $metaTags = $headElement->getElementsByTagName('meta');
             if ($metaTags->length > 0) {
                 $list = [];
                 $idsList = [];
-                for ($i = 0; $i < $metaTags->length; $i++) {
-                    $metaTag = $metaTags->item($i);
+                //for ($i = 0; $i < $metaTags->length; $i++) {
+                //    $metaTag = $metaTags->item($i);
+                foreach ($metaTags as $metaTag) {
                     $id = $metaTag->getAttribute('name');
                     if ($id !== '') {
                         $id = 'name:' . $id;
