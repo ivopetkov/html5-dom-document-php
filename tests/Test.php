@@ -532,9 +532,9 @@ class Test extends HTML5DOMDocumentTestCase
                 . '<meta content="video.movie" property="og:type">'
                 . '</head>');
         $expectedSource = '<!DOCTYPE html><html><head>'
+                . '<meta charset="us-ascii">'
                 . '<meta content="index,follow" name="robots">'
                 . '<meta content="dom" name="keywords">'
-                . '<meta charset="us-ascii">'
                 . '<meta content="video.movie" property="og:type">'
                 . '</head></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());

@@ -170,6 +170,9 @@ class HTML5DOMDocument extends \DOMDocument
                 $this->removeDuplicateMetatags();
                 $this->removeElementsWithDuplicateIDs();
             }
+            if (isset($firstHeadElement)) {
+                $this->optimizeHeadElementsOrder($firstHeadElement);
+            }
         }
 
         $this->loaded = true;
@@ -597,6 +600,7 @@ class HTML5DOMDocument extends \DOMDocument
         }
         if ($headMetaElementsChanged) {
             $this->removeDuplicateMetatags();
+            $this->optimizeHeadElementsOrder($currentDomHeadElement); // $currentDomHeadElement is set only in this case
         }
     }
 
@@ -686,6 +690,42 @@ class HTML5DOMDocument extends \DOMDocument
                 } else {
                     $passedIDs[$id] = 1;
                 }
+            }
+        }
+    }
+
+    /**
+     * Moves the title element and the metatags first
+     * @param type $headElement
+     */
+    private function optimizeHeadElementsOrder(&$headElement)
+    {
+        $titleElement = $headElement->getElementsByTagName('title')->item(0);
+        $hasTitleElement = false;
+        if ($titleElement !== null && $titleElement->previousSibling !== null) {
+            $headElement->insertBefore($titleElement, $headElement->firstChild);
+            $hasTitleElement = true;
+        }
+        $metaTags = $headElement->getElementsByTagName('meta');
+        $metaTagsLength = $metaTags->length;
+        if ($metaTagsLength > 0) {
+            $charsetMetaTag = null;
+            $nodesToMove = [];
+            for ($i = $metaTagsLength - 1; $i >= 0; $i--) {
+                $nodesToMove[$i] = $metaTags->item($i);
+            }
+            for ($i = $metaTagsLength - 1; $i >= 0; $i--) {
+                $nodeToMove = $nodesToMove[$i];
+                if ($charsetMetaTag === null && $nodeToMove->getAttribute('charset') !== '') {
+                    $charsetMetaTag = $nodeToMove;
+                }
+                $referenceNode = $headElement->childNodes->item($hasTitleElement ? 1 : 0);
+                if ($nodeToMove !== $referenceNode) {
+                    $headElement->insertBefore($nodeToMove, $referenceNode);
+                }
+            }
+            if ($charsetMetaTag !== null && $charsetMetaTag->previousSibling !== null) {
+                $headElement->insertBefore($charsetMetaTag, $headElement->firstChild);
             }
         }
     }
