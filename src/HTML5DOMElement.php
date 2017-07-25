@@ -151,6 +151,9 @@ class HTML5DOMElement extends \DOMElement
         if (!is_string($name)) {
             throw new \InvalidArgumentException('The name argument must be of type string');
         }
+        if ($this->attributes->length === 0) { // performance optimization
+            return '';
+        }
         $value = parent::getAttribute($name);
         return $value !== '' ? (strstr($value, 'html5-dom-document-internal-entity') !== false ? $this->updateResult($value) : $value) : '';
     }

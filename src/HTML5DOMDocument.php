@@ -402,6 +402,9 @@ class HTML5DOMDocument extends \DOMDocument
         $doubleCheckIfNodeExists = function($domDocument, $name, $id) { // getElementById returns and element even if it's removed from the DOM
             $list = $domDocument->getElementsByTagName($name);
             foreach ($list as $node) {
+                if ($node->attributes->length === 0) { // performance optimization
+                    continue;
+                }
                 $nodeID = $node->getAttribute('id');
                 if ($nodeID !== '' && $nodeID === $id) {
                     return true;
@@ -413,12 +416,14 @@ class HTML5DOMDocument extends \DOMDocument
         $currentDomDocument = &$this;
         $getNewChild = function($child) use ($currentDomDocument, $doubleCheckIfNodeExists) {
             if ($child instanceof \DOMElement) {
-                $id = $child->getAttribute('id');
-                if ($id !== '') {
-                    $otherElement = $currentDomDocument->getElementById($id);
-                    if ($otherElement !== null) {
-                        if ($doubleCheckIfNodeExists($currentDomDocument, $otherElement->nodeName, $id)) {
-                            return null;
+                if ($child->attributes->length > 0) { // performance optimization
+                    $id = $child->getAttribute('id');
+                    if ($id !== '') {
+                        $otherElement = $currentDomDocument->getElementById($id);
+                        if ($otherElement !== null) {
+                            if ($doubleCheckIfNodeExists($currentDomDocument, $otherElement->nodeName, $id)) {
+                                return null;
+                            }
                         }
                     }
                 }
@@ -426,12 +431,14 @@ class HTML5DOMDocument extends \DOMDocument
             if ($child->firstChild !== null) {
                 $childChildren = $child->getElementsByTagName('*');
                 foreach ($childChildren as $childChild) {
-                    $id = $childChild->getAttribute('id');
-                    if ($id !== '') {
-                        $otherElement = $currentDomDocument->getElementById($id);
-                        if ($otherElement !== null) {
-                            if ($doubleCheckIfNodeExists($currentDomDocument, $otherElement->nodeName, $id)) {
-                                $childChild->parentNode->removeChild($childChild);
+                    if ($childChild->attributes->length > 0) { // performance optimization
+                        $id = $childChild->getAttribute('id');
+                        if ($id !== '') {
+                            $otherElement = $currentDomDocument->getElementById($id);
+                            if ($otherElement !== null) {
+                                if ($doubleCheckIfNodeExists($currentDomDocument, $otherElement->nodeName, $id)) {
+                                    $childChild->parentNode->removeChild($childChild);
+                                }
                             }
                         }
                     }
@@ -626,6 +633,9 @@ class HTML5DOMDocument extends \DOMDocument
         $allElements = $this->getElementsByTagName('*');
         $passedIDs = [];
         foreach ($allElements as $element) {
+            if ($element->attributes->length === 0) { // performance optimization
+                continue;
+            }
             $id = $element->getAttribute('id');
             if ($id !== '') {
                 if (isset($passedIDs[$id])) {
