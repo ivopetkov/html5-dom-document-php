@@ -198,6 +198,29 @@ class Test extends HTML5DOMDocumentTestCase
                 . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
+        // insert in target in empty dom
+        $dom = new HTML5DOMDocument();
+        $insertTarget = $dom->createInsertTarget('name1');
+        $dom->insertHTML('<body></body>');
+        $dom->querySelector('body')->appendChild($insertTarget);
+        $dom->insertHTML('value1', 'name1');
+        $expectedSource = '<!DOCTYPE html><html><body>value1</body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        // Insert duplicate ID
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<div>1</div>'
+                . '<div id="value1">2</div>'
+                . '<div>3</div>');
+        $dom->insertHTML('<div id="value1">5</div><div>4</div>');
+        $expectedSource = '<!DOCTYPE html><html><body>'
+                . '<div>1</div>'
+                . '<div id="value1">2</div>'
+                . '<div>3</div>'
+                . '<div>4</div>'
+                . '</body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
         // Empty source
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('');
@@ -214,7 +237,6 @@ class Test extends HTML5DOMDocumentTestCase
                 . '<div>text1</div>'
                 . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
-
 
         // Text
         $dom = new HTML5DOMDocument();
@@ -246,6 +268,30 @@ class Test extends HTML5DOMDocumentTestCase
         $expectedSource = '<!DOCTYPE html><html><body>'
                 . '<component></component>'
                 . '</body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        // Empty content
+        $dom = new HTML5DOMDocument();
+        $dom->insertHTML('');
+        $expectedSource = '<!DOCTYPE html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        // Html tag with attribute
+        $dom = new HTML5DOMDocument();
+        $dom->insertHTML('<html data-var1="value1"></html>');
+        $expectedSource = '<!DOCTYPE html><html data-var1="value1"></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        // Head tag with attribute
+        $dom = new HTML5DOMDocument();
+        $dom->insertHTML('<head data-var1="value1"></head>');
+        $expectedSource = '<!DOCTYPE html><html><head data-var1="value1"></head></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        // Body tag with attribute
+        $dom = new HTML5DOMDocument();
+        $dom->insertHTML('<body data-var1="value1"></body>');
+        $expectedSource = '<!DOCTYPE html><html><body data-var1="value1"></body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
@@ -466,6 +512,16 @@ class Test extends HTML5DOMDocumentTestCase
      */
     public function testDuplicateIDs()
     {
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><html><head>'
+                . '<script id="script1">var script1=1;</script>'
+                . '<script id="script1">var script1=2;</script>'
+                . '</head><body></body></html>');
+        $expectedSource = '<!DOCTYPE html><html><head>'
+                . '<script id="script1">var script1=1;</script>'
+                . '</head><body></body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<!DOCTYPE html><html><head>'
                 . '<script id="script1">var script1=1;</script>'
