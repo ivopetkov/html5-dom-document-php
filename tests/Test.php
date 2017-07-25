@@ -93,7 +93,11 @@ class Test extends HTML5DOMDocumentTestCase
         $bodyContent = '<div> &nbsp; &nbsp; &nbsp; </div>'
                 . '<div> &nbsp;&nbsp;&nbsp; </div>'
                 . '<div> &nbsp; <span>&nbsp;</span></div>'
-                . '<div>text1 text2 </div>';
+                . '<div>text1 text2 </div>'
+                . '<label>Label 1</label>
+    <input>
+    <label>Label 2</label>
+    <input>';
         $expectedSource = '<!DOCTYPE html><html><body>' . $bodyContent . '</body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($bodyContent);

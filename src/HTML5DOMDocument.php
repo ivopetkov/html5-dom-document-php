@@ -103,7 +103,7 @@ class HTML5DOMDocument extends \DOMDocument
         $source = preg_replace('/&([a-zA-Z]*);/', 'html5-dom-document-internal-entity1-$1-end', $source);
         $source = preg_replace('/&#([0-9]*);/', 'html5-dom-document-internal-entity2-$1-end', $source);
 
-        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, is_array($options) ? 0 : $options); //todo dont use array
+        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, (is_array($options) ? 0 : $options) | LIBXML_NOENT); //todo dont use array
         if ($internalErrorsOptionValue === false) {
             libxml_use_internal_errors(false);
         }
@@ -258,50 +258,6 @@ class HTML5DOMDocument extends \DOMDocument
         if (!$this->loaded) {
             return '<!DOCTYPE html>';
         }
-        if ($node !== null) {
-            $isInBody = false;
-            $isInHead = false;
-            $parentNode = $node;
-            for ($i = 0; $i < 1000; $i++) {
-                $parentNode = $parentNode->parentNode;
-                if ($parentNode === null) {
-                    break;
-                }
-                if ($parentNode->nodeName === 'body') {
-                    $isInBody = true;
-                    break;
-                } elseif ($parentNode->nodeName === 'head') {
-                    $isInHead = true;
-                    break;
-                }
-            }
-            if ($isInBody) {
-                $contentElement = $node; // update node children
-            } elseif ($isInHead) {
-                $contentElement = null; // dont update any children
-            } else { // can be body or html element
-                $contentElement = $this->getElementsByTagName('body')->item(0); // update body children
-            }
-        } else {
-            $contentElement = $this->getElementsByTagName('body')->item(0); // update body children
-        }
-        if ($contentElement !== null) { // This preserves the whitespace between the HTML tags
-            $contentElements = $contentElement->getElementsByTagName('*');
-            $tempNodes = [];
-            $tempTextNode = $this->createTextNode('html5-dom-document-internal-content');
-            foreach ($contentElements as $element) {
-                $newTextNode1 = clone($tempTextNode);
-                $parentNode = $element->parentNode;
-                $parentNode->insertBefore($newTextNode1, $element);
-                if ($element->nextSibling === null) {
-                    $newTextNode2 = clone($tempTextNode);
-                    $parentNode->appendChild($newTextNode2);
-                } else {
-                    $newTextNode2 = null;
-                }
-                $tempNodes[] = [$parentNode, $newTextNode1, $newTextNode2];
-            }
-        }
 
         $removeHtmlElement = false;
         $removeHeadElement = false;
@@ -345,7 +301,6 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         $codeToRemove = [
-            'html5-dom-document-internal-content',
             '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8">',
             '</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>'
         ];
@@ -633,8 +588,6 @@ class HTML5DOMDocument extends \DOMDocument
             if ($metaTags->length > 0) {
                 $list = [];
                 $idsList = [];
-                //for ($i = 0; $i < $metaTags->length; $i++) {
-                //    $metaTag = $metaTags->item($i);
                 foreach ($metaTags as $metaTag) {
                     $id = $metaTag->getAttribute('name');
                     if ($id !== '') {
