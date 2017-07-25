@@ -37,7 +37,7 @@ class HTML5DOMElement extends \DOMElement
      * @return string The value of the property specified
      * @throws \Exception
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         if ($name === 'innerHTML') {
             if ($this->firstChild === null) {
@@ -71,14 +71,10 @@ class HTML5DOMElement extends \DOMElement
      * 
      * @param string $name
      * @param string $value
-     * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
-        if (!is_string($value)) {
-            throw new \InvalidArgumentException('The value argument must be of type string');
-        }
         if ($name === 'innerHTML') {
             while ($this->hasChildNodes()) {
                 $this->removeChild($this->firstChild);
@@ -115,7 +111,7 @@ class HTML5DOMElement extends \DOMElement
      * @param string $value
      * @return string The updated value
      */
-    private function updateResult($value)
+    private function updateResult(string $value): string
     {
 
         $value = str_replace(self::$foundEntitiesCache[0], self::$foundEntitiesCache[1], $value);
@@ -146,11 +142,8 @@ class HTML5DOMElement extends \DOMElement
      * @return string
      * @throws \InvalidArgumentException
      */
-    public function getAttribute($name)
+    public function getAttribute(string $name): string
     {
-        if (!is_string($name)) {
-            throw new \InvalidArgumentException('The name argument must be of type string');
-        }
         if ($this->attributes->length === 0) { // performance optimization
             return '';
         }
@@ -163,7 +156,7 @@ class HTML5DOMElement extends \DOMElement
      * 
      * @return array An associative array containing all attributes
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         $attributes = [];
         foreach ($this->attributes as $attributeName => $attribute) {
@@ -178,7 +171,7 @@ class HTML5DOMElement extends \DOMElement
      * 
      * @return string The element outerHTML
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->outerHTML;
     }
@@ -188,8 +181,9 @@ class HTML5DOMElement extends \DOMElement
      * 
      * @param string $selector CSS query selector
      * @return \DOMElement|null The result DOMElement or null if not found
+     * @throws \InvalidArgumentException
      */
-    public function querySelector($selector)
+    public function querySelector(string $selector)
     {
         return $this->internalQuerySelector($selector);
     }
@@ -201,7 +195,7 @@ class HTML5DOMElement extends \DOMElement
      * @return DOMNodeList Returns a list of DOMElements matching the criteria
      * @throws \InvalidArgumentException
      */
-    public function querySelectorAll($selector)
+    public function querySelectorAll(string $selector)
     {
         return $this->internalQuerySelectorAll($selector);
     }

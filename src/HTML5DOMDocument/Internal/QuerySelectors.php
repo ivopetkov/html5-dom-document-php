@@ -11,7 +11,7 @@ trait QuerySelectors
      * @param string $selector CSS query selector
      * @return \DOMElement|null The result DOMElement or null if not found
      */
-    private function internalQuerySelector($selector)
+    private function internalQuerySelector(string $selector)
     {
         $result = $this->internalQuerySelectorAll($selector, 1);
         return $result->item(0);
@@ -25,12 +25,8 @@ trait QuerySelectors
      * @return DOMNodeList Returns a list of DOMElements matching the criteria
      * @throws \InvalidArgumentException
      */
-    private function internalQuerySelectorAll($selector, $preferredLimit = null)
+    private function internalQuerySelectorAll(string $selector, $preferredLimit = null)
     {
-        if (!is_string($selector)) {
-            throw new \InvalidArgumentException('The selector argument must be of type string');
-        }
-
         $getElementById = function($id) {
             if ($this instanceof \DOMDocument) {
                 return $this->getElementById($id);

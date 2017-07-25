@@ -21,7 +21,7 @@ class HTML5DOMNodeList extends \ArrayObject
      * @param int $index The item index
      * @return \IvoPetkov\HTML5DOMElement|null The item at the specified index or null if not existent
      */
-    public function item($index)
+    public function item(int $index)
     {
         return $this->offsetExists($index) ? $this->offsetGet($index) : null;
     }
@@ -33,7 +33,7 @@ class HTML5DOMNodeList extends \ArrayObject
      * @return mixed
      * @throws \Exception
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         if ($name === 'length') {
             return sizeof($this);
