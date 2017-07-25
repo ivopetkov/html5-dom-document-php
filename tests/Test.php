@@ -101,6 +101,9 @@ class Test extends HTML5DOMDocumentTestCase
         $expectedSource = '<!DOCTYPE html><html><body>' . $bodyContent . '</body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($bodyContent);
+        echo $dom->saveHTML()."\n\n";
+        echo $expectedSource."\n\n";
+        exit;
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
