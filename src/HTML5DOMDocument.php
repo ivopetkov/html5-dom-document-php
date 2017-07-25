@@ -103,7 +103,7 @@ class HTML5DOMDocument extends \DOMDocument
         $source = preg_replace('/&([a-zA-Z]*);/', 'html5-dom-document-internal-entity1-$1-end', $source);
         $source = preg_replace('/&#([0-9]*);/', 'html5-dom-document-internal-entity2-$1-end', $source);
 
-        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, (is_array($options) ? 0 : $options) | LIBXML_NOENT); //todo dont use array
+        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $options | LIBXML_NOENT);
         if ($internalErrorsOptionValue === false) {
             libxml_use_internal_errors(false);
         }
@@ -163,9 +163,7 @@ class HTML5DOMDocument extends \DOMDocument
                 }
             }
 
-            if (is_array($options) && isset($options['_internal_disable_duplicates_removal'])) {
-                
-            } else {
+            if (!isset($this->internalDisableDuplicatesRemoval)) {
                 $this->removeDuplicateTitleTags();
                 $this->removeDuplicateMetatags();
                 $this->removeElementsWithDuplicateIDs();
@@ -383,7 +381,9 @@ class HTML5DOMDocument extends \DOMDocument
             self::$newObjectsCache['html5domdocument'] = new HTML5DOMDocument();
         }
         $domDocument = clone(self::$newObjectsCache['html5domdocument']);
-        $domDocument->loadHTML($source, ['_internal_disable_duplicates_removal' => true]);
+        $domDocument->internalDisableDuplicatesRemoval = true;
+        $domDocument->loadHTML($source);
+        unset($domDocument->internalDisableDuplicatesRemoval);
 
         $doubleCheckIfNodeExists = function($domDocument, $name, $id) { // getElementById returns and element even if it's removed from the DOM
             $list = $domDocument->getElementsByTagName($name);
