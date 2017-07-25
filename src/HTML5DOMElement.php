@@ -142,7 +142,7 @@ class HTML5DOMElement extends \DOMElement
      * @return string
      * @throws \InvalidArgumentException
      */
-    public function getAttribute(string $name): string
+    public function getAttribute($name): string
     {
         if ($this->attributes->length === 0) { // performance optimization
             return '';

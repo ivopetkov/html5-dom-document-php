@@ -56,7 +56,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param int $options Additional Libxml parameters
      * @return boolean TRUE on success or FALSE on failure
      */
-    public function loadHTML(string $source, int $options = 0): bool
+    public function loadHTML($source, $options = 0)
     {
         $isSavedHTML = isset(self::$savedHTML[md5($source)]);
         // Enables libxml errors handling
@@ -185,7 +185,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param string $filename The path to the HTML file
      * @param int $options Additional Libxml parameters
      */
-    public function loadHTMLFile(string $filename, int $options = 0)
+    public function loadHTMLFile($filename, $options = 0)
     {
         return $this->loadHTML(file_get_contents($filename), $options);
     }
@@ -313,7 +313,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param string $filename The path to the saved HTML document.
      * @return int the number of bytes written or FALSE if an error occurred
      */
-    public function saveHTMLFile(string $filename)
+    public function saveHTMLFile($filename)
     {
         if (!is_writable($filename)) {
             return false;

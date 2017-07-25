@@ -637,30 +637,6 @@ class Test extends HTML5DOMDocumentTestCase
     /**
      * 
      */
-    public function testInvalidArguments3()
-    {
-        $dom = new HTML5DOMDocument();
-        $dom->loadHTML('<!DOCTYPE html><body></body></html>');
-        $element = $dom->querySelector('body');
-        $this->setExpectedException('\InvalidArgumentException');
-        $element->innerHTML = 1;
-    }
-
-    /**
-     * 
-     */
-    public function testInvalidArguments4()
-    {
-        $dom = new HTML5DOMDocument();
-        $dom->loadHTML('<!DOCTYPE html><body></body></html>');
-        $element = $dom->querySelector('body');
-        $this->setExpectedException('\InvalidArgumentException');
-        $element->getAttribute(1);
-    }
-
-    /**
-     * 
-     */
     public function testInvalidArguments5()
     {
         $list = new \IvoPetkov\HTML5DOMNodeList();
