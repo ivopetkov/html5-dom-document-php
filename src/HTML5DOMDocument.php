@@ -279,16 +279,6 @@ class HTML5DOMDocument extends \DOMDocument
 
         $html = parent::saveHTML($node);
 
-        if (isset($tempNodes)) {
-            foreach ($tempNodes as $tempNodesData) {
-                $tempNodesData[0]->removeChild($tempNodesData[1]);
-                if ($tempNodesData[2] !== null) {
-                    $tempNodesData[0]->removeChild($tempNodesData[2]);
-                }
-            }
-            unset($tempNodes);
-        }
-
         if ($removeHeadElement) {
             $headElement->parentNode->removeChild($headElement);
         } else {
