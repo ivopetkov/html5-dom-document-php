@@ -94,16 +94,11 @@ class Test extends HTML5DOMDocumentTestCase
                 . '<div> &nbsp;&nbsp;&nbsp; </div>'
                 . '<div> &nbsp; <span>&nbsp;</span></div>'
                 . '<div>text1 text2 </div>'
-                . '<label>Label 1</label>
-    <input>
-    <label>Label 2</label>
-    <input>';
+                . '<input>
+    <label>Label 2</label>';
         $expectedSource = '<!DOCTYPE html><html><body>' . $bodyContent . '</body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($bodyContent);
-        echo $dom->saveHTML()."\n\n";
-        echo $expectedSource."\n\n";
-        exit;
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
