@@ -257,85 +257,71 @@ class HTML5DOMDocument extends \DOMDocument
             return '<!DOCTYPE html>';
         }
 
-        if ($node !== null) {
-            $isInBody = false;
-            $isInHead = false;
-            $parentNode = $node;
-            for ($i = 0; $i < 1000; $i++) {
-                $parentNode = $parentNode->parentNode;
-                if ($parentNode === null) {
-                    break;
-                }
-                if ($parentNode->nodeName === 'body') {
-                    $isInBody = true;
-                    break;
-                } elseif ($parentNode->nodeName === 'head') {
-                    $isInHead = true;
-                    break;
-                }
-            }
-            if ($isInBody) {
-                $contentElement = $node; // update node children
-            } elseif ($isInHead) {
-                $contentElement = null; // dont update any children
-            } else { // can be body or html element
-                $contentElement = $this->getElementsByTagName('body')->item(0); // update body children
-            }
-        } else {
-            $contentElement = $this->getElementsByTagName('body')->item(0); // update body children
-        }
-        if ($contentElement !== null) { // This preserves the whitespace between the HTML tags
-            $contentElements = $contentElement->getElementsByTagName('*');
-            $tempNodes = [];
-            $tempTextNode = $this->createTextNode('html5-dom-document-internal-content');
-            foreach ($contentElements as $element) {
-                $newTextNode1 = clone($tempTextNode);
-                $parentNode = $element->parentNode;
-                $parentNode->insertBefore($newTextNode1, $element);
-                if ($element->nextSibling === null) {
-                    $newTextNode2 = clone($tempTextNode);
-                    $parentNode->appendChild($newTextNode2);
-                } else {
-                    $newTextNode2 = null;
-                }
-                $tempNodes[] = [$parentNode, $newTextNode1, $newTextNode2];
-            }
+        $nodeMode = $node !== null;
+        if ($nodeMode && $node instanceof \DOMDocument) {
+            $nodeMode = false;
         }
 
-        $removeHtmlElement = false;
-        $removeHeadElement = false;
-        $headElement = $this->getElementsByTagName('head')->item(0);
-        if ($headElement === null) {
-            if ($this->addHtmlElementIfMissing()) {
-                $removeHtmlElement = true;
+        if ($nodeMode) {
+            $tempDomDocument = new HTML5DOMDocument();
+            if ($node->nodeName === 'html') {
+                $tempDomDocument->loadHTML('<!DOCTYPE html>');
+                $tempDomDocument->appendChild($tempDomDocument->importNode(clone($node), true));
+                $html = $tempDomDocument->saveHTML();
+                $html = substr($html, 15); // remove the DOCTYPE
+            } elseif ($node->nodeName === 'head' || $node->nodeName === 'body') {
+                $tempDomDocument->loadHTML('<!DOCTYPE html><html></html>');
+                $tempDomDocument->childNodes[1]->appendChild($tempDomDocument->importNode(clone($node), true));
+                $html = $tempDomDocument->saveHTML();
+                $html = substr($html, 21, -7); // remove the DOCTYPE + html tag
+            } else {
+                $isInHead = false;
+                $parentNode = $node;
+                for ($i = 0; $i < 1000; $i++) {
+                    $parentNode = $parentNode->parentNode;
+                    if ($parentNode === null) {
+                        break;
+                    }
+                    if ($parentNode->nodeName === 'body') {
+                        break;
+                    } elseif ($parentNode->nodeName === 'head') {
+                        $isInHead = true;
+                        break;
+                    }
+                }
+                $tempDomDocument->loadHTML('<!DOCTYPE html><html>' . ($isInHead ? '<head></head>' : '<body></body>') . '</html>');
+                $tempDomDocument->childNodes[1]->childNodes[0]->appendChild($tempDomDocument->importNode(clone($node), true));
+                $html = $tempDomDocument->saveHTML();
+                $html = substr($html, 27, -14); // remove the DOCTYPE + html + body or head tags
             }
-            if ($this->addHeadElementIfMissing()) {
-                $removeHeadElement = true;
-            }
+        } else {
+            $removeHtmlElement = false;
+            $removeHeadElement = false;
             $headElement = $this->getElementsByTagName('head')->item(0);
-        }
-        $meta = $this->createElement('meta');
-        $meta->setAttribute('data-html5-dom-document-internal-attribute', 'charset-meta');
-        $meta->setAttribute('http-equiv', 'content-type');
-        $meta->setAttribute('content', 'text/html; charset=utf-8');
-        $headElement->appendChild($meta);
-
-        $html = parent::saveHTML($node);
-
-        if (isset($tempNodes)) {
-            foreach ($tempNodes as $tempNodesData) {
-                $tempNodesData[0]->removeChild($tempNodesData[1]);
-                if ($tempNodesData[2] !== null) {
-                    $tempNodesData[0]->removeChild($tempNodesData[2]);
+            if ($headElement === null) {
+                if ($this->addHtmlElementIfMissing()) {
+                    $removeHtmlElement = true;
                 }
+                if ($this->addHeadElementIfMissing()) {
+                    $removeHeadElement = true;
+                }
+                $headElement = $this->getElementsByTagName('head')->item(0);
             }
-            unset($tempNodes);
+            $meta = $this->createElement('meta');
+            $meta->setAttribute('data-html5-dom-document-internal-attribute', 'charset-meta');
+            $meta->setAttribute('http-equiv', 'content-type');
+            $meta->setAttribute('content', 'text/html; charset=utf-8');
+            $headElement->appendChild($meta);
+            $html = parent::saveHTML($nodeMode ? $node : null);
         }
 
-        if ($removeHeadElement) {
-            $headElement->parentNode->removeChild($headElement);
-        } else {
-            $meta->parentNode->removeChild($meta);
+
+        if (!$nodeMode) {
+            if ($removeHeadElement) {
+                $headElement->parentNode->removeChild($headElement);
+            } else {
+                $meta->parentNode->removeChild($meta);
+            }
         }
 
         if (strpos($html, 'html5-dom-document-internal-entity') !== false) {
@@ -348,16 +334,20 @@ class HTML5DOMDocument extends \DOMDocument
             '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8">',
             '</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>'
         ];
-        if ($removeHeadElement) {
-            $codeToRemove[] = '<head></head>';
-        }
-        if ($removeHtmlElement) {
-            $codeToRemove[] = '<html></html>';
+        if (!$nodeMode) {
+            if ($removeHeadElement) {
+                $codeToRemove[] = '<head></head>';
+            }
+            if ($removeHtmlElement) {
+                $codeToRemove[] = '<html></html>';
+            }
         }
         $html = str_replace($codeToRemove, '', $html);
 
-        // Remove the whitespace between the doctype and html tag
-        $html = trim(preg_replace('/\>\s\<html/', '><html', $html, 1));
+        if (!$nodeMode) {
+            // Remove the whitespace between the doctype and html tag
+            $html = trim(preg_replace('/\>\s\<html/', '><html', $html, 1));
+        }
         self::$savedHTML[md5($html)] = 1;
         return $html;
     }

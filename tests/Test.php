@@ -604,6 +604,45 @@ class Test extends HTML5DOMDocumentTestCase
     /**
      * 
      */
+    public function testSaveHTMLForNodes()
+    {
+        // A custom html tags makes the default saveHTML function return more whitespaces
+        $html = '<html><head><component><script src="url1"/><script src="url2"/></component></head><body><div><component><ul><li><a href="#">Link 1</a></li><li><a href="#">Link 2</a></li></ul></component></div>';
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($html);
+
+        $expectedOutput = '<div><component><ul><li><a href="#">Link 1</a></li><li><a href="#">Link 2</a></li></ul></component></div>';
+        $this->assertTrue($dom->saveHTML($dom->querySelector('div')) === $expectedOutput);
+
+        $expectedOutput = '<body><div><component><ul><li><a href="#">Link 1</a></li><li><a href="#">Link 2</a></li></ul></component></div></body>';
+        $this->assertTrue($dom->saveHTML($dom->querySelector('div')->parentNode) === $expectedOutput);
+
+        $expectedOutput = '<html><head><component><script src="url1"></script><script src="url2"></script></component></head><body><div><component><ul><li><a href="#">Link 1</a></li><li><a href="#">Link 2</a></li></ul></component></div></body></html>';
+        $this->assertTrue($dom->saveHTML($dom->querySelector('div')->parentNode->parentNode) === $expectedOutput);
+
+        $expectedOutput = '<!DOCTYPE html><html><head><component><script src="url1"></script><script src="url2"></script></component></head><body><div><component><ul><li><a href="#">Link 1</a></li><li><a href="#">Link 2</a></li></ul></component></div></body></html>';
+        $this->assertTrue($dom->saveHTML($dom->querySelector('div')->parentNode->parentNode->parentNode) === $expectedOutput);
+
+        $expectedOutput = '<script src="url1"></script>';
+        $this->assertTrue($dom->saveHTML($dom->querySelector('script')) === $expectedOutput);
+
+        $expectedOutput = '<component><script src="url1"></script><script src="url2"></script></component>';
+        $this->assertTrue($dom->saveHTML($dom->querySelector('script')->parentNode) === $expectedOutput);
+
+        $expectedOutput = '<head><component><script src="url1"></script><script src="url2"></script></component></head>';
+        $this->assertTrue($dom->saveHTML($dom->querySelector('script')->parentNode->parentNode) === $expectedOutput);
+
+        $expectedOutput = '<html><head><component><script src="url1"></script><script src="url2"></script></component></head><body><div><component><ul><li><a href="#">Link 1</a></li><li><a href="#">Link 2</a></li></ul></component></div></body></html>';
+        $this->assertTrue($dom->saveHTML($dom->querySelector('script')->parentNode->parentNode->parentNode) === $expectedOutput);
+
+        $expectedOutput = '<!DOCTYPE html><html><head><component><script src="url1"></script><script src="url2"></script></component></head><body><div><component><ul><li><a href="#">Link 1</a></li><li><a href="#">Link 2</a></li></ul></component></div></body></html>';
+        $this->assertTrue($dom->saveHTML($dom->querySelector('script')->parentNode->parentNode->parentNode->parentNode) === $expectedOutput);
+    }
+
+    /**
+     * 
+     */
     public function testMultipleHeadAndBodyTags()
     {
 
