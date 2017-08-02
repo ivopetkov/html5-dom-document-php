@@ -27,84 +27,88 @@ trait QuerySelectors
      */
     private function internalQuerySelectorAll(string $selector, $preferredLimit = null)
     {
-        $getElementById = function($id) {
+        $walkChildren = function($element, $callback) use (&$walkChildren) { // $walkChildren is a lot faster than $this->getElementsByTagName('*') for 300+ elements
+            foreach ($element->childNodes as $child) {
+                if ($child instanceof \DOMElement) {
+                    if ($callback($child) === true) {
+                        return true;
+                    }
+                    if ($walkChildren($child, $callback) === true) {
+                        return true;
+                    }
+                }
+            }
+        };
+
+        $getElementById = function($id) use (&$walkChildren) {
             if ($this instanceof \DOMDocument) {
                 return $this->getElementById($id);
             } else {
-                $elements = $this->getElementsByTagName('*');
-                foreach ($elements as $element) {
-                    if ($element->attributes->length === 0) { // Performance optimization
-                        continue;
+                $foundElement = null;
+                $walkChildren($this, function($element) use ($id, &$foundElement) {
+                    if ($element->attributes->length > 0 && $element->getAttribute('id') === $id) {
+                        $foundElement = $element;
+                        return true;
                     }
-                    if ($element->getAttribute('id') === $id) {
-                        return $element;
-                    }
-                }
+                });
+                return $foundElement;
             }
             return null;
         };
 
         $matches = null;
         if ($selector === '*') { // all
-            return $this->getElementsByTagName('*');
-        } elseif (preg_match('/^[a-z0-9]+$/', $selector) === 1) { // tagname
-            return $this->getElementsByTagName($selector);
-        } elseif (preg_match('/^([a-z0-9]*)\[(.+)\=\"(.+)\"\]$/', $selector, $matches) === 1) { // [attribute="value"] or tagname[attribute="value"]
             $result = [];
-            $elements = strlen($matches[1]) > 0 ? $this->getElementsByTagName($matches[1]) : $this->getElementsByTagName('*');
-            foreach ($elements as $element) {
-                if ($element->attributes->length === 0) { // Performance optimization
-                    continue;
-                }
-                if ($element->getAttribute($matches[2]) === $matches[3]) {
+            $walkChildren($this, function($element) use (&$result) {
+                $result[] = $element;
+            });
+            return new \IvoPetkov\HTML5DOMNodeList($result);
+        } elseif (preg_match('/^[a-z0-9]+$/', $selector) === 1) { // tagname
+            $result = [];
+            $walkChildren($this, function($element) use (&$result, $selector) {
+                if ($element->tagName === $selector) {
                     $result[] = $element;
-                    if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
-                        break;
+                }
+            });
+            return new \IvoPetkov\HTML5DOMNodeList($result);
+        } elseif (preg_match('/^([a-z0-9]*)\[(.+)\=\"(.+)\"\]$/', $selector, $matches) === 1) { // tagname[attribute="value"] or [attribute="value"]
+            $result = [];
+            $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
+            $walkChildren($this, function($element) use (&$result, $tagName, $preferredLimit, $matches) {
+                if ($tagName === null || $element->tagName === $tagName) {
+                    if ($element->attributes->length > 0 && $element->getAttribute($matches[2]) === $matches[3]) {
+                        $result[] = $element;
+                        if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
+                            return true;
+                        }
                     }
                 }
-            }
+            });
             return new \IvoPetkov\HTML5DOMNodeList($result);
-        } elseif (preg_match('/^[a-z0-9]+#.+$/', $selector) === 1) { // tagname#id
-            $parts = explode('#', $selector, 2);
-            $element = $getElementById($parts[1]);
-            if ($element && $element->tagName === $parts[0]) {
+        } elseif (preg_match('/^([a-z0-9]*)#(.+)$/', $selector, $matches) === 1) { // tagname#id or #id
+            $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
+            $idSelector = $matches[2];
+            $element = $getElementById($idSelector);
+            if ($element && ($tagName === null || $element->tagName === $tagName)) {
                 return new \IvoPetkov\HTML5DOMNodeList([$element]);
             }
             return new \IvoPetkov\HTML5DOMNodeList();
-        } elseif (preg_match('/^[a-z0-9]+\..+$/', $selector) === 1) { // tagname.classname
+        } elseif (preg_match('/^([a-z0-9]*)\.(.+)$/', $selector, $matches) === 1) { // tagname.classname or .classname
             $parts = explode('.', $selector, 2);
+            $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
+            $classSelector = $matches[2];
             $result = [];
-            $selectorClass = $parts[1];
-            $elements = $this->getElementsByTagName($parts[0]);
-            foreach ($elements as $element) {
-                $classAttribute = $element->getAttribute('class');
-                if ($classAttribute === $selectorClass || strpos($classAttribute, $selectorClass . ' ') === 0 || substr($classAttribute, -(strlen($selectorClass) + 1)) === ' ' . $selectorClass || strpos($classAttribute, ' ' . $selectorClass . ' ') !== false) {
-                    $result[] = $element;
-                    if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
-                        break;
+            $walkChildren($this, function($element) use (&$result, $tagName, $classSelector, $preferredLimit) {
+                if (($tagName === null || $element->tagName === $tagName) && $element->attributes->length > 0) {
+                    $classAttribute = $element->getAttribute('class');
+                    if ($classAttribute === $classSelector || strpos($classAttribute, $classSelector . ' ') === 0 || substr($classAttribute, -(strlen($classSelector) + 1)) === ' ' . $classSelector || strpos($classAttribute, ' ' . $classSelector . ' ') !== false) {
+                        $result[] = $element;
+                        if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
+                            return true;
+                        }
                     }
                 }
-            }
-            return new \IvoPetkov\HTML5DOMNodeList($result);
-        } elseif (substr($selector, 0, 1) === '#') { // #id
-            $element = $getElementById(substr($selector, 1));
-            return $element !== null ? new \IvoPetkov\HTML5DOMNodeList([$element]) : new \IvoPetkov\HTML5DOMNodeList();
-        } elseif (substr($selector, 0, 1) === '.') { // .classname
-            $elements = $this->getElementsByTagName('*');
-            $result = [];
-            $selectorClass = substr($selector, 1);
-            foreach ($elements as $element) {
-                if ($element->attributes->length === 0) { // Performance optimization
-                    continue;
-                }
-                $classAttribute = $element->getAttribute('class');
-                if ($classAttribute === $selectorClass || strpos($classAttribute, $selectorClass . ' ') === 0 || substr($classAttribute, -(strlen($selectorClass) + 1)) === ' ' . $selectorClass || strpos($classAttribute, ' ' . $selectorClass . ' ') !== false) {
-                    $result[] = $element;
-                    if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
-                        break;
-                    }
-                }
-            }
+            });
             return new \IvoPetkov\HTML5DOMNodeList($result);
         }
         throw new \InvalidArgumentException('Unsupported selector');
