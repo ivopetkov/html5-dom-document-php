@@ -144,7 +144,7 @@ class HTML5DOMElement extends \DOMElement
      */
     public function getAttribute($name): string
     {
-        if ($this->attributes->length === 0) { // performance optimization
+        if ($this->attributes->length === 0) { // Performance optimization
             return '';
         }
         $value = parent::getAttribute($name);

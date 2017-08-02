@@ -33,7 +33,7 @@ trait QuerySelectors
             } else {
                 $elements = $this->getElementsByTagName('*');
                 foreach ($elements as $element) {
-                    if ($element->attributes->length === 0) { // performance optimization
+                    if ($element->attributes->length === 0) { // Performance optimization
                         continue;
                     }
                     if ($element->getAttribute('id') === $id) {
@@ -53,7 +53,7 @@ trait QuerySelectors
             $result = [];
             $elements = strlen($matches[1]) > 0 ? $this->getElementsByTagName($matches[1]) : $this->getElementsByTagName('*');
             foreach ($elements as $element) {
-                if ($element->attributes->length === 0) { // performance optimization
+                if ($element->attributes->length === 0) { // Performance optimization
                     continue;
                 }
                 if ($element->getAttribute($matches[2]) === $matches[3]) {
@@ -94,7 +94,7 @@ trait QuerySelectors
             $result = [];
             $selectorClass = substr($selector, 1);
             foreach ($elements as $element) {
-                if ($element->attributes->length === 0) { // performance optimization
+                if ($element->attributes->length === 0) { // Performance optimization
                     continue;
                 }
                 $classAttribute = $element->getAttribute('class');
