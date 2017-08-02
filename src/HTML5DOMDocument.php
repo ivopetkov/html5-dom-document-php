@@ -481,55 +481,59 @@ class HTML5DOMDocument extends \DOMDocument
             };
             $walkChildren($currentDomDocument);
         };
-        $getNewChild = function($child) use ($currentDomDocument, &$buildCurrentDomDocumentElementsIDs, &$currentDomDocumentElementsIDs) {
-            if ($child instanceof \DOMElement) { // If the current element has an ID that exists in the current document, null is returned
-                if ($child->attributes->length > 0) { // Performance optimization
-                    $id = $child->getAttribute('id');
-                    if ($id !== '') {
-                        if ($currentDomDocumentElementsIDs === null) {
-                            $buildCurrentDomDocumentElementsIDs();
-                        }
-                        if (array_search($id, $currentDomDocumentElementsIDs) !== false) {
-                            return null;
+        $potentialNewElementsIDs = $this->getPotentialElementsIDs($source);
+        $hasPotentialNewElementsIDs = !empty($potentialNewElementsIDs);
+        $getNewChild = function($child) use ($currentDomDocument, $hasPotentialNewElementsIDs, &$buildCurrentDomDocumentElementsIDs, &$currentDomDocumentElementsIDs) {
+            if ($hasPotentialNewElementsIDs) {
+                if ($child instanceof \DOMElement) { // If the current element has an ID that exists in the current document, null is returned
+                    if ($child->attributes->length > 0) { // Performance optimization
+                        $id = $child->getAttribute('id');
+                        if ($id !== '') {
+                            if ($currentDomDocumentElementsIDs === null) {
+                                $buildCurrentDomDocumentElementsIDs();
+                            }
+                            if (array_search($id, $currentDomDocumentElementsIDs) !== false) {
+                                return null;
+                            }
                         }
                     }
                 }
-            }
-            if ($child->firstChild !== null) { // Remove current element's children with IDs that exists in the current document
-                $elementsToRemove1 = []; // Elements to remove because they exist in the current document
-                $elementsToRemove2 = []; // Elements to remove because they are duplicates in the interted document
-                $walkChildren = function($element) use (&$walkChildren, &$elementsToRemove1, &$elementsToRemove2, &$buildCurrentDomDocumentElementsIDs, &$currentDomDocumentElementsIDs) {
-                    foreach ($element->childNodes as $child) {
-                        if ($child instanceof \DOMElement) {
-                            if ($child->attributes->length > 0) { // Performance optimization
-                                $id = $child->getAttribute('id');
-                                if ($id !== '') {
-                                    if ($currentDomDocumentElementsIDs === null) {
-                                        $buildCurrentDomDocumentElementsIDs();
-                                    }
-                                    if (array_search($id, $currentDomDocumentElementsIDs) !== false) {
-                                        $elementsToRemove1[] = $child;
-                                        continue; // Don't check the children because they will be removed anyway
-                                    }
-                                    if (isset($elementsToRemove2[$id])) { // All other elements with specific ID are added to the array
-                                        $elementsToRemove2[$id][] = $child;
-                                        continue; // Don't check the children because they will be removed anyway
-                                    } else { // The array is created for the first element with a specific ID
-                                        $elementsToRemove2[$id] = [];
+                if ($child->firstChild !== null) { // Remove current element's children with IDs that exists in the current document
+                    $elementsToRemove1 = []; // Elements to remove because they exist in the current document
+                    $elementsToRemove2 = []; // Elements to remove because they are duplicates in the interted document
+                    $walkChildren = function($element) use (&$walkChildren, &$elementsToRemove1, &$elementsToRemove2, &$buildCurrentDomDocumentElementsIDs, &$currentDomDocumentElementsIDs) {
+                        foreach ($element->childNodes as $_child) {
+                            if ($_child instanceof \DOMElement) {
+                                if ($_child->attributes->length > 0) { // Performance optimization
+                                    $id = $_child->getAttribute('id');
+                                    if ($id !== '') {
+                                        if ($currentDomDocumentElementsIDs === null) {
+                                            $buildCurrentDomDocumentElementsIDs();
+                                        }
+                                        if (array_search($id, $currentDomDocumentElementsIDs) !== false) {
+                                            $elementsToRemove1[] = $_child;
+                                            continue; // Don't check the children because they will be removed anyway
+                                        }
+                                        if (isset($elementsToRemove2[$id])) { // All other elements with specific ID are added to the array
+                                            $elementsToRemove2[$id][] = $_child;
+                                            continue; // Don't check the children because they will be removed anyway
+                                        } else { // The array is created for the first element with a specific ID
+                                            $elementsToRemove2[$id] = [];
+                                        }
                                     }
                                 }
+                                $walkChildren($_child);
                             }
-                            $walkChildren($child);
                         }
-                    }
-                };
-                $walkChildren($child);
-                foreach ($elementsToRemove1 as $elementToRemove) {
-                    $elementToRemove->parentNode->removeChild($elementToRemove);
-                }
-                foreach ($elementsToRemove2 as $_elementsToRemove2) {
-                    foreach ($_elementsToRemove2 as $elementToRemove) {
+                    };
+                    $walkChildren($child);
+                    foreach ($elementsToRemove1 as $elementToRemove) {
                         $elementToRemove->parentNode->removeChild($elementToRemove);
+                    }
+                    foreach ($elementsToRemove2 as $_elementsToRemove2) {
+                        foreach ($_elementsToRemove2 as $elementToRemove) {
+                            $elementToRemove->parentNode->removeChild($elementToRemove);
+                        }
                     }
                 }
             }
