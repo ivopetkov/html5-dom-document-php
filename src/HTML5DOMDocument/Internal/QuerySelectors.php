@@ -33,6 +33,9 @@ trait QuerySelectors
             } else {
                 $elements = $this->getElementsByTagName('*');
                 foreach ($elements as $element) {
+                    if ($element->attributes->length === 0) { // performance optimization
+                        continue;
+                    }
                     if ($element->getAttribute('id') === $id) {
                         return $element;
                     }
@@ -50,6 +53,9 @@ trait QuerySelectors
             $result = [];
             $elements = strlen($matches[1]) > 0 ? $this->getElementsByTagName($matches[1]) : $this->getElementsByTagName('*');
             foreach ($elements as $element) {
+                if ($element->attributes->length === 0) { // performance optimization
+                    continue;
+                }
                 if ($element->getAttribute($matches[2]) === $matches[3]) {
                     $result[] = $element;
                     if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
@@ -88,6 +94,9 @@ trait QuerySelectors
             $result = [];
             $selectorClass = substr($selector, 1);
             foreach ($elements as $element) {
+                if ($element->attributes->length === 0) { // performance optimization
+                    continue;
+                }
                 $classAttribute = $element->getAttribute('class');
                 if ($classAttribute === $selectorClass || strpos($classAttribute, $selectorClass . ' ') === 0 || substr($classAttribute, -(strlen($selectorClass) + 1)) === ' ' . $selectorClass || strpos($classAttribute, ' ' . $selectorClass . ' ') !== false) {
                     $result[] = $element;

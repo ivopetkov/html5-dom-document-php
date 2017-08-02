@@ -263,7 +263,10 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         if ($nodeMode) {
-            $tempDomDocument = new HTML5DOMDocument();
+            if (!isset(self::$newObjectsCache['html5domdocument'])) {
+                self::$newObjectsCache['html5domdocument'] = new HTML5DOMDocument();
+            }
+            $tempDomDocument = clone(self::$newObjectsCache['html5domdocument']);
             if ($node->nodeName === 'html') {
                 $tempDomDocument->loadHTML('<!DOCTYPE html>');
                 $tempDomDocument->appendChild($tempDomDocument->importNode(clone($node), true));
