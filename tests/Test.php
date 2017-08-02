@@ -560,6 +560,39 @@ class Test extends HTML5DOMDocumentTestCase
                 . '<div></div>'
                 . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><html><body>'
+                . '<div id="text1">text1</div>'
+                . '</body></html>');
+        $dom->insertHTML('<!DOCTYPE html><html><body>'
+                . '<div>'
+                . '<div id="text1">text1</div>'
+                . '<div><div id="text1">text1</div></div>'
+                . '<div id="text2">text2</div>'
+                . '</div>'
+                . '</body></html>');
+        $expectedSource = '<!DOCTYPE html><html><body>'
+                . '<div id="text1">text1</div>'
+                . '<div><div></div><div id="text2">text2</div></div>'
+                . '</body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><html><body>'
+                . '<div id="text1">text1</div>'
+                . '</body></html>');
+        $dom->insertHTML('<!DOCTYPE html><html><body>'
+                . '<div>'
+                . '<div id="text2">text2</div>'
+                . '<div id="text2">text2</div>'
+                . '</div>'
+                . '</body></html>');
+        $expectedSource = '<!DOCTYPE html><html><body>'
+                . '<div id="text1">text1</div>'
+                . '<div><div id="text2">text2</div></div>'
+                . '</body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
     /**

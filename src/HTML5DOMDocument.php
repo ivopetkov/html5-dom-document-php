@@ -166,7 +166,37 @@ class HTML5DOMDocument extends \DOMDocument
             if (!isset($this->internalDisableDuplicatesRemoval)) {
                 $this->removeDuplicateTitleTags();
                 $this->removeDuplicateMetatags();
-                $this->removeElementsWithDuplicateIDs();
+                $potentialElementsIDs = $this->getPotentialElementsIDs($source);
+                foreach ($potentialElementsIDs as $potentialOccurrencesCount) {
+                    if ($potentialOccurrencesCount > 1) {
+                        $elementsToRemove = [];
+                        $walkChildren = function($element) use (&$walkChildren, &$elementsToRemove) {
+                            foreach ($element->childNodes as $child) {
+                                if ($child instanceof \DOMElement) {
+                                    if ($child->attributes->length > 0) { // Performance optimization
+                                        $id = $child->getAttribute('id');
+                                        if ($id !== '') {
+                                            if (isset($elementsToRemove[$id])) { // All other elements with specific ID are added to the array
+                                                $elementsToRemove[$id][] = $child;
+                                                continue; // Don't check the children because they will be removed anyway
+                                            } else { // The array is created for the first element with a specific ID
+                                                $elementsToRemove[$id] = [];
+                                            }
+                                        }
+                                    }
+                                    $walkChildren($child);
+                                }
+                            }
+                        };
+                        $walkChildren($this);
+                        foreach ($elementsToRemove as $_elementsToRemove) {
+                            foreach ($_elementsToRemove as $elementToRemove) {
+                                $elementToRemove->parentNode->removeChild($elementToRemove);
+                            }
+                        }
+                        break;
+                    }
+                }
             }
             if (isset($firstHeadElement)) {
                 $this->optimizeHeadElementsOrder($firstHeadElement);
@@ -315,39 +345,33 @@ class HTML5DOMDocument extends \DOMDocument
             $meta->setAttribute('http-equiv', 'content-type');
             $meta->setAttribute('content', 'text/html; charset=utf-8');
             $headElement->appendChild($meta);
-            $html = parent::saveHTML($nodeMode ? $node : null);
-        }
+            $html = parent::saveHTML();
 
 
-        if (!$nodeMode) {
             if ($removeHeadElement) {
                 $headElement->parentNode->removeChild($headElement);
             } else {
                 $meta->parentNode->removeChild($meta);
             }
-        }
 
-        if (strpos($html, 'html5-dom-document-internal-entity') !== false) {
-            $html = preg_replace('/html5-dom-document-internal-entity1-(.*?)-end/', '&$1;', $html);
-            $html = preg_replace('/html5-dom-document-internal-entity2-(.*?)-end/', '&#$1;', $html);
-        }
+            if (strpos($html, 'html5-dom-document-internal-entity') !== false) {
+                $html = preg_replace('/html5-dom-document-internal-entity1-(.*?)-end/', '&$1;', $html);
+                $html = preg_replace('/html5-dom-document-internal-entity2-(.*?)-end/', '&#$1;', $html);
+            }
 
-        $codeToRemove = [
-            'html5-dom-document-internal-content',
-            '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8">',
-            '</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>'
-        ];
-        if (!$nodeMode) {
+            $codeToRemove = [
+                'html5-dom-document-internal-content',
+                '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8">',
+                '</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>'
+            ];
             if ($removeHeadElement) {
                 $codeToRemove[] = '<head></head>';
             }
             if ($removeHtmlElement) {
                 $codeToRemove[] = '<html></html>';
             }
-        }
-        $html = str_replace($codeToRemove, '', $html);
+            $html = str_replace($codeToRemove, '', $html);
 
-        if (!$nodeMode) {
             // Remove the whitespace between the doctype and html tag
             $html = trim(preg_replace('/\>\s\<html/', '><html', $html, 1));
         }
@@ -434,48 +458,78 @@ class HTML5DOMDocument extends \DOMDocument
         $domDocument->loadHTML($source);
         unset($domDocument->internalDisableDuplicatesRemoval);
 
-        $doubleCheckIfNodeExists = function($domDocument, $name, $id) { // getElementById returns and element even if it's removed from the DOM
-            $list = $domDocument->getElementsByTagName($name);
-            foreach ($list as $node) {
-                if ($node->attributes->length === 0) { // performance optimization
-                    continue;
-                }
-                $nodeID = $node->getAttribute('id');
-                if ($nodeID !== '' && $nodeID === $id) {
-                    return true;
-                }
-            }
-            return false;
-        };
-
         $currentDomDocument = &$this;
-        $getNewChild = function($child) use ($currentDomDocument, $doubleCheckIfNodeExists) {
-            if ($child instanceof \DOMElement) {
-                if ($child->attributes->length > 0) { // performance optimization
+        $currentDomDocumentElementsIDs = null; // Here the element IDs from the current document are stored. They are used for duplicates check.
+        $buildCurrentDomDocumentElementsIDs = function() use (&$currentDomDocument, &$currentDomDocumentElementsIDs) {
+            if ($currentDomDocumentElementsIDs === null) {
+                $currentDomDocumentElementsIDs = [];
+            } else {
+                return;
+            }
+            $walkChildren = function($element) use (&$walkChildren, &$currentDomDocumentElementsIDs) {
+                foreach ($element->childNodes as $child) {
+                    if ($child instanceof \DOMElement) {
+                        if ($child->attributes->length > 0) { // Performance optimization
+                            $id = $child->getAttribute('id');
+                            if ($id !== '') {
+                                $currentDomDocumentElementsIDs[] = $id;
+                            }
+                        }
+                        $walkChildren($child);
+                    }
+                }
+            };
+            $walkChildren($currentDomDocument);
+        };
+        $getNewChild = function($child) use ($currentDomDocument, &$buildCurrentDomDocumentElementsIDs, &$currentDomDocumentElementsIDs) {
+            if ($child instanceof \DOMElement) { // If the current element has an ID that exists in the current document, null is returned
+                if ($child->attributes->length > 0) { // Performance optimization
                     $id = $child->getAttribute('id');
                     if ($id !== '') {
-                        $otherElement = $currentDomDocument->getElementById($id);
-                        if ($otherElement !== null) {
-                            if ($doubleCheckIfNodeExists($currentDomDocument, $otherElement->nodeName, $id)) {
-                                return null;
-                            }
+                        if ($currentDomDocumentElementsIDs === null) {
+                            $buildCurrentDomDocumentElementsIDs();
+                        }
+                        if (array_search($id, $currentDomDocumentElementsIDs) !== false) {
+                            return null;
                         }
                     }
                 }
             }
-            if ($child->firstChild !== null) {
-                $childChildren = $child->getElementsByTagName('*');
-                foreach ($childChildren as $childChild) {
-                    if ($childChild->attributes->length > 0) { // performance optimization
-                        $id = $childChild->getAttribute('id');
-                        if ($id !== '') {
-                            $otherElement = $currentDomDocument->getElementById($id);
-                            if ($otherElement !== null) {
-                                if ($doubleCheckIfNodeExists($currentDomDocument, $otherElement->nodeName, $id)) {
-                                    $childChild->parentNode->removeChild($childChild);
+            if ($child->firstChild !== null) { // Remove current element's children with IDs that exists in the current document
+                $elementsToRemove1 = []; // Elements to remove because they exist in the current document
+                $elementsToRemove2 = []; // Elements to remove because they are duplicates in the interted document
+                $walkChildren = function($element) use (&$walkChildren, &$elementsToRemove1, &$elementsToRemove2, &$buildCurrentDomDocumentElementsIDs, &$currentDomDocumentElementsIDs) {
+                    foreach ($element->childNodes as $child) {
+                        if ($child instanceof \DOMElement) {
+                            if ($child->attributes->length > 0) { // Performance optimization
+                                $id = $child->getAttribute('id');
+                                if ($id !== '') {
+                                    if ($currentDomDocumentElementsIDs === null) {
+                                        $buildCurrentDomDocumentElementsIDs();
+                                    }
+                                    if (array_search($id, $currentDomDocumentElementsIDs) !== false) {
+                                        $elementsToRemove1[] = $child;
+                                        continue; // Don't check the children because they will be removed anyway
+                                    }
+                                    if (isset($elementsToRemove2[$id])) { // All other elements with specific ID are added to the array
+                                        $elementsToRemove2[$id][] = $child;
+                                        continue; // Don't check the children because they will be removed anyway
+                                    } else { // The array is created for the first element with a specific ID
+                                        $elementsToRemove2[$id] = [];
+                                    }
                                 }
                             }
+                            $walkChildren($child);
                         }
+                    }
+                };
+                $walkChildren($child);
+                foreach ($elementsToRemove1 as $elementToRemove) {
+                    $elementToRemove->parentNode->removeChild($elementToRemove);
+                }
+                foreach ($elementsToRemove2 as $_elementsToRemove2) {
+                    foreach ($_elementsToRemove2 as $elementToRemove) {
+                        $elementToRemove->parentNode->removeChild($elementToRemove);
                     }
                 }
             }
@@ -661,25 +715,14 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Only the first element with a specified id will remain if multiple with the same id are set.
+     * Returns and associative array containing the id of an element and potential occurrences.
+     * @param string $html
      */
-    private function removeElementsWithDuplicateIDs()
+    private function getPotentialElementsIDs($html)
     {
-        $allElements = $this->getElementsByTagName('*');
-        $passedIDs = [];
-        foreach ($allElements as $element) {
-            if ($element->attributes->length === 0) { // performance optimization
-                continue;
-            }
-            $id = $element->getAttribute('id');
-            if ($id !== '') {
-                if (isset($passedIDs[$id])) {
-                    $element->parentNode->removeChild($element);
-                } else {
-                    $passedIDs[$id] = 1;
-                }
-            }
-        }
+        $matches = [];
+        preg_match_all('/\sid[\s]*=[\s]*(["\'])(.*?)\1/', $html, $matches);
+        return array_count_values($matches[2]);
     }
 
     /**
