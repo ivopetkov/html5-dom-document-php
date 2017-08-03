@@ -738,6 +738,38 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
+    public function testInsertHTMLMulti()
+    {
+        $html = '';
+        for ($i = 0; $i < 5; $i++) {
+            $html .= '<div>';
+            $html .= '<div id="id' . $i . '"></div>';
+            $html .= '<div class="class' . $i . '"></div>';
+            $html .= '<div></div>';
+            $html .= '<div></div>';
+            $html .= '<div></div>';
+            $html .= '</div>';
+        }
+
+        $dom1 = new IvoPetkov\HTML5DOMDocument();
+        $dom1->loadHTML('<body></body>');
+        for ($i = 0; $i < 5; $i++) {
+            $dom1->insertHTML($html);
+        }
+        $result1 = $dom1->saveHTML();
+
+        $dom2 = new IvoPetkov\HTML5DOMDocument();
+        $dom2->loadHTML('<body></body>');
+
+        $data = [];
+        for ($i = 0; $i < 5; $i++) {
+            $data[] = ['source' => $html];
+        }
+        $dom2->insertHTMLMulti($data);
+        $result2 = $dom2->saveHTML();
+        $this->assertTrue($result1 === $result2);
+    }
+
     /**
      * 
      */

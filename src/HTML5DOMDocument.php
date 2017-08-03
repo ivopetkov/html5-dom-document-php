@@ -446,6 +446,17 @@ class HTML5DOMDocument extends \DOMDocument
      */
     public function insertHTML(string $source, string $target = 'beforeBodyEnd')
     {
+        $this->insertHTMLMulti([['source' => $source, 'target' => $target]]);
+    }
+
+    /**
+     * Inserts multiple HTML documents into the current document. The elements from the head and the body will be moved to their proper locations.
+     * 
+     * @param array $sources An array containing the source of the document to be inserted in the following format: [ ['source'=>'', 'target'=>''], ['source'=>'', 'target'=>''], ... ]
+     * @throws \Exception
+     */
+    public function insertHTMLMulti(array $sources)
+    {
         if (!$this->loaded) {
             $this->loadHTML('');
         }
@@ -453,10 +464,6 @@ class HTML5DOMDocument extends \DOMDocument
         if (!isset(self::$newObjectsCache['html5domdocument'])) {
             self::$newObjectsCache['html5domdocument'] = new HTML5DOMDocument();
         }
-        $domDocument = clone(self::$newObjectsCache['html5domdocument']);
-        $domDocument->internalDisableDuplicatesRemoval = true;
-        $domDocument->loadHTML($source);
-        unset($domDocument->internalDisableDuplicatesRemoval);
 
         $currentDomDocument = &$this;
         $currentDomDocumentElementsIDs = null; // Here the element IDs from the current document are stored. They are used for duplicates check.
@@ -481,64 +488,6 @@ class HTML5DOMDocument extends \DOMDocument
             };
             $walkChildren($currentDomDocument);
         };
-        $potentialNewElementsIDs = $this->getPotentialElementsIDs($source);
-        $hasPotentialNewElementsIDs = !empty($potentialNewElementsIDs);
-        $getNewChild = function($child) use ($currentDomDocument, $hasPotentialNewElementsIDs, &$buildCurrentDomDocumentElementsIDs, &$currentDomDocumentElementsIDs) {
-            if ($hasPotentialNewElementsIDs) {
-                if ($child instanceof \DOMElement) { // If the current element has an ID that exists in the current document, null is returned
-                    if ($child->attributes->length > 0) { // Performance optimization
-                        $id = $child->getAttribute('id');
-                        if ($id !== '') {
-                            if ($currentDomDocumentElementsIDs === null) {
-                                $buildCurrentDomDocumentElementsIDs();
-                            }
-                            if (array_search($id, $currentDomDocumentElementsIDs) !== false) {
-                                return null;
-                            }
-                        }
-                    }
-                }
-                if ($child->firstChild !== null) { // Remove current element's children with IDs that exists in the current document
-                    $elementsToRemove1 = []; // Elements to remove because they exist in the current document
-                    $elementsToRemove2 = []; // Elements to remove because they are duplicates in the interted document
-                    $walkChildren = function($element) use (&$walkChildren, &$elementsToRemove1, &$elementsToRemove2, &$buildCurrentDomDocumentElementsIDs, &$currentDomDocumentElementsIDs) {
-                        foreach ($element->childNodes as $_child) {
-                            if ($_child instanceof \DOMElement) {
-                                if ($_child->attributes->length > 0) { // Performance optimization
-                                    $id = $_child->getAttribute('id');
-                                    if ($id !== '') {
-                                        if ($currentDomDocumentElementsIDs === null) {
-                                            $buildCurrentDomDocumentElementsIDs();
-                                        }
-                                        if (array_search($id, $currentDomDocumentElementsIDs) !== false) {
-                                            $elementsToRemove1[] = $_child;
-                                            continue; // Don't check the children because they will be removed anyway
-                                        }
-                                        if (isset($elementsToRemove2[$id])) { // All other elements with specific ID are added to the array
-                                            $elementsToRemove2[$id][] = $_child;
-                                            continue; // Don't check the children because they will be removed anyway
-                                        } else { // The array is created for the first element with a specific ID
-                                            $elementsToRemove2[$id] = [];
-                                        }
-                                    }
-                                }
-                                $walkChildren($_child);
-                            }
-                        }
-                    };
-                    $walkChildren($child);
-                    foreach ($elementsToRemove1 as $elementToRemove) {
-                        $elementToRemove->parentNode->removeChild($elementToRemove);
-                    }
-                    foreach ($elementsToRemove2 as $_elementsToRemove2) {
-                        foreach ($_elementsToRemove2 as $elementToRemove) {
-                            $elementToRemove->parentNode->removeChild($elementToRemove);
-                        }
-                    }
-                }
-            }
-            return $currentDomDocument->importNode($child, true);
-        };
 
         $copyAttributes = function($sourceNode, $targetNode) {
             foreach ($sourceNode->attributes as $attributeName => $attribute) {
@@ -546,96 +495,163 @@ class HTML5DOMDocument extends \DOMDocument
             }
         };
 
+        $currentDomHTMLElement = null;
+        $currentDomHeadElement = null;
+        $currentDomBodyElement = null;
+
         $headTitlesElementsChanged = false;
         $headMetaElementsChanged = false;
 
-        $domDocumentHtmlTags = $domDocument->getElementsByTagName('html');
-        if ($domDocumentHtmlTags->length > 0) {
-            $htmlElement = $domDocumentHtmlTags->item(0);
-            if ($htmlElement->attributes->length > 0) {
-                $currentDomHTMLElement = $this->getElementsByTagName('html')->item(0);
-                if ($currentDomHTMLElement === null) {
-                    $this->addHtmlElementIfMissing();
-                    $currentDomHTMLElement = $this->getElementsByTagName('html')->item(0);
-                }
-                $copyAttributes($htmlElement, $currentDomHTMLElement);
+        foreach ($sources as $sourceData) {
+            if (!isset($sourceData['source'])) {
+                throw new \Exception('Missing source key');
             }
-        }
+            $source = $sourceData['source'];
+            $target = isset($sourceData['target']) ? $sourceData['target'] : 'beforeBodyEnd';
 
-        $domDocumentHeadTags = $domDocument->getElementsByTagName('head');
-        if ($domDocumentHeadTags->length > 0) {
-            $headElement = $domDocumentHeadTags->item(0);
-            $currentDomHeadElement = $this->getElementsByTagName('head')->item(0);
-            if ($currentDomHeadElement === null) {
-                $this->addHtmlElementIfMissing();
-                $this->addHeadElementIfMissing();
-                $currentDomHeadElement = $this->getElementsByTagName('head')->item(0);
-            }
-            $headElementChildren = $headElement->childNodes;
-            foreach ($headElementChildren as $headElementChild) {
-                $newNode = $getNewChild($headElementChild);
-                if ($newNode !== null) {
-                    $currentDomHeadElement->appendChild($newNode);
-                    $nodeName = $newNode->nodeName;
-                    if (!$headTitlesElementsChanged && $nodeName === 'title') {
-                        $headTitlesElementsChanged = true;
-                    }
-                    if (!$headMetaElementsChanged && $nodeName === 'meta') {
-                        $headMetaElementsChanged = true;
-                    }
-                }
-            }
-            if ($headElement->attributes->length > 0) {
-                $copyAttributes($headElement, $currentDomHeadElement);
-            }
-        }
+            $domDocument = clone(self::$newObjectsCache['html5domdocument']);
+            $domDocument->internalDisableDuplicatesRemoval = true;
+            $domDocument->loadHTML($source);
+            unset($domDocument->internalDisableDuplicatesRemoval);
 
-        $domDocumentBodyTags = $domDocument->getElementsByTagName('body');
-        if ($domDocumentBodyTags->length > 0) {
-            $bodyElement = $domDocumentBodyTags->item(0);
-            $currentDomBodyElement = $this->getElementsByTagName('body')->item(0);
-            if ($currentDomBodyElement === null) {
-                $this->addHtmlElementIfMissing();
-                $this->addBodyElementIfMissing();
-                $currentDomBodyElement = $this->getElementsByTagName('body')->item(0);
-            }
-            $bodyElementChildren = $bodyElement->childNodes;
-            if ($bodyElement->attributes->length > 0) {
-                $copyAttributes($bodyElement, $currentDomBodyElement);
-            }
-
-            if ($target === 'afterBodyBegin') {
-                $bodyElementChildrenCount = $bodyElementChildren->length;
-                for ($i = $bodyElementChildrenCount - 1; $i >= 0; $i--) {
-                    $newNode = $getNewChild($bodyElementChildren->item($i));
-                    if ($newNode !== null) {
-                        if ($currentDomBodyElement->firstChild === null) {
-                            $currentDomBodyElement->appendChild($newNode);
-                        } else {
-                            $currentDomBodyElement->insertBefore($newNode, $currentDomBodyElement->firstChild);
-                        }
-                    }
-                }
-            } else if ($target === 'beforeBodyEnd') {
-                foreach ($bodyElementChildren as $bodyElementChild) {
-                    $newNode = $getNewChild($bodyElementChild);
-                    if ($newNode !== null) {
-                        $currentDomBodyElement->appendChild($newNode);
-                    }
-                }
-            } else {
-                $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
-                foreach ($targetElements as $targetElement) {
-                    if ($targetElement->getAttribute('name') === $target) {
-                        foreach ($bodyElementChildren as $bodyElementChild) {
-                            $newNode = $getNewChild($bodyElementChild);
-                            if ($newNode !== null) {
-                                $targetElement->parentNode->insertBefore($newNode, $targetElement);
+            $potentialNewElementsIDs = $this->getPotentialElementsIDs($source);
+            $hasPotentialNewElementsIDs = !empty($potentialNewElementsIDs);
+            $getNewChild = function($child) use ($currentDomDocument, $hasPotentialNewElementsIDs, &$buildCurrentDomDocumentElementsIDs, &$currentDomDocumentElementsIDs) {
+                if ($hasPotentialNewElementsIDs) {
+                    if ($child instanceof \DOMElement) { // If the current element has an ID that exists in the current document, null is returned
+                        if ($child->attributes->length > 0) { // Performance optimization
+                            $id = $child->getAttribute('id');
+                            if ($id !== '') {
+                                if ($currentDomDocumentElementsIDs === null) {
+                                    $buildCurrentDomDocumentElementsIDs();
+                                }
+                                if (array_search($id, $currentDomDocumentElementsIDs) !== false) {
+                                    return null;
+                                }
+                                $currentDomDocumentElementsIDs[] = $id;
                             }
                         }
                     }
-                    $targetElement->parentNode->removeChild($targetElement);
-                    break;
+                    if ($child->firstChild !== null) { // Remove current element's children with IDs that exists in the current document
+                        $elementsToRemove = []; // Elements to remove because they exist in the current document
+                        $walkChildren = function($element) use (&$walkChildren, &$elementsToRemove, &$buildCurrentDomDocumentElementsIDs, &$currentDomDocumentElementsIDs) {
+                            foreach ($element->childNodes as $_child) {
+                                if ($_child instanceof \DOMElement) {
+                                    if ($_child->attributes->length > 0) { // Performance optimization
+                                        $id = $_child->getAttribute('id');
+                                        if ($id !== '') {
+                                            if ($currentDomDocumentElementsIDs === null) {
+                                                $buildCurrentDomDocumentElementsIDs();
+                                            }
+                                            if (array_search($id, $currentDomDocumentElementsIDs) !== false) {
+                                                $elementsToRemove[] = $_child;
+                                                continue; // Don't check the children because they will be removed anyway
+                                            }
+                                            $currentDomDocumentElementsIDs[] = $id;
+                                        }
+                                    }
+                                    $walkChildren($_child);
+                                }
+                            }
+                        };
+                        $walkChildren($child);
+                        foreach ($elementsToRemove as $elementToRemove) {
+                            $elementToRemove->parentNode->removeChild($elementToRemove);
+                        }
+                    }
+                }
+                return $currentDomDocument->importNode($child, true);
+            };
+
+            $htmlElement = $domDocument->getElementsByTagName('html')->item(0);
+            if ($htmlElement !== null) {
+                if ($htmlElement->attributes->length > 0) {
+                    if ($currentDomHTMLElement === null) {
+                        $currentDomHTMLElement = $this->getElementsByTagName('html')->item(0);
+                        if ($currentDomHTMLElement === null) {
+                            $this->addHtmlElementIfMissing();
+                            $currentDomHTMLElement = $this->getElementsByTagName('html')->item(0);
+                        }
+                    }
+                    $copyAttributes($htmlElement, $currentDomHTMLElement);
+                }
+            }
+
+            $headElement = $domDocument->getElementsByTagName('head')->item(0);
+            if ($headElement !== null) {
+                if ($currentDomHeadElement === null) {
+                    $currentDomHeadElement = $this->getElementsByTagName('head')->item(0);
+                    if ($currentDomHeadElement === null) {
+                        $this->addHtmlElementIfMissing();
+                        $this->addHeadElementIfMissing();
+                        $currentDomHeadElement = $this->getElementsByTagName('head')->item(0);
+                    }
+                }
+                foreach ($headElement->childNodes as $headElementChild) {
+                    $newNode = $getNewChild($headElementChild);
+                    if ($newNode !== null) {
+                        $currentDomHeadElement->appendChild($newNode);
+                        $nodeName = $newNode->nodeName;
+                        if (!$headTitlesElementsChanged && $nodeName === 'title') {
+                            $headTitlesElementsChanged = true;
+                        }
+                        if (!$headMetaElementsChanged && $nodeName === 'meta') {
+                            $headMetaElementsChanged = true;
+                        }
+                    }
+                }
+                if ($headElement->attributes->length > 0) {
+                    $copyAttributes($headElement, $currentDomHeadElement);
+                }
+            }
+
+            $bodyElement = $domDocument->getElementsByTagName('body')->item(0);
+            if ($bodyElement !== null) {
+                if ($currentDomBodyElement === null) {
+                    $currentDomBodyElement = $this->getElementsByTagName('body')->item(0);
+                    if ($currentDomBodyElement === null) {
+                        $this->addHtmlElementIfMissing();
+                        $this->addBodyElementIfMissing();
+                        $currentDomBodyElement = $this->getElementsByTagName('body')->item(0);
+                    }
+                }
+                $bodyElementChildren = $bodyElement->childNodes;
+                if ($target === 'afterBodyBegin') {
+                    $bodyElementChildrenCount = $bodyElementChildren->length;
+                    for ($i = $bodyElementChildrenCount - 1; $i >= 0; $i--) {
+                        $newNode = $getNewChild($bodyElementChildren->item($i));
+                        if ($newNode !== null) {
+                            if ($currentDomBodyElement->firstChild === null) {
+                                $currentDomBodyElement->appendChild($newNode);
+                            } else {
+                                $currentDomBodyElement->insertBefore($newNode, $currentDomBodyElement->firstChild);
+                            }
+                        }
+                    }
+                } else if ($target === 'beforeBodyEnd') {
+                    foreach ($bodyElementChildren as $bodyElementChild) {
+                        $newNode = $getNewChild($bodyElementChild);
+                        if ($newNode !== null) {
+                            $currentDomBodyElement->appendChild($newNode);
+                        }
+                    }
+                } else {
+                    $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
+                    foreach ($targetElements as $targetElement) {
+                        if ($targetElement->getAttribute('name') === $target) {
+                            foreach ($bodyElementChildren as $bodyElementChild) {
+                                $newNode = $getNewChild($bodyElementChild);
+                                if ($newNode !== null) {
+                                    $targetElement->parentNode->insertBefore($newNode, $targetElement);
+                                }
+                            }
+                        }
+                        $targetElement->parentNode->removeChild($targetElement);
+                        break;
+                    }
+                }
+                if ($bodyElement->attributes->length > 0) {
+                    $copyAttributes($bodyElement, $currentDomBodyElement);
                 }
             }
         }
@@ -654,9 +670,8 @@ class HTML5DOMDocument extends \DOMDocument
      */
     private function removeDuplicateTitleTags()
     {
-        $headElements = $this->getElementsByTagName('head');
-        if ($headElements->length > 0) {
-            $headElement = $headElements->item(0);
+        $headElement = $this->getElementsByTagName('head')->item(0);
+        if ($headElement !== null) {
             $titleTags = $headElement->getElementsByTagName('title');
             $titleTagsCount = $titleTags->length;
             for ($i = 0; $i < $titleTagsCount - 1; $i++) {
@@ -671,9 +686,8 @@ class HTML5DOMDocument extends \DOMDocument
      */
     private function removeDuplicateMetatags()
     {
-        $headElements = $this->getElementsByTagName('head');
-        if ($headElements->length > 0) {
-            $headElement = $headElements->item(0);
+        $headElement = $this->getElementsByTagName('head')->item(0);
+        if ($headElement !== null) {
             $metaTags = $headElement->getElementsByTagName('meta');
             if ($metaTags->length > 0) {
                 $list = [];
