@@ -645,13 +645,21 @@ class HTML5DOMDocument extends \DOMDocument
                                     $targetElement->parentNode->insertBefore($newNode, $targetElement);
                                 }
                             }
+                            $targetElement->parentNode->removeChild($targetElement);
+                            break;
                         }
-                        $targetElement->parentNode->removeChild($targetElement);
-                        break;
                     }
                 }
                 if ($bodyElement->attributes->length > 0) {
                     $copyAttributes($bodyElement, $currentDomBodyElement);
+                }
+            } else { // clear the insert target when there is no body element
+                $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
+                foreach ($targetElements as $targetElement) {
+                    if ($targetElement->getAttribute('name') === $target) {
+                        $targetElement->parentNode->removeChild($targetElement);
+                        break;
+                    }
                 }
             }
         }

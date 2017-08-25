@@ -293,6 +293,15 @@ class Test extends HTML5DOMDocumentTestCase
         $dom->insertHTML('<body data-var1="value1"></body>');
         $expectedSource = '<!DOCTYPE html><html><body data-var1="value1"></body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
+
+        // Empty content in insert target
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<body></body>');
+        $insertTarget = $dom->createInsertTarget('name1');
+        $dom->querySelector('body')->appendChild($insertTarget);
+        $dom->insertHTML('', 'name1');
+        $expectedSource = '<!DOCTYPE html><html><body></body></html>';
+        $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
     /**
