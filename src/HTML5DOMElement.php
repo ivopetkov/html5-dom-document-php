@@ -20,19 +20,19 @@ class HTML5DOMElement extends \DOMElement
 
     /**
      *
-     * @var array 
+     * @var array
      */
     static private $foundEntitiesCache = [[], []];
 
     /**
      *
-     * @var array 
+     * @var array
      */
     static private $newObjectsCache = [];
 
     /**
      * Returns the value for the property specified
-     * 
+     *
      * @param string $name The name of the property
      * @return string The value of the property specified
      * @throws \Exception
@@ -68,7 +68,7 @@ class HTML5DOMElement extends \DOMElement
 
     /**
      * Sets the value for the property specified
-     * 
+     *
      * @param string $name
      * @param string $value
      * @throws \Exception
@@ -107,7 +107,7 @@ class HTML5DOMElement extends \DOMElement
 
     /**
      * Updates the result value before returning it
-     * 
+     *
      * @param string $value
      * @return string The updated value
      */
@@ -137,7 +137,7 @@ class HTML5DOMElement extends \DOMElement
 
     /**
      * Returns the value for the attribute name specified
-     * 
+     *
      * @param string $name The attribute name
      * @return string
      * @throws \InvalidArgumentException
@@ -153,7 +153,7 @@ class HTML5DOMElement extends \DOMElement
 
     /**
      * Returns an array containing all attributes
-     * 
+     *
      * @return array An associative array containing all attributes
      */
     public function getAttributes(): array
@@ -168,7 +168,7 @@ class HTML5DOMElement extends \DOMElement
 
     /**
      * Returns the element outerHTML
-     * 
+     *
      * @return string The element outerHTML
      */
     public function __toString(): string
@@ -178,7 +178,7 @@ class HTML5DOMElement extends \DOMElement
 
     /**
      * Returns the first child element matching the selector
-     * 
+     *
      * @param string $selector CSS query selector
      * @return \DOMElement|null The result DOMElement or null if not found
      * @throws \InvalidArgumentException
@@ -190,9 +190,9 @@ class HTML5DOMElement extends \DOMElement
 
     /**
      * Returns a list of children elements matching the selector
-     * 
+     *
      * @param string $selector CSS query selector
-     * @return DOMNodeList Returns a list of DOMElements matching the criteria
+     * @return \DOMNodeList Returns a list of DOMElements matching the criteria
      * @throws \InvalidArgumentException
      */
     public function querySelectorAll(string $selector)
