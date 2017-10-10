@@ -7,7 +7,7 @@ trait QuerySelectors
 
     /**
      * Returns the first element matching the selector
-     * 
+     *
      * @param string $selector CSS query selector
      * @return \DOMElement|null The result DOMElement or null if not found
      */
@@ -19,10 +19,10 @@ trait QuerySelectors
 
     /**
      * Returns a list of document elements matching the selector
-     * 
+     *
      * @param string $selector CSS query selector
      * @param int|null $preferredLimit Preferred maximum number of elements to return
-     * @return DOMNodeList Returns a list of DOMElements matching the criteria
+     * @return \DOMNodeList Returns a list of DOMElements matching the criteria
      * @throws \InvalidArgumentException
      */
     private function internalQuerySelectorAll(string $selector, $preferredLimit = null)

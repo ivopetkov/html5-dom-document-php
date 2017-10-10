@@ -10,7 +10,7 @@
 namespace IvoPetkov;
 
 /**
- * 
+ *
  */
 class HTML5DOMDocument extends \DOMDocument
 {
@@ -19,27 +19,27 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Used to store information about the results of saveHTML. If those results are passed to loadHTML some optimizations are applied.
-     * 
+     *
      * @var array
      */
     static private $savedHTML = [];
 
     /**
      *
-     * @var array 
+     * @var array
      */
     static private $newObjectsCache = [];
 
     /**
      * Indicates whether an HTML code is loaded
-     * 
+     *
      * @var boolean
      */
     private $loaded = false;
 
     /**
      * Creates a new \IvoPetkov\HTML5DOMDocument object
-     * 
+     *
      * @param string $version The version number of the document as part of the XML declaration.
      * @param string $encoding The encoding of the document as part of the XML declaration.
      */
@@ -51,7 +51,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Load HTML from a string and adds missing doctype, html and body tags
-     * 
+     *
      * @param string $source The HTML code
      * @param int $options Additional Libxml parameters
      * @return boolean TRUE on success or FALSE on failure
@@ -209,7 +209,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Load HTML from a file and adds missing doctype, html and body tags
-     * 
+     *
      * @param string $filename The path to the HTML file
      * @param int $options Additional Libxml parameters
      */
@@ -220,7 +220,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Adds the HTML tag to the document if missing
-     * 
+     *
      * @return boolean TRUE on success, FALSE otherwise
      */
     private function addHtmlElementIfMissing(): bool
@@ -237,7 +237,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Adds the HEAD tag to the document if missing
-     * 
+     *
      * @return boolean TRUE on success, FALSE otherwise
      */
     private function addHeadElementIfMissing(): bool
@@ -260,7 +260,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Adds the BODY tag to the document if missing
-     * 
+     *
      * @return boolean TRUE on success, FALSE otherwise
      */
     private function addBodyElementIfMissing(): bool
@@ -277,7 +277,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Dumps the internal document into a string using HTML formatting
-     * 
+     *
      * @param \DOMNode $node Optional parameter to output a subset of the document.
      * @return string The document (or node) HTML code as string
      */
@@ -400,7 +400,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Returns the first document element matching the selector
-     * 
+     *
      * @param string $selector CSS query selector
      * @return \DOMElement|null The result DOMElement or null if not found
      * @throws \InvalidArgumentException
@@ -412,9 +412,9 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Returns a list of document elements matching the selector
-     * 
+     *
      * @param string $selector CSS query selector
-     * @return DOMNodeList Returns a list of DOMElements matching the criteria
+     * @return \DOMNodeList Returns a list of DOMElements matching the criteria
      * @throws \InvalidArgumentException
      */
     public function querySelectorAll(string $selector)
@@ -424,7 +424,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Creates an element that will be replaced by the new body in insertHTML
-     * 
+     *
      * @param string $name The name of the insert target
      * @return \DOMElement A new DOMElement that must be set in the place where the new body will be inserted
      */
@@ -440,7 +440,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Inserts a HTML document into the current document. The elements from the head and the body will be moved to their proper locations.
-     * 
+     *
      * @param string $source The HTML code to be inserted
      * @param string $target Body target position. Available values: afterBodyBegin, beforeBodyEnd or insertTarget name.
      */
@@ -451,7 +451,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Inserts multiple HTML documents into the current document. The elements from the head and the body will be moved to their proper locations.
-     * 
+     *
      * @param array $sources An array containing the source of the document to be inserted in the following format: [ ['source'=>'', 'target'=>''], ['source'=>'', 'target'=>''], ... ]
      * @throws \Exception
      */
@@ -753,7 +753,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Moves the title element and the metatags first
-     * @param type $headElement
+     * @param \DOMElement $headElement
      */
     private function optimizeHeadElementsOrder(&$headElement)
     {
