@@ -99,6 +99,18 @@ trait QuerySelectors
                 }
             });
             return new \IvoPetkov\HTML5DOMNodeList($result);
+        } elseif (preg_match('/^([a-z0-9]*)\[(.+)\]$/', $selector, $matches) === 1) { // tagname[attribute] or [attribute]
+            $result = [];
+            $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
+            $walkChildren($this, $tagName, function($element) use (&$result, $preferredLimit, $matches) {
+                if ($element->attributes->length > 0 && $element->getAttribute($matches[2]) !== '') {
+                    $result[] = $element;
+                    if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
+                        return true;
+                    }
+                }
+            });
+            return new \IvoPetkov\HTML5DOMNodeList($result);
         } elseif (preg_match('/^([a-z0-9]*)#(.+)$/', $selector, $matches) === 1) { // tagname#id or #id
             $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
             $idSelector = $matches[2];

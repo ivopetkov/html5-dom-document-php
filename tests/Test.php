@@ -360,6 +360,10 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($dom->querySelectorAll('span#text4')->item(0)->innerHTML === 'text4');
         $this->assertTrue($dom->querySelectorAll('[id="text4"]')->item(0)->innerHTML === 'text4');
         $this->assertTrue($dom->querySelectorAll('span[id="text4"]')->item(0)->innerHTML === 'text4');
+        $this->assertTrue($dom->querySelectorAll('[id]')->item(0)->innerHTML === 'text1');
+        $this->assertTrue($dom->querySelectorAll('[id]')->length === 2);
+        $this->assertTrue($dom->querySelectorAll('span[id]')->item(0)->innerHTML === 'text4');
+        $this->assertTrue($dom->querySelectorAll('span[data-other]')->length === 0);
         $this->assertTrue($dom->querySelectorAll('div#text4')->length === 0);
         $this->assertTrue($dom->querySelectorAll('div.class1')->length === 2);
         $this->assertTrue($dom->querySelectorAll('.class1')->length === 3);
