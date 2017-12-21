@@ -236,4 +236,4 @@ echo $dom->saveHTML();
 HTML5DOMDocument is open-sourced software. It's free to use under the MIT license. See the [license file](https://github.com/ivopetkov/html5-dom-document-php/blob/master/LICENSE) for more information.
 
 ## Author
-This library is created by Ivo Petkov. Feel free to contact me at [@IvoPetkovCom](https://twitter.com/IvoPetkovCom) or [ivopetkov.com](https://ivopetkov.com).
+This library is created and maintained by [Ivo Petkov](https://github.com/ivopetkov/) and some [awesome folks](https://github.com/ivopetkov/html5-dom-document-php/graphs/contributors). Feel free to open new issues and contribute or contact me at [@IvoPetkovCom](https://twitter.com/IvoPetkovCom) or [ivopetkov.com](https://ivopetkov.com).
