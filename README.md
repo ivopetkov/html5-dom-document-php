@@ -188,7 +188,7 @@ echo $dom->querySelector('h1')->innerHTML;
 // Hello
 
 echo $dom->querySelector('.content')->outerHTML;
-// <div class="content">This is some text</div><
+// <div class="content">This is some text</div>
 ```
 
 Inserting HTML code into other HTML code.
