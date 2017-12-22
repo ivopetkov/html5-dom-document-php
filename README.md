@@ -14,7 +14,7 @@ HTML5DOMDocument extends the native [DOMDocument](http://php.net/manual/en/class
 - Preserves html entities
 - Preserves void tags
 - Allows **inserting HTML code** that moves the correct parts to their proper places (head elements are inserted in the head, body elements in the body)
-- Allows **querying the DOM with CSS selectors** (currently avaiable: *, tagname, tagname#id, tagname.classname, #id, .classname)
+- Allows **querying the DOM with CSS selectors** (currently avaiable: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute="value"], [attribute="value"], tagname[attribute], [attribute])
 
 ## Install via Composer
 
