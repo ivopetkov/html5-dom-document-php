@@ -39,7 +39,9 @@ echo $dom->saveHTML();
 This is a list of all the new methods and properties that the library has added to the [DOMDocument](http://php.net/manual/en/class.domdocument.php) and the [DOMElement](http://php.net/manual/en/class.domelement.php) classes.
 
 [IvoPetkov\HTML5DOMDocument](docs/classes/IvoPetkov-HTML5DOMDocument.md)
+
 [IvoPetkov\HTML5DOMElement](docs/classes/IvoPetkov-HTML5DOMElement.md)
+
 [IvoPetkov\HTML5DOMNodeList](docs/classes/IvoPetkov-HTML5DOMNodeList.md)
 
 ## Examples
