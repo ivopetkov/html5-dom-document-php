@@ -8,12 +8,6 @@ HTML5DOMDocument extends the native [DOMDocument](http://php.net/manual/en/class
 [![License](https://poser.pugx.org/ivopetkov/html5-dom-document-php/license)](https://packagist.org/packages/ivopetkov/html5-dom-document-php)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/dafa5722288b409a9d447fa6aabd572b)](https://www.codacy.com/app/ivo_2/html5-dom-document-php)
 
-## Install via Composer
-
-```shell
-composer require ivopetkov/html5-dom-document-php
-```
-
 ## Differences to the native DOMDocument library
 
 - Preserves white spaces
@@ -21,6 +15,12 @@ composer require ivopetkov/html5-dom-document-php
 - Preserves void tags
 - Allows **inserting HTML code** that moves the correct parts to their proper places (head elements are inserted in the head, body elements in the body)
 - Allows **querying the DOM with CSS selectors** (currently avaiable: *, tagname, tagname#id, tagname.classname, #id, .classname)
+
+## Install via Composer
+
+```shell
+composer require ivopetkov/html5-dom-document-php
+```
 
 ## Usage
 
@@ -36,145 +36,11 @@ echo $dom->saveHTML();
 
 ## Documentation
 
-### Classes
-
 This is a list of all the new methods and properties that the library has added to the [DOMDocument](http://php.net/manual/en/class.domdocument.php) and the [DOMElement](http://php.net/manual/en/class.domelement.php) classes.
 
-#### IvoPetkov\HTML5DOMDocument
-##### Methods
-
-```php
-public \DOMElement|null querySelector ( string $selector )
-```
-
-Returns the first document element matching the selector
-
-_Parameters_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$selector`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CSS query selector
-
-_Returns_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The result DOMElement or null if not found
-
-```php
-public DOMNodeList querySelectorAll ( string $selector )
-```
-
-Returns a list of document elements matching the selector
-
-_Parameters_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$selector`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CSS query selector
-
-_Returns_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of DOMElements matching the criteria
-
-```php
-public \DOMElement createInsertTarget ( string $name )
-```
-
-Creates an element that will be replaced by the new body in insertHTML
-
-_Parameters_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$name`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the insert target
-
-_Returns_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A new DOMElement that must be set in the place where the new body will be inserted
-
-```php
-public void insertHTML ( string $source [, string $target = 'beforeBodyEnd' ] )
-```
-
-Inserts a HTML document into the current document. The elements from the head and the body will be moved to their proper locations.
-
-_Parameters_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$source`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code to be inserted
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$target`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Body target position. Available values: afterBodyBegin, beforeBodyEnd or insertTarget name.
-
-_Returns_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;No value is returned.
-
-#### IvoPetkov\HTML5DOMElement
-##### Properties
-
-`public string $innerHTML`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code inside the element
-
-`public string $outerHTML`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code for the element including the code inside
-
-##### Methods
-
-```php
-public array getAttributes ( void )
-```
-
-Returns an array containing all attributes
-
-_Returns_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An associative array containing all attributes
-
-```php
-public string __toString ( void )
-```
-
-Returns the element outerHTML
-
-_Returns_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The element outerHTML
-
-```php
-public \DOMElement|null querySelector ( string $selector )
-```
-
-Returns the first child element matching the selector
-
-_Parameters_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$selector`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CSS query selector
-
-_Returns_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The result DOMElement or null if not found
-
-```php
-public DOMNodeList querySelectorAll ( string $selector )
-```
-
-Returns a list of children elements matching the selector
-
-_Parameters_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$selector`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CSS query selector
-
-_Returns_
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of DOMElements matching the criteria
+[IvoPetkov\HTML5DOMDocument](docs/classes/IvoPetkov-HTML5DOMDocument.md)
+[IvoPetkov\HTML5DOMElement](docs/classes/IvoPetkov-HTML5DOMElement.md)
+[IvoPetkov\HTML5DOMNodeList](docs/classes/IvoPetkov-HTML5DOMNodeList.md)
 
 ## Examples
 
@@ -233,7 +99,11 @@ echo $dom->saveHTML();
 ```
 
 ## License
-HTML5DOMDocument is open-sourced software. It's free to use under the MIT license. See the [license file](https://github.com/ivopetkov/html5-dom-document-php/blob/master/LICENSE) for more information.
+This project is licensed under the MIT License. See the [license file](https://github.com/ivopetkov/html5-dom-document-php/blob/master/LICENSE) for more information.
 
-## Author
-This library is created and maintained by [Ivo Petkov](https://github.com/ivopetkov/) and some [awesome folks](https://github.com/ivopetkov/html5-dom-document-php/graphs/contributors). Feel free to open new issues and contribute or contact me at [@IvoPetkovCom](https://twitter.com/IvoPetkovCom) or [ivopetkov.com](https://ivopetkov.com).
+## Contributing
+Feel free to open new issues and contribute to the project. Let's make it awesome.
+This project is released with a [Contributor Covenant Code of Conduct](https://github.com/ivopetkov/html5-dom-document-php/blob/master/CODE-OF-CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+## Authors
+This library is created and maintained by [Ivo Petkov](https://github.com/ivopetkov/) ([ivopetkov.com](https://ivopetkov.com)) and some [awesome folks](https://github.com/ivopetkov/html5-dom-document-php/graphs/contributors).
