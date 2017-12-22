@@ -44,7 +44,7 @@ List of classes added by the library:
 
 ## Examples
 
-Querying the document with CSS selectors and getting the innerHTML and the outerHTML of the elements.
+Querying the document with CSS selectors and getting the innerHTML and the outerHTML of the elements:
 
 ```php
 $dom = new IvoPetkov\HTML5DOMDocument();
@@ -57,7 +57,7 @@ echo $dom->querySelector('.content')->outerHTML;
 // <div class="content">This is some text</div>
 ```
 
-Inserting HTML code into other HTML code.
+Inserting HTML code into a HTML document (other HTML code):
 
 ```php
 $dom = new IvoPetkov\HTML5DOMDocument();
