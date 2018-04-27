@@ -72,8 +72,11 @@ class HTML5DOMDocument extends \DOMDocument
             $source = '<body>' . $source . '</body>';
         }
 
+        // Adds temporary DOCTYPE
+        $removeDocType=false;
         if (strtoupper(substr($source, 0, 9)) !== '<!DOCTYPE') {
             $source = '<!DOCTYPE html>' . $source;
+            $removeDocType=true;
         }
 
         // Adds temporary head tag
@@ -130,6 +133,12 @@ class HTML5DOMDocument extends \DOMDocument
                     $htmlElement->parentNode->removeChild($htmlElement);
                 }
             }
+        }
+
+        // Remove temporary DOCTYPE
+        if($removeDocType)
+        {
+            $this->removeChild($this->doctype);            
         }
 
         if (!$isSavedHTML) {
