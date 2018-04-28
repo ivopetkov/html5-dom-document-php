@@ -78,7 +78,7 @@ trait QuerySelectors
                 }
             });
             return new \IvoPetkov\HTML5DOMNodeList($result);
-        } elseif (preg_match('/^[a-z0-9]+$/', $selector) === 1) { // tagname
+        } elseif (preg_match('/^[a-z0-9\-]+$/', $selector) === 1) { // tagname
             $result = [];
             $walkChildren($this, $selector, function($element) use (&$result, $preferredLimit) {
                 $result[] = $element;
@@ -87,7 +87,7 @@ trait QuerySelectors
                 }
             });
             return new \IvoPetkov\HTML5DOMNodeList($result);
-        } elseif (preg_match('/^([a-z0-9]*)\[(.+)\=\"(.+)\"\]$/', $selector, $matches) === 1) { // tagname[attribute="value"] or [attribute="value"]
+        } elseif (preg_match('/^([a-z0-9\-]*)\[(.+)\=\"(.+)\"\]$/', $selector, $matches) === 1) { // tagname[attribute="value"] or [attribute="value"]
             $result = [];
             $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
             $walkChildren($this, $tagName, function($element) use (&$result, $preferredLimit, $matches) {
@@ -99,7 +99,7 @@ trait QuerySelectors
                 }
             });
             return new \IvoPetkov\HTML5DOMNodeList($result);
-        } elseif (preg_match('/^([a-z0-9]*)\[(.+)\]$/', $selector, $matches) === 1) { // tagname[attribute] or [attribute]
+        } elseif (preg_match('/^([a-z0-9\-]*)\[(.+)\]$/', $selector, $matches) === 1) { // tagname[attribute] or [attribute]
             $result = [];
             $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
             $walkChildren($this, $tagName, function($element) use (&$result, $preferredLimit, $matches) {
@@ -111,7 +111,7 @@ trait QuerySelectors
                 }
             });
             return new \IvoPetkov\HTML5DOMNodeList($result);
-        } elseif (preg_match('/^([a-z0-9]*)#(.+)$/', $selector, $matches) === 1) { // tagname#id or #id
+        } elseif (preg_match('/^([a-z0-9\-]*)#(.+)$/', $selector, $matches) === 1) { // tagname#id or #id
             $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
             $idSelector = $matches[2];
             $element = $getElementById($idSelector, $tagName);
@@ -119,7 +119,7 @@ trait QuerySelectors
                 return new \IvoPetkov\HTML5DOMNodeList([$element]);
             }
             return new \IvoPetkov\HTML5DOMNodeList();
-        } elseif (preg_match('/^([a-z0-9]*)\.(.+)$/', $selector, $matches) === 1) { // tagname.classname or .classname
+        } elseif (preg_match('/^([a-z0-9\-]*)\.(.+)$/', $selector, $matches) === 1) { // tagname.classname or .classname
             $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
             $classSelector = $matches[2];
             $result = [];

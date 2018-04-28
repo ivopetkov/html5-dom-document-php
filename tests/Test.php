@@ -344,12 +344,13 @@ class Test extends HTML5DOMDocumentTestCase
                 . '<div>'
                 . '<div class="text3 class1">text3</div>'
                 . '</div>'
+                . '<my-custom-element class="text5 class1">text5</my-custom-element>'
                 . '<span id="text4" class="class1 class2">text4</div>'
                 . '</body></html>');
 
         $this->assertTrue($dom->querySelector('#text1')->innerHTML === 'text1');
 
-        $this->assertTrue($dom->querySelectorAll('*')->length === 8); // html + body + 1 h1 + 4 divs + 1 span
+        $this->assertTrue($dom->querySelectorAll('*')->length === 9); // html + body + 1 h1 + 4 divs + 1 custom element + 1 span
         $this->assertTrue($dom->querySelectorAll('h1')->item(0)->innerHTML === 'text0');
         $this->assertTrue($dom->querySelectorAll('div')->length === 4); // 4 divs
         $this->assertTrue($dom->querySelectorAll('#text1')->length === 1);
@@ -366,9 +367,12 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($dom->querySelectorAll('span[data-other]')->length === 0);
         $this->assertTrue($dom->querySelectorAll('div#text4')->length === 0);
         $this->assertTrue($dom->querySelectorAll('div.class1')->length === 2);
-        $this->assertTrue($dom->querySelectorAll('.class1')->length === 3);
+        $this->assertTrue($dom->querySelectorAll('.class1')->length === 4);
         $this->assertTrue($dom->querySelectorAll('div.class2')->length === 0);
         $this->assertTrue($dom->querySelectorAll('span.class2')->length === 1);
+        $this->assertTrue($dom->querySelectorAll('my-custom-element')->length === 1);
+        $this->assertTrue($dom->querySelectorAll('my-custom-element.text5')->length === 1);
+        $this->assertTrue($dom->querySelectorAll('my-custom-element.text5')->item(0)->innerHTML === 'text5');
 
         $this->assertTrue($dom->querySelectorAll('unknown')->length === 0);
         $this->assertTrue($dom->querySelectorAll('unknown')->item(0) === null);
@@ -391,12 +395,13 @@ class Test extends HTML5DOMDocumentTestCase
                 . '<div>'
                 . '<div class="text3 class1">text3</div>'
                 . '</div>'
+                . '<my-custom-element class="text5 class1">text5</my-custom-element>'
                 . '<span id="text4" class="class1 class2">text4</div>'
                 . '</div></body></html>');
 
         $this->assertTrue($dom->querySelector('#container')->querySelector('#text1')->innerHTML === 'text1');
 
-        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('*')->length === 5); // 4 divs + 1 span
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('*')->length === 6); // 4 divs + 1 custom element + 1 span
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('div')->length === 4); // 4 divs
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('#text1')->length === 1);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('#text1')->item(0)->innerHTML === 'text1');
@@ -408,9 +413,12 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('span[id="text4"]')->item(0)->innerHTML === 'text4');
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('div#text4')->length === 0);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('div.class1')->length === 2);
-        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('.class1')->length === 3);
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('.class1')->length === 4);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('div.class2')->length === 0);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('span.class2')->length === 1);
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('my-custom-element')->length === 1);
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('my-custom-element.text5')->length === 1);
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('my-custom-element.text5')->item(0)->innerHTML === 'text5');
 
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('unknown')->length === 0);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('unknown')->item(0) === null);
