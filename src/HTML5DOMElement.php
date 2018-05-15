@@ -200,4 +200,107 @@ class HTML5DOMElement extends \DOMElement
         return $this->internalQuerySelectorAll($selector);
     }
 
+	/**
+	 * Determines whether the element has the given class.
+	 * 
+	 * @param string $className The class name to search for.
+	 * @return bool Returns true if the given class name is found.
+	 */
+	public function hasClass(string $className)
+	{
+		$class = $this->getAttribute('class');
+		if (empty($class)) {
+			return false;
+		}
+		$needle = " $className ";
+		$haystack = " $class ";
+		return strpos($haystack, $needle) !== false;
+	}
+
+	/**
+	 * Returns the class attribute value.
+	 * 
+	 * @return string[] Returns a list of classes.
+	 */
+	public function getClass()
+	{
+		$class = $this->getAttribute('class');
+		if (empty($class)) {
+			return [];
+		}
+		$items = explode(' ', $class);
+		$items = array_filter($items, 'strlen');
+		return $items;
+	}
+
+	/**
+	 * Adds the specified class(es) to the element.
+	 * 
+	 * @param string $className One or more space-separated classes to be added to the class attribute.
+	 * @return \HTML5DOMElement The element itself.
+	 */
+	public function addClass(string $className)
+	{
+		if (!empty($className)) {
+			$class = $this->getAttribute('class');
+			if (empty($class)) {
+				$this->setAttribute('class', $className);
+			} else {
+				if (strpos($className, ' ') !== false) {
+					$merged = $class . ' ' . $className;
+					$items = explode(' ', $merged);
+					$unique = [];
+					foreach ($items as $item) {
+						if (empty($item)) {
+							continue;
+						}
+						if (!in_array($item, $unique)) {
+							$unique[] = $item;
+						}
+					}
+					$this->setAttribute('class', implode(' ', $unique));
+				} else {
+					$needle = " $className ";
+					$haystack = " $class ";
+					if (strpos($haystack, $needle) === false) {
+						$class .= " $className";
+						$this->setAttribute('class', $class);
+					}
+				}
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * Remove a single class, multiple classes, or all classes from each element in the set of matched elements.
+	 * If no class names are specified in the parameter, all classes will be removed.
+	 * 
+	 * @param string $className One or more space-separated classes to be removed from the class attribute.
+	 * @return \HTML5DOMElement The element itself.
+	 */
+	public function removeClass(string $className = '') {
+		if (empty($className)) {
+			$this->removeAttribute('class');
+		} else {
+			$class = $this->getAttribute('class');
+			if (!empty($class)) {
+				$class = " $class ";
+				$items = explode(' ', $className);
+				foreach ($items as $item) {
+					if (empty($item)) {
+						continue;
+					}
+					$class = str_replace(" $item ", ' ', $class);
+				}
+				$class = trim($class);
+				if (empty($class)) {
+					$this->removeAttribute('class');
+				} else {
+					$this->setAttribute('class', $class);
+				}
+			}
+		}
+		return $this;
+	}
 }

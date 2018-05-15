@@ -825,4 +825,88 @@ class Test extends HTML5DOMDocumentTestCase
         $list->missing;
     }
 
+	public function testHasClass()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><body class="a b c"></body></html>');
+		$element = $dom->querySelector('body');
+		$this->assertTrue($element->hasClass('a'));
+		$this->assertTrue($element->hasClass('b'));
+		$this->assertTrue($element->hasClass('c'));
+		$this->assertFalse($element->hasClass('d'));
+	}
+
+	public function testGetClass()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><body class="a b c"></body></html>');
+		$element = $dom->querySelector('body');
+		$class = $element->getClass();
+		$class = implode(',', $class);
+		$this->assertEquals('a,b,c', $class);
+	}
+
+	public function testAddClassEmpty()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><body></body></html>');
+		$element = $dom->querySelector('body');
+		$element->addClass('');
+		$result = $element->outerHTML;
+		$this->assertEquals('<body></body>', $result);
+	}
+
+	public function testAddClassSingle()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><body class="a b"></body></html>');
+		$element = $dom->querySelector('body');
+		$element->addClass('c');
+		$result = $element->outerHTML;
+		$this->assertEquals('<body class="a b c"></body>', $result);
+
+		$element->addClass('b');
+		$result = $element->outerHTML;
+		$this->assertEquals('<body class="a b c"></body>', $result);
+	}
+
+	public function testAddClassMultiple()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><body class="a b"></body></html>');
+		$element = $dom->querySelector('body');
+		$element->addClass('d b a c');
+		$result = $element->outerHTML;
+		$this->assertEquals('<body class="a b d c"></body>', $result);
+	}
+
+	public function testRemoveClassAll()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><body class="a b c"></body></html>');
+		$element = $dom->querySelector('body');
+		$element->removeClass();
+		$result = $element->outerHTML;
+		$this->assertEquals('<body></body>', $result);
+	}
+
+	public function testRemoveClassSingle()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><body class="a b c"></body></html>');
+		$element = $dom->querySelector('body');
+		$element->removeClass('b');
+		$result = $element->outerHTML;
+		$this->assertEquals('<body class="a c"></body>', $result);
+	}
+
+	public function testRemoveClassMultiple()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><body class="a b c"></body></html>');
+		$element = $dom->querySelector('body');
+		$element->removeClass('a c d');
+		$result = $element->outerHTML;
+		$this->assertEquals('<body class="b"></body>', $result);
+	}
 }
