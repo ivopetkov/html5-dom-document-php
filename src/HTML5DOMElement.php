@@ -220,7 +220,7 @@ class HTML5DOMElement extends \DOMElement
 	/**
 	 * Returns the class attribute value.
 	 * 
-	 * @return string[] Returns a list of classes.
+	 * @return string[] Returns a list of class names.
 	 */
 	public function getClass()
 	{
@@ -237,7 +237,7 @@ class HTML5DOMElement extends \DOMElement
 	 * Adds the specified class(es) to the element.
 	 * 
 	 * @param string $className One or more space-separated classes to be added to the class attribute.
-	 * @return \HTML5DOMElement The element itself.
+	 * @return HTML5DOMElement Returns the element itself.
 	 */
 	public function addClass(string $className)
 	{
@@ -277,7 +277,7 @@ class HTML5DOMElement extends \DOMElement
 	 * If no class names are specified in the parameter, all classes will be removed.
 	 * 
 	 * @param string $className One or more space-separated classes to be removed from the class attribute.
-	 * @return \HTML5DOMElement The element itself.
+	 * @return HTML5DOMElement Returns the element itself.
 	 */
 	public function removeClass(string $className = '') {
 		if (empty($className)) {
