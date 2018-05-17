@@ -90,7 +90,7 @@ trait QuerySelectors
         } elseif (preg_match('/^([a-z0-9]*)((\[([^\]]+)\=\"([^\]]+)\"\])*)$/', $selector, $matches) === 1) { // tagname[attribute="value"] or [attribute="value"]
             $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
             // Extract potentially multiple attributes.
-            $attributes = preg_match_all('/\[([^\]]+)\=\"([^\]]+)\"\]/', $matches[2], $attrMatches, PREG_SET_ORDER);
+            preg_match_all('/\[([^\]]+)\=\"([^\]]+)\"\]/', $matches[2], $attrMatches, PREG_SET_ORDER);
             $result = [];
             $walkChildren($this, $tagName, function($element) use (&$result, $preferredLimit, $matches, $attrMatches) {
                 if ($element->attributes->length < 1) {
