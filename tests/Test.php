@@ -825,105 +825,221 @@ class Test extends HTML5DOMDocumentTestCase
         $list->missing;
     }
 
-	public function testHasClass()
+	/**
+	 * @group classlist
+	 */
+	public function testClassListContains()
 	{
 		$dom = new HTML5DOMDocument();
-        $dom->loadHTML('<html><body class="aaa b c"></body></html>');
+        $dom->loadHTML('<html><body class=" c aaa b  c  "></body></html>');
 
 		$html = $dom->querySelector('html');
-		$this->assertFalse($html->hasClass('a'));
+		$this->assertFalse($html->classList()->contains('a'));
 
 		$body = $dom->querySelector('body');
-		$this->assertFalse($body->hasClass('a'));
-		$this->assertTrue($body->hasClass('aaa'));
-		$this->assertTrue($body->hasClass('b'));
-		$this->assertTrue($body->hasClass('c'));
-		$this->assertFalse($body->hasClass('d'));
+		$classList = $body->classList();
+		$this->assertFalse($classList->contains('a'));
+		$this->assertTrue($classList->contains('aaa'));
+		$this->assertTrue($classList->contains('b'));
+		$this->assertTrue($classList->contains('c'));
+		$this->assertFalse($classList->contains('d'));
 	}
 
-	public function testGetClass()
+	/**
+	 * @group classlist
+	 */
+	public function testClassListEntries()
 	{
 		$dom = new HTML5DOMDocument();
-        $dom->loadHTML('<html><body class="a b c"></body></html>');
+        $dom->loadHTML('<html><body class="  a   b c b a c"></body></html>');
+
+		$text = '';
+		$html = $dom->querySelector('html');
+		foreach ($html->classList()->entries() as $class) {
+			$text .= "[$class]";
+		}
+		$this->assertSame('', $text);
+
+		$text = '';
+		$body = $dom->querySelector('body');
+		foreach ($body->classList()->entries() as $class) {
+			$text .= "[$class]";
+		}
+		$this->assertSame('[a][b][c]', $text);
+	}
+
+	/**
+	 * @group classlist
+	 */
+	public function testClassListItem()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<html><body class="  a   b c b a c"></body></html>');
 
 		$html = $dom->querySelector('html');
-		$this->assertEquals(0, count($html->getClass()));
+		$this->assertNull($html->classList()->item(0));
+		$this->assertNull($html->classList()->item(1));
 
 		$body = $dom->querySelector('body');
-		$class = $body->getClass();
-		$class = implode(',', $class);
-		$this->assertEquals('a,b,c', $class);
+		$this->assertSame('a', $body->classList()->item(0));
+		$this->assertSame('b', $body->classList()->item(1));
+		$this->assertSame('c', $body->classList()->item(2));
+		$this->assertNull($body->classList()->item(3));
 	}
 
-	public function testAddClassEmpty()
+	/**
+	 * @group classlist
+	 */
+	public function testClassListAdd()
 	{
 		$dom = new HTML5DOMDocument();
-        $dom->loadHTML('<html><body></body></html>');
-		$body = $dom->querySelector('body');
-		$body->addClass('');
-		$result = $body->outerHTML;
-		$this->assertEquals('<body></body>', $result);
-	}
+        $dom->loadHTML('<html><body class="  a   b c b a c"></body></html>');
 
-	public function testAddClassSingle()
-	{
-		$dom = new HTML5DOMDocument();
-        $dom->loadHTML('<html><body></body></html>');
-		$body = $dom->querySelector('body');
-		$body->addClass('a');
-		$result = $body->outerHTML;
-		$this->assertEquals('<body class="a"></body>', $result);
-
-		$body->addClass('b');
-		$result = $body->outerHTML;
-		$this->assertEquals('<body class="a b"></body>', $result);
-	}
-
-	public function testAddClassMultiple()
-	{
-		$dom = new HTML5DOMDocument();
-        $dom->loadHTML('<html><body class=" a b "></body></html>');
-		$body = $dom->querySelector('body');
-		$body->addClass('d b a c');
-		$result = $body->outerHTML;
-		$this->assertEquals('<body class="a b d c"></body>', $result);
-	}
-
-	public function testRemoveClassAll()
-	{
-		$dom = new HTML5DOMDocument();
-        $dom->loadHTML('<html><body class="a b c"></body></html>');
-		$body = $dom->querySelector('body');
-		$body->removeClass();
-		$result = $body->outerHTML;
-		$this->assertEquals('<body></body>', $result);
-	}
-
-	public function testRemoveClassSingle()
-	{
-		$dom = new HTML5DOMDocument();
-        $dom->loadHTML('<html><body class="a b"></body></html>');
 		$html = $dom->querySelector('html');
-		$html->removeClass('a');
-		$result = $html->outerHTML;
-		$this->assertEquals('<html><body class="a b"></body></html>', $result);
+		$html->classList()->add('abc');
+		$this->assertSame('abc', $html->getAttribute('class'));
 
 		$body = $dom->querySelector('body');
-		$body->removeClass('b');
-		$result = $body->outerHTML;
-		$this->assertEquals('<body class="a"></body>', $result);
-		$body->removeClass('a');
-		$result = $body->outerHTML;
-		$this->assertEquals('<body></body>', $result);
+		$body->classList()->add('a', 'd');
+		$this->assertSame('a b c d', $body->getAttribute('class'));
 	}
 
-	public function testRemoveClassMultiple()
+	/**
+	 * @group classlist
+	 */
+	public function testClassListRemove()
 	{
 		$dom = new HTML5DOMDocument();
-        $dom->loadHTML('<html><body class=" a  b c "></body></html>');
+        $dom->loadHTML('<html><body class="  a   b c b a c"></body></html>');
+
+		$html = $dom->querySelector('html');
+		$html->classList()->remove('a');
+		$this->assertSame('', $html->getAttribute('class'));
+
 		$body = $dom->querySelector('body');
-		$body->removeClass('a c  d');
-		$result = $body->outerHTML;
-		$this->assertEquals('<body class="b"></body>', $result);
+		$body->classList()->remove('a', 'd');
+		$this->assertSame('b c', $body->getAttribute('class'));
+	}
+
+	/**
+	 * @group classlist
+	 */
+	public function testClassListToggle()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<html><body class="  a   b c b a c"></body></html>');
+
+		$html = $dom->querySelector('html');
+		$isThere = $html->classList()->toggle('a');
+		$this->assertTrue($isThere);
+		$this->assertSame('a', $html->getAttribute('class'));
+
+		$body = $dom->querySelector('body');
+		$isThere = $body->classList()->toggle('a');
+		$this->assertFalse($isThere);
+		$this->assertSame('b c', $body->getAttribute('class'));
+
+		$isThere = $body->classList()->toggle('d');
+		$this->assertTrue($isThere);
+		$this->assertSame('b c d', $body->getAttribute('class'));
+	}
+
+	/**
+	 * @group classlist
+	 */
+	public function testClassListToggleForce()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<html><body class="  a   b c b a c"></body></html>');
+
+		$html = $dom->querySelector('html');
+		$isThere = $html->classList()->toggle('a', false);
+		$this->assertFalse($isThere);
+		$this->assertSame('', $html->getAttribute('class'));
+		$isThere = $html->classList()->toggle('a', true);
+		$this->assertTrue($isThere);
+		$this->assertSame('a', $html->getAttribute('class'));
+		$isThere = $html->classList()->toggle('a', true);
+		$this->assertTrue($isThere);
+		$this->assertSame('a', $html->getAttribute('class'));
+
+		$body = $dom->querySelector('body');
+		$isThere = $body->classList()->toggle('a', false);
+		$this->assertFalse($isThere);
+		$this->assertSame('b c', $body->getAttribute('class'));
+		$isThere = $body->classList()->toggle('a', false);
+		$this->assertFalse($isThere);
+		$this->assertSame('b c', $body->getAttribute('class'));
+		$isThere = $body->classList()->toggle('b', true);
+		$this->assertTrue($isThere);
+		$this->assertSame('b c', $body->getAttribute('class'));
+	}
+
+	/**
+	 * @group classlist
+	 */
+	public function testClassListReplace()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<html><body class="  a   b c b a c"></body></html>');
+
+		$html = $dom->querySelector('html');
+		$html->classList()->replace('a', 'b');
+		$this->assertSame('', $html->getAttribute('class'));
+
+		$body = $dom->querySelector('body');
+		$body->classList()->replace('a', 'a');
+		$this->assertSame('  a   b c b a c', $body->getAttribute('class')); // since no change is made
+
+		$body->classList()->replace('a', 'b');
+		$this->assertSame('b c', $body->getAttribute('class'));
+
+		$body->classList()->replace('c', 'd');
+		$this->assertSame('b d', $body->getAttribute('class'));
+	}
+
+	/**
+	 * @group classlist
+	 */
+	public function testClassListLength()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<html><body class="  a   b c b a c"></body></html>');
+
+		$html = $dom->querySelector('html');
+		$this->assertSame(0, $html->classlist()->length());
+
+		$body = $dom->querySelector('body');
+		$this->assertSame(3, $body->classlist()->length());
+	}
+
+	/**
+	 * @group classlist
+	 */
+	public function testClassListValue()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<html><body class="  a   b c b a c"></body></html>');
+
+		$html = $dom->querySelector('html');
+		$this->assertSame('', $html->classlist()->value());
+
+		$body = $dom->querySelector('body');
+		$this->assertSame('a b c', $body->classlist()->value());
+	}
+
+	/**
+	 * @group classlist
+	 */
+	public function testClassListToString()
+	{
+		$dom = new HTML5DOMDocument();
+        $dom->loadHTML('<html><body class="  a   b c b a c"></body></html>');
+
+		$html = $dom->querySelector('html');
+		$this->assertSame('', "{$html->classlist()}");
+
+		$body = $dom->querySelector('body');
+		$this->assertSame('a b c', "{$body->classlist()}");
 	}
 }
