@@ -383,13 +383,16 @@ class Test extends HTML5DOMDocumentTestCase
     }
 
     /**
-     * 
+     *
      */
     public function testElementQuerySelector()
     {
 
         $dom = new HTML5DOMDocument();
-        $dom->loadHTML('<html><body><div id="container">'
+        $dom->loadHTML('<html><head>'
+                . '<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">'
+                . '<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32"></head>'
+                . '<body><div id="container">'
                 . '<div id="text1" class="class1">text1</div>'
                 . '<div>text2</div>'
                 . '<div>'
@@ -411,6 +414,10 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('span#text4')->item(0)->innerHTML === 'text4');
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[id="text4"]')->item(0)->innerHTML === 'text4');
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('span[id="text4"]')->item(0)->innerHTML === 'text4');
+        $this->assertEquals('/favicon-16x16.png', $dom->querySelectorAll('link[rel="icon"]')->item(0)->getAttribute('href'));
+        $this->assertEquals('/favicon-32x32.png', $dom->querySelectorAll('link[rel="icon"]')->item(1)->getAttribute('href'));
+        $this->assertEquals('/favicon-16x16.png', $dom->querySelectorAll('link[rel="icon"][sizes="16x16"]')->item(0)->getAttribute('href'));
+        $this->assertNull($dom->querySelectorAll('link[rel="icon"][sizes="16x16"]')->item(1));
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('div#text4')->length === 0);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('div.class1')->length === 2);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('.class1')->length === 4);
