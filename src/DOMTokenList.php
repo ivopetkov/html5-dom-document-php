@@ -25,7 +25,7 @@ class DOMTokenList
 	/**
 	 * @var string
 	 */
-	private $value;
+	private $prevValue;
 
 	/**
 	 * Creates a list of space-separated tokens based on the attribute value of an element.
@@ -36,7 +36,7 @@ class DOMTokenList
 	{
 		$this->element = $element;
 		$this->attributeName = $attributeName;
-		$this->value = null;
+		$this->prevValue = null;
 		$this->tokenize();
 	}
 
@@ -151,28 +151,10 @@ class DOMTokenList
 		}
 	}
 
-	/**
-	 * Returns the number of tokens.
-	 * @return int
-	 */
-	public function length() : int
-	{
-		$this->tokenize();
-		return count($this->tokens);
-	}
-
-	/**
-	 * Returns the string representation of the list.
-	 * @return string
-	 */
-	public function value() : string {
-		$this->tokenize();
-		return implode(' ', $this->tokens);
-	}
-
 	public function __toString() : string
 	{
-		return $this->value();
+		$this->tokenize();
+		return implode(' ', $this->tokens);
 	}
 
 	/**
@@ -185,11 +167,29 @@ class DOMTokenList
 		return new ArrayIterator($this->tokens);
 	}
 
+	/**
+     * Returns the value for the property specified
+     *
+     * @param string $name The name of the property
+     * @return string The value of the property specified
+     * @throws \Exception
+     */
+    public function __get(string $name)
+    {
+		if ($name === 'length') {
+			$this->tokenize();
+			return count($this->tokens);
+		} else if ($name === 'value') {
+			return $this->__toString();
+		}
+		throw new \Exception('Undefined property: DOMTokenList::$' . $name);
+	}
+
 	private function tokenize()
 	{
 		$current = $this->element->getAttribute($this->attributeName);
-		if ($this->value === $current) return;
-		$this->value = $current;
+		if ($this->prevValue === $current) return;
+		$this->prevValue = $current;
 		$tokens = explode(' ', $current);
 		$finals = [];
 		foreach ($tokens as $token) {
@@ -203,8 +203,8 @@ class DOMTokenList
 	private function setAttributeValue()
 	{
 		$value = implode(' ', $this->tokens);
-		if ($this->value === $value) return;
-		$this->value = $value;
+		if ($this->prevValue === $value) return;
+		$this->prevValue = $value;
 		$this->element->setAttribute($this->attributeName, $value);
 	}
 }
