@@ -87,15 +87,24 @@ trait QuerySelectors
                 }
             });
             return new \IvoPetkov\HTML5DOMNodeList($result);
-        } elseif (preg_match('/^([a-z0-9\-]*)\[(.+)\=\"(.+)\"\]$/', $selector, $matches) === 1) { // tagname[attribute="value"] or [attribute="value"]
-            $result = [];
+        } elseif (preg_match('/^([a-z0-9]*)((\[([^\]]+)\=\"([^\]]+)\"\])*)$/', $selector, $matches) === 1) { // tagname[attribute="value"] or [attribute="value"]
             $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
-            $walkChildren($this, $tagName, function($element) use (&$result, $preferredLimit, $matches) {
-                if ($element->attributes->length > 0 && $element->getAttribute($matches[2]) === $matches[3]) {
-                    $result[] = $element;
-                    if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
-                        return true;
+            // Extract potentially multiple attributes.
+            preg_match_all('/\[([^\]]+)\=\"([^\]]+)\"\]/', $matches[2], $attrMatches, PREG_SET_ORDER);
+            $result = [];
+            $walkChildren($this, $tagName, function($element) use (&$result, $preferredLimit, $matches, $attrMatches) {
+                if ($element->attributes->length < 1) {
+                    return;
+                }
+                // Check that all specified attributes match.
+                foreach ($attrMatches as $attrMatch) {
+                    if ($element->getAttribute($attrMatch[1]) !== $attrMatch[2]) {
+                        return;
                     }
+                }
+                $result[] = $element;
+                if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
+                    return true;
                 }
             });
             return new \IvoPetkov\HTML5DOMNodeList($result);
