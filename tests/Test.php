@@ -389,13 +389,16 @@ class Test extends HTML5DOMDocumentTestCase
     {
 
         $dom = new HTML5DOMDocument();
-        $dom->loadHTML('<html><body><div id="container">'
+        $dom->loadHTML('<html><head>'
+                . '<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">'
+                . '<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32"></head>'
+                . '<body><div id="container">'
                 . '<div id="text1" class="class1">text1</div>'
                 . '<div>text2</div>'
                 . '<div>'
-                . '<div class="text3 class1">text3</div>'
+                . '<div class="class3 class1">text3</div>'
                 . '</div>'
-                . '<my-custom-element class="text5 class1">text5</my-custom-element>'
+                . '<my-custom-element class="class5 class1">text5</my-custom-element>'
                 . '<span id="text4" class="class1 class2">text4</div>'
                 . '</div></body></html>');
 
@@ -405,8 +408,18 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('div')->length === 4); // 4 divs
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('#text1')->length === 1);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('#text1')->item(0)->innerHTML === 'text1');
-        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('.text3')->length === 1);
-        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('.text3')->item(0)->innerHTML === 'text3');
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('.class3')->length === 1);
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('.class3')->item(0)->innerHTML === 'text3');
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[class~="class3"]')->length === 1);
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[class~="class3"]')->item(0)->innerHTML === 'text3');
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[class|="class1"]')->length === 1);
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[class|="class1"]')->item(0)->innerHTML === 'text1');
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[class^="class3"]')->length === 1);
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[class^="class3"]')->item(0)->innerHTML === 'text3');
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[class$="class2"]')->length === 1);
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[class$="class2"]')->item(0)->innerHTML === 'text4');
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[class*="ss3"]')->length === 1);
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[class*="ss3"]')->item(0)->innerHTML === 'text3');
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('div#text1')->item(0)->innerHTML === 'text1');
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('span#text4')->item(0)->innerHTML === 'text4');
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('[id="text4"]')->item(0)->innerHTML === 'text4');
@@ -417,8 +430,8 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('div.class2')->length === 0);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('span.class2')->length === 1);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('my-custom-element')->length === 1);
-        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('my-custom-element.text5')->length === 1);
-        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('my-custom-element.text5')->item(0)->innerHTML === 'text5');
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('my-custom-element.class5')->length === 1);
+        $this->assertTrue($dom->querySelector('#container')->querySelectorAll('my-custom-element.class5')->item(0)->innerHTML === 'text5');
 
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('unknown')->length === 0);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('unknown')->item(0) === null);
@@ -426,6 +439,11 @@ class Test extends HTML5DOMDocumentTestCase
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('#unknown')->item(0) === null);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('.unknown')->length === 0);
         $this->assertTrue($dom->querySelector('#container')->querySelectorAll('.unknown')->item(0) === null);
+
+        $this->assertEquals('/favicon-16x16.png', $dom->querySelectorAll('link[rel="icon"]')->item(0)->getAttribute('href'));
+        $this->assertEquals('/favicon-32x32.png', $dom->querySelectorAll('link[rel="icon"]')->item(1)->getAttribute('href'));
+        $this->assertEquals('/favicon-16x16.png', $dom->querySelectorAll('link[rel="icon"][sizes="16x16"]')->item(0)->getAttribute('href'));
+        $this->assertNull($dom->querySelectorAll('link[rel="icon"][sizes="16x16"]')->item(1));
     }
 
     /**
@@ -824,7 +842,7 @@ class Test extends HTML5DOMDocumentTestCase
         $this->setExpectedException('\Exception');
         $list->missing;
     }
-
+  
 	/**
 	 * @group classlist
 	 */
@@ -1055,4 +1073,23 @@ class Test extends HTML5DOMDocumentTestCase
 		$body = $dom->querySelector('body');
 		$this->assertSame('a b c', "{$body->classList}");
 	}
+
+    /**
+     * 
+     */
+    public function testWrongCharsetMetaTag()
+    {
+        $html = '<!DOCTYPE html><html>
+    <head>
+        <meta http-equiv="Content-Type" name="viewport" content="charset=UTF-8; width=device-width; initial-scale=1.0; text/html">
+    </head>
+    <body>
+        Hi
+    </body>
+</html>';
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($html);
+        $resultHTML = $dom->saveHTML();
+        $this->assertTrue($html === $resultHTML);
+    }
 }

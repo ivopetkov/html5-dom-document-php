@@ -87,23 +87,77 @@ trait QuerySelectors
                 }
             });
             return new \IvoPetkov\HTML5DOMNodeList($result);
-        } elseif (preg_match('/^([a-z0-9\-]*)\[(.+)\=\"(.+)\"\]$/', $selector, $matches) === 1) { // tagname[attribute="value"] or [attribute="value"]
-            $result = [];
-            $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
-            $walkChildren($this, $tagName, function($element) use (&$result, $preferredLimit, $matches) {
-                if ($element->attributes->length > 0 && $element->getAttribute($matches[2]) === $matches[3]) {
-                    $result[] = $element;
-                    if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
-                        return true;
-                    }
+        } elseif (preg_match('/^([a-z0-9\-]*)(\[.+\])$/', $selector, $matches) === 1) { // tagname[target] or [target] // Available values for targets: attr, attr="value", attr~="value", attr|="value", attr^="value", attr$="value", attr*="value"
+            $attributeSelectors = explode('][', substr($matches[2], 1, -1));
+            foreach ($attributeSelectors as $i => $attributeSelector) {
+                $attributeSelectorMatches = null;
+                if (preg_match('/^(.+?)(=|~=|\|=|\^=|\$=|\*=)\"(.+)\"$/', $attributeSelector, $attributeSelectorMatches) === 1) {
+                    $attributeSelectors[$i] = [
+                        'name' => $attributeSelectorMatches[1],
+                        'value' => $attributeSelectorMatches[3],
+                        'operator' => $attributeSelectorMatches[2]
+                    ];
+                } else {
+                    $attributeSelectors[$i] = [
+                        'name' => $attributeSelector
+                    ];
                 }
-            });
-            return new \IvoPetkov\HTML5DOMNodeList($result);
-        } elseif (preg_match('/^([a-z0-9\-]*)\[(.+)\]$/', $selector, $matches) === 1) { // tagname[attribute] or [attribute]
+            }
             $result = [];
             $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
-            $walkChildren($this, $tagName, function($element) use (&$result, $preferredLimit, $matches) {
-                if ($element->attributes->length > 0 && $element->getAttribute($matches[2]) !== '') {
+            $walkChildren($this, $tagName, function($element) use (&$result, $preferredLimit, $attributeSelectors) {
+                if ($element->attributes->length > 0) {
+                    foreach ($attributeSelectors as $attributeSelector) {
+                        $isMatch = false;
+                        $attributeValue = $element->getAttribute($attributeSelector['name']);
+                        if (isset($attributeSelector['value'])) {
+                            $valueToMatch = $attributeSelector['value'];
+                            switch ($attributeSelector['operator']) {
+                                case '=':
+                                    if ($attributeValue === $valueToMatch) {
+                                        $isMatch = true;
+                                    }
+                                    break;
+                                case '~=':
+                                    $words = preg_split("/[\s]+/", $attributeValue);
+                                    if (array_search($valueToMatch, $words) !== false) {
+                                        $isMatch = true;
+                                    }
+                                    break;
+
+                                case '|=':
+                                    if ($attributeValue === $valueToMatch || strpos($attributeValue, $valueToMatch . '-') === 0) {
+                                        $isMatch = true;
+                                    }
+                                    break;
+
+                                case '^=':
+                                    if (strpos($attributeValue, $valueToMatch) === 0) {
+                                        $isMatch = true;
+                                    }
+                                    break;
+
+                                case '$=':
+                                    if (substr($attributeValue, -strlen($valueToMatch)) === $valueToMatch) {
+                                        $isMatch = true;
+                                    }
+                                    break;
+
+                                case '*=':
+                                    if (strpos($attributeValue, $valueToMatch) !== false) {
+                                        $isMatch = true;
+                                    }
+                                    break;
+                            }
+                        } else {
+                            if ($attributeValue !== '') {
+                                $isMatch = true;
+                            }
+                        }
+                        if (!$isMatch) {
+                            return;
+                        }
+                    }
                     $result[] = $element;
                     if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
                         return true;
@@ -136,7 +190,7 @@ trait QuerySelectors
             });
             return new \IvoPetkov\HTML5DOMNodeList($result);
         }
-        throw new \InvalidArgumentException('Unsupported selector');
+        throw new \InvalidArgumentException('Unsupported selector (' . $selector . ')');
     }
 
 }
