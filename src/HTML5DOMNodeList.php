@@ -3,7 +3,7 @@
 /*
  * HTML5 DOMDocument PHP library (extends DOMDocument)
  * https://github.com/ivopetkov/html5-dom-document-php
- * Copyright 2016, Ivo Petkov
+ * Copyright 2016-2018, Ivo Petkov
  * Free to use under the MIT license.
  */
 
