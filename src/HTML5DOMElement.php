@@ -30,6 +30,11 @@ class HTML5DOMElement extends \DOMElement
      */
     static private $newObjectsCache = [];
 
+	/*
+	 * @var DOMTokenList
+	 */
+	private $classList = null;
+
     /**
      * Returns the value for the property specified
      *
@@ -62,7 +67,12 @@ class HTML5DOMElement extends \DOMElement
                 return $result;
             }
             return $this->ownerDocument->saveHTML($this);
-        }
+        } elseif ($name === 'classList') {
+			if (is_null($this->classList)) {
+				$this->classList = new DOMTokenList($this, 'class');
+			}
+			return $this->classList;
+		}
         throw new \Exception('Undefined property: HTML5DOMElement::$' . $name);
     }
 
@@ -199,5 +209,4 @@ class HTML5DOMElement extends \DOMElement
     {
         return $this->internalQuerySelectorAll($selector);
     }
-
 }
