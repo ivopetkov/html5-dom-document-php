@@ -12,6 +12,7 @@ namespace IvoPetkov;
 /**
  * @property-read string $innerHTML The HTML code inside the element
  * @property-read string $outerHTML The HTML code for the element including the code inside
+ * @property-read \IvoPetkov\HTML5DOMTokenList $classList A collection of the class attributes of the element
  */
 class HTML5DOMElement extends \DOMElement
 {
@@ -30,10 +31,11 @@ class HTML5DOMElement extends \DOMElement
      */
     static private $newObjectsCache = [];
 
-	/*
-	 * @var DOMTokenList
-	 */
-	private $classList = null;
+    /*
+     * 
+     * @var HTML5DOMTokenList
+     */
+    private $classList = null;
 
     /**
      * Returns the value for the property specified
@@ -68,11 +70,11 @@ class HTML5DOMElement extends \DOMElement
             }
             return $this->ownerDocument->saveHTML($this);
         } elseif ($name === 'classList') {
-			if (is_null($this->classList)) {
-				$this->classList = new DOMTokenList($this, 'class');
-			}
-			return $this->classList;
-		}
+            if ($this->classList === null) {
+                $this->classList = new HTML5DOMTokenList($this, 'class');
+            }
+            return $this->classList;
+        }
         throw new \Exception('Undefined property: HTML5DOMElement::$' . $name);
     }
 
@@ -110,6 +112,9 @@ class HTML5DOMElement extends \DOMElement
                 $this->parentNode->insertBefore($node, $this);
             }
             $this->parentNode->removeChild($this);
+            return;
+        } elseif ($name === 'classList') {
+            $this->setAttribute('class', $value);
             return;
         }
         throw new \Exception('Undefined property: HTML5DOMElement::$' . $name);
@@ -209,4 +214,5 @@ class HTML5DOMElement extends \DOMElement
     {
         return $this->internalQuerySelectorAll($selector);
     }
+
 }
