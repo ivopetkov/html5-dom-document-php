@@ -12,7 +12,7 @@ namespace IvoPetkov;
 /**
  * @property-read string $innerHTML The HTML code inside the element
  * @property-read string $outerHTML The HTML code for the element including the code inside
- * @property-read \IvoPetkov\HTML5DOMTokenList $classList A collection of the class attributes of the element
+ * @property \IvoPetkov\HTML5DOMTokenList $classList A collection of the class attributes of the element
  */
 class HTML5DOMElement extends \DOMElement
 {
