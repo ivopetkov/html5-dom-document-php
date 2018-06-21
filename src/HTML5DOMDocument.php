@@ -344,9 +344,12 @@ class HTML5DOMDocument extends \DOMDocument
             $meta->setAttribute('data-html5-dom-document-internal-attribute', 'charset-meta');
             $meta->setAttribute('http-equiv', 'content-type');
             $meta->setAttribute('content', 'text/html; charset=utf-8');
-            $headElement->appendChild($meta);
+            if ($headElement->firstChild !== null) {
+                $headElement->insertBefore($meta, $headElement->firstChild);
+            } else {
+                $headElement->appendChild($meta);
+            }
             $html = parent::saveHTML();
-
 
             if ($removeHeadElement) {
                 $headElement->parentNode->removeChild($headElement);
