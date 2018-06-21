@@ -58,7 +58,7 @@ class HTML5DOMTokenList
      * @param string[] $tokens The tokens you want to add to the list.
      * @return void
      */
-    public function add(string ...$tokens): void
+    public function add(string ...$tokens)
     {
         if (count($tokens) === 0) {
             return;
@@ -77,7 +77,7 @@ class HTML5DOMTokenList
      * @param string[] $tokens The token you want to remove from the list.
      * @return void
      */
-    public function remove(string ...$tokens): void
+    public function remove(string ...$tokens)
     {
         if (count($tokens) === 0) {
             return;
@@ -160,7 +160,7 @@ class HTML5DOMTokenList
      * @param string $new The token you want to replace $old with.
      * @return void
      */
-    public function replace(string $old, string $new): void
+    public function replace(string $old, string $new)
     {
         if ($old === $new) {
             return;
@@ -216,7 +216,7 @@ class HTML5DOMTokenList
      * 
      * @return void
      */
-    private function tokenize(): void
+    private function tokenize()
     {
         $current = $this->element->getAttribute($this->attributeName);
         if ($this->previousValue === $current) {
@@ -239,7 +239,7 @@ class HTML5DOMTokenList
      * 
      * @return void
      */
-    private function setAttributeValue(): void
+    private function setAttributeValue()
     {
         $value = implode(' ', $this->tokens);
         if ($this->previousValue === $value) {
