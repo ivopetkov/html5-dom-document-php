@@ -1,22 +1,19 @@
 <?xml version="1.0"?>
 <phpunit bootstrap="tests/bootstrap.php"
-         colors="false"
+         colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          beStrictAboutOutputDuringTests="true"
          stopOnFailure="true">
     <testsuites>
-        <testsuite name="HTML5 DOM Document Test Suite">
+        <testsuite name="">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+        <whitelist>
             <directory>./src/</directory>
         </whitelist>
     </filter>
-    <php>
-        <ini name="date.timezone" value="UTC"/>
-    </php>
 </phpunit>

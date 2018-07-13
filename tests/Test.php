@@ -12,7 +12,7 @@ use IvoPetkov\HTML5DOMDocument;
 /**
  * @runTestsInSeparateProcesses
  */
-class Test extends HTML5DOMDocumentTestCase
+class Test extends PHPUnit\Framework\TestCase
 {
 
     /**
@@ -817,7 +817,7 @@ class Test extends HTML5DOMDocumentTestCase
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<!DOCTYPE html><body></body></html>');
         $element = $dom->querySelector('body');
-        $this->setExpectedException('\Exception');
+        $this->expectException('\Exception');
         $element->missing;
     }
 
@@ -829,7 +829,7 @@ class Test extends HTML5DOMDocumentTestCase
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<!DOCTYPE html><body></body></html>');
         $element = $dom->querySelector('body');
-        $this->setExpectedException('\Exception');
+        $this->expectException('\Exception');
         $element->missing = 'true';
     }
 
@@ -839,7 +839,7 @@ class Test extends HTML5DOMDocumentTestCase
     public function testInvalidArguments5()
     {
         $list = new \IvoPetkov\HTML5DOMNodeList();
-        $this->setExpectedException('\Exception');
+        $this->expectException('\Exception');
         $list->missing;
     }
 
