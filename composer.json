@@ -17,8 +17,6 @@
         "phpunit/phpunit": "^4.8"
     },
     "autoload": {
-        "psr-4": {
-            "IvoPetkov\\": "src/"
-        }
+        "files": ["autoload.php"]
     }
 }
