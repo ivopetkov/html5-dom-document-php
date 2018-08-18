@@ -38,6 +38,13 @@ class HTML5DOMDocument extends \DOMDocument
     private $loaded = false;
 
     /**
+     * Indicates whether have added temporary <body></body> tags
+     *
+     * @var boolean
+     */
+    private $removeBodyTag = false;
+
+    /**
      * Creates a new \IvoPetkov\HTML5DOMDocument object
      *
      * @param string $version The version number of the document as part of the XML declaration.
@@ -70,6 +77,7 @@ class HTML5DOMDocument extends \DOMDocument
         // Add body tag if missing
         if ($source !== '' && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html.*?\>/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
             $source = '<body>' . $source . '</body>';
+            $this->removeBodyTag=true;
         }
 
         if (strtoupper(substr($source, 0, 9)) !== '<!DOCTYPE') {
@@ -372,6 +380,10 @@ class HTML5DOMDocument extends \DOMDocument
             }
             if ($removeHtmlElement) {
                 $codeToRemove[] = '<html></html>';
+            }
+            if ($this->removeBodyTag) {
+                $codeToRemove[] = '<body>';
+                $codeToRemove[] = '</body>';
             }
             $html = str_replace($codeToRemove, '', $html);
 
