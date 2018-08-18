@@ -1100,14 +1100,7 @@ class Test extends PHPUnit\Framework\TestCase
      */
     public function testWrongCharsetMetaTag()
     {
-        $html = '<!DOCTYPE html>' . "\n" . '<html>
-    <head>
-        <meta http-equiv="Content-Type" name="viewport" content="charset=UTF-8; width=device-width; initial-scale=1.0; text/html">
-    </head>
-    <body>
-        Hi
-    </body>
-</html>';
+        $html = '<!DOCTYPE html>' . "\n" . '<html><head><meta http-equiv="Content-Type" name="viewport" content="charset=UTF-8; width=device-width; initial-scale=1.0; text/html"></head><body>Hi</body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($html);
         $resultHTML = $dom->saveHTML();
