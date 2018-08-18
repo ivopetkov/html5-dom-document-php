@@ -77,7 +77,7 @@ class HTML5DOMDocument extends \DOMDocument
 
         // Add DOCTYPE if missing
         if ($autoAddDoctype && strtoupper(substr($source, 0, 9)) !== '<!DOCTYPE') {
-            $source = '<!DOCTYPE html>' . $source;
+            $source = "<!DOCTYPE html>\n" . $source;
         }
 
         // Adds temporary head tag
@@ -127,7 +127,7 @@ class HTML5DOMDocument extends \DOMDocument
                 $headElement = $metaTagElement->parentNode;
                 $htmlElement = $headElement->parentNode;
                 $metaTagElement->parentNode->removeChild($metaTagElement);
-                if ($headElement !== null && $removeHeadTag && $headElement->firstChild === null) {
+                if ($headElement !== null && $removeHeadTag && ($headElement->firstChild === null || ($headElement->childNodes->length === 1 && $headElement->firstChild instanceof \DOMText))) {
                     $headElement->parentNode->removeChild($headElement);
                 }
                 if ($htmlElement !== null && $removeHtmlTag && $htmlElement->firstChild === null) {
@@ -305,12 +305,12 @@ class HTML5DOMDocument extends \DOMDocument
                 $tempDomDocument->loadHTML('<!DOCTYPE html>');
                 $tempDomDocument->appendChild($tempDomDocument->importNode(clone($node), true));
                 $html = $tempDomDocument->saveHTML();
-                $html = substr($html, 15); // remove the DOCTYPE
+                $html = substr($html, 16); // remove the DOCTYPE + the new line after
             } elseif ($node->nodeName === 'head' || $node->nodeName === 'body') {
-                $tempDomDocument->loadHTML('<!DOCTYPE html><html></html>');
+                $tempDomDocument->loadHTML("<!DOCTYPE html>\n<html></html>");
                 $tempDomDocument->childNodes[1]->appendChild($tempDomDocument->importNode(clone($node), true));
                 $html = $tempDomDocument->saveHTML();
-                $html = substr($html, 21, -7); // remove the DOCTYPE + html tag
+                $html = substr($html, 22, -7); // remove the DOCTYPE + the new line after + html tag
             } else {
                 $isInHead = false;
                 $parentNode = $node;
@@ -326,11 +326,12 @@ class HTML5DOMDocument extends \DOMDocument
                         break;
                     }
                 }
-                $tempDomDocument->loadHTML('<!DOCTYPE html><html>' . ($isInHead ? '<head></head>' : '<body></body>') . '</html>');
+                $tempDomDocument->loadHTML("<!DOCTYPE html>\n<html>" . ($isInHead ? '<head></head>' : '<body></body>') . '</html>');
                 $tempDomDocument->childNodes[1]->childNodes[0]->appendChild($tempDomDocument->importNode(clone($node), true));
                 $html = $tempDomDocument->saveHTML();
-                $html = substr($html, 27, -14); // remove the DOCTYPE + html + body or head tags
+                $html = substr($html, 28, -14); // remove the DOCTYPE + the new line + html + body or head tags
             }
+            $html = trim($html);
         } else {
             $removeHtmlElement = false;
             $removeHeadElement = false;
@@ -354,6 +355,7 @@ class HTML5DOMDocument extends \DOMDocument
                 $headElement->appendChild($meta);
             }
             $html = parent::saveHTML();
+            $html = rtrim($html, "\n");
 
             if ($removeHeadElement) {
                 $headElement->parentNode->removeChild($headElement);
@@ -377,10 +379,8 @@ class HTML5DOMDocument extends \DOMDocument
             if ($removeHtmlElement) {
                 $codeToRemove[] = '<html></html>';
             }
-            $html = str_replace($codeToRemove, '', $html);
 
-            // Remove the whitespace between the doctype and html tag
-            $html = trim(preg_replace('/\>\s\<html/', '><html', $html, 1));
+            $html = str_replace($codeToRemove, '', $html);
         }
         self::$savedHTML[md5($html)] = 1;
         return $html;
