@@ -67,12 +67,16 @@ class HTML5DOMDocument extends \DOMDocument
 
         $source = trim($source);
 
+        $autoAddHtmlAndBodyTags = ($options & LIBXML_HTML_NOIMPLIED) !== LIBXML_HTML_NOIMPLIED;
+        $autoAddDoctype = ($options & LIBXML_HTML_NODEFDTD) !== LIBXML_HTML_NODEFDTD;
+
         // Add body tag if missing
-        if ($source !== '' && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html.*?\>/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
+        if ($autoAddHtmlAndBodyTags && $source !== '' && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html.*?\>/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
             $source = '<body>' . $source . '</body>';
         }
 
-        if (strtoupper(substr($source, 0, 9)) !== '<!DOCTYPE') {
+        // Add DOCTYPE if missing
+        if ($autoAddDoctype && strtoupper(substr($source, 0, 9)) !== '<!DOCTYPE') {
             $source = '<!DOCTYPE html>' . $source;
         }
 
@@ -123,10 +127,10 @@ class HTML5DOMDocument extends \DOMDocument
                 $headElement = $metaTagElement->parentNode;
                 $htmlElement = $headElement->parentNode;
                 $metaTagElement->parentNode->removeChild($metaTagElement);
-                if ($removeHeadTag && $headElement->firstChild === null) {
+                if ($headElement !== null && $removeHeadTag && $headElement->firstChild === null) {
                     $headElement->parentNode->removeChild($headElement);
                 }
-                if ($removeHtmlTag && $htmlElement->firstChild === null) {
+                if ($htmlElement !== null && $removeHtmlTag && $htmlElement->firstChild === null) {
                     $htmlElement->parentNode->removeChild($htmlElement);
                 }
             }

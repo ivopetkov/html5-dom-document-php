@@ -1114,4 +1114,32 @@ class Test extends PHPUnit\Framework\TestCase
         $this->assertTrue($html === $resultHTML);
     }
 
+    /**
+     *
+     */
+    public function testLIBXML_HTML_NODEFDTD()
+    {
+        $content = '<div>hello</div>';
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($content, LIBXML_HTML_NODEFDTD);
+        $expectedContent = '<html><body><div>hello</div></body></html>';
+        $this->assertEquals($dom->saveHTML(), $expectedContent);
+    }
+
+    /**
+     *
+     */
+    public function testLIBXML_HTML_NOIMPLIED()
+    {
+
+        $content = '<div>hello</div>';
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($content, LIBXML_HTML_NOIMPLIED);
+        $this->assertEquals($dom->getElementsByTagName('html')->length, 0);
+        $this->assertEquals($dom->getElementsByTagName('head')->length, 0);
+        $this->assertEquals($dom->getElementsByTagName('body')->length, 0);
+        $expectedContent = '<!DOCTYPE html>' . "\n" . '<div>hello</div>';
+        $this->assertEquals($dom->saveHTML(), $expectedContent);
+    }
+
 }
