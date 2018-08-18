@@ -107,7 +107,7 @@ class HTML5DOMDocument extends \DOMDocument
         $source = preg_replace('/&([a-zA-Z]*);/', 'html5-dom-document-internal-entity1-$1-end', $source);
         $source = preg_replace('/&#([0-9]*);/', 'html5-dom-document-internal-entity2-$1-end', $source);
 
-        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $options | LIBXML_NOENT);
+        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $options);
         if ($internalErrorsOptionValue === false) {
             libxml_use_internal_errors(false);
         }
