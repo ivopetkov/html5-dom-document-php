@@ -123,11 +123,18 @@ class HTML5DOMDocument extends \DOMDocument
                 $headElement = $metaTagElement->parentNode;
                 $htmlElement = $headElement->parentNode;
                 $metaTagElement->parentNode->removeChild($metaTagElement);
-                if ($removeHeadTag && $headElement->firstChild === null) {
-                    $headElement->parentNode->removeChild($headElement);
+                if(is_object($metaTagElement))
+                {
+                    if ($removeHeadTag && $headElement->firstChild === null) {
+                        $headElement->parentNode->removeChild($headElement);
+                    }
                 }
-                if ($removeHtmlTag && $htmlElement->firstChild === null) {
-                    $htmlElement->parentNode->removeChild($htmlElement);
+                $htmlElement = $headElement->parentNode;
+                if(is_object($htmlElement))
+                {
+                    if ($removeHtmlTag && $htmlElement->firstChild === null) {
+                        $htmlElement->parentNode->removeChild($htmlElement);
+                    }
                 }
             }
         }
