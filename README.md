@@ -14,12 +14,12 @@ HTML5DOMDocument extends the native [DOMDocument](http://php.net/manual/en/class
 - Preserves html entities
 - Preserves void tags
 - Allows **inserting HTML code** that moves the correct parts to their proper places (head elements are inserted in the head, body elements in the body)
-- Allows **querying the DOM with CSS selectors** (currently avaiable: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute="value"], [attribute="value"], tagname[attribute], [attribute])
+- Allows **querying the DOM with CSS selectors** (currently avaiable: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector])
 
 ## Install via Composer
 
 ```shell
-composer require ivopetkov/html5-dom-document-php
+composer require ivopetkov/html5-dom-document-php:1.*
 ```
 
 ## Usage
@@ -41,6 +41,7 @@ List of classes added by the library:
 - [IvoPetkov\HTML5DOMDocument](https://github.com/ivopetkov/html5-dom-document-php/blob/master/docs/classes/IvoPetkov-HTML5DOMDocument.md)
 - [IvoPetkov\HTML5DOMElement](https://github.com/ivopetkov/html5-dom-document-php/blob/master/docs/classes/IvoPetkov-HTML5DOMElement.md)
 - [IvoPetkov\HTML5DOMNodeList](https://github.com/ivopetkov/html5-dom-document-php/blob/master/docs/classes/IvoPetkov-HTML5DOMNodeList.md)
+- [IvoPetkov\HTML5DOMTokenList](https://github.com/ivopetkov/html5-dom-document-php/blob/master/docs/classes/IvoPetkov-HTML5DOMTokenList.md)
 
 ## Examples
 
@@ -96,6 +97,15 @@ echo $dom->saveHTML();
 //             <div>This is some text</div>
 //         </body>
 //     </html>
+```
+
+Manipulating the values of the class attribute of an element:
+
+```php
+$dom = new IvoPetkov\HTML5DOMDocument();
+$dom->loadHTML('<div class="class1"></div>');
+
+echo $dom->querySelector('div')->classList->add('class2');
 ```
 
 ## License

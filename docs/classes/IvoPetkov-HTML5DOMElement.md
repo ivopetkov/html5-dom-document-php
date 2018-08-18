@@ -9,6 +9,10 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code for the element including the code inside
 
+`public \IvoPetkov\HTML5DOMTokenList $classList`
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A collection of the class attributes of the element
+
 ## Methods
 
 ```php
