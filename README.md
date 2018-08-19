@@ -36,12 +36,7 @@ echo $dom->saveHTML();
 
 ## Documentation
 
-List of classes added by the library:
-
-- [IvoPetkov\HTML5DOMDocument](https://github.com/ivopetkov/html5-dom-document-php/blob/master/docs/classes/IvoPetkov-HTML5DOMDocument.md)
-- [IvoPetkov\HTML5DOMElement](https://github.com/ivopetkov/html5-dom-document-php/blob/master/docs/classes/IvoPetkov-HTML5DOMElement.md)
-- [IvoPetkov\HTML5DOMNodeList](https://github.com/ivopetkov/html5-dom-document-php/blob/master/docs/classes/IvoPetkov-HTML5DOMNodeList.md)
-- [IvoPetkov\HTML5DOMTokenList](https://github.com/ivopetkov/html5-dom-document-php/blob/master/docs/classes/IvoPetkov-HTML5DOMTokenList.md)
+Browse the [documentation](https://github.com/ivopetkov/html5-dom-document-php/blob/master/docs/markdown/index.md).
 
 ## Examples
 

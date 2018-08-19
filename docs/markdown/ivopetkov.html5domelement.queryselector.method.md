@@ -1,0 +1,22 @@
+# IvoPetkov\HTML5DOMElement::querySelector
+
+Returns the first child element matching the selector
+
+```php
+public [DOMElement](http://php.net/manual/en/domelement.php)|null querySelector ( string $selector )
+```
+
+## Parameters
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$selector`
+
+## Returns
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The result DOMElement or null if not found
+
+## Details
+
+Class: [IvoPetkov\HTML5DOMElement](ivopetkov.html5domelement.class.md)
+
+File: /src/HTML5DOMElement.php
+

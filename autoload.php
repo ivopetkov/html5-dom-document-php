@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * HTML5 DOMDocument PHP library (extends DOMDocument)
+ * https://github.com/ivopetkov/html5-dom-document-php
+ * Copyright (c) Ivo Petkov
+ * Free to use under the MIT license.
+ */
+
 $classes = array(
     'IvoPetkov\HTML5DOMDocument' => __DIR__ . '/src/HTML5DOMDocument.php',
     'IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors' => __DIR__ . '/src/HTML5DOMDocument/Internal/QuerySelectors.php',

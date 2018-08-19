@@ -50,7 +50,7 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Load HTML from a string and adds missing doctype, html and body tags
+     * Load HTML from a string
      *
      * @param string $source The HTML code
      * @param int $options Additional Libxml parameters
@@ -212,7 +212,7 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Load HTML from a file and adds missing doctype, html and body tags
+     * Load HTML from a file
      *
      * @param string $filename The path to the HTML file
      * @param int $options Additional Libxml parameters
