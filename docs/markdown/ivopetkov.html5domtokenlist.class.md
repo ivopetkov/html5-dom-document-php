@@ -30,7 +30,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Replaces an existing token with a new token.
 
-##### public [ArrayIterator](http://php.net/manual/en/arrayiterator.php) [entries](ivopetkov.html5domtokenlist.entries.method.md) ( void )
+##### public [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php) [entries](ivopetkov.html5domtokenlist.entries.method.md) ( void )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an iterator allowing you to go through all tokens contained in the list.
 

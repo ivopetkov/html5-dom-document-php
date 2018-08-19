@@ -1,6 +1,6 @@
 # IvoPetkov\HTML5DOMDocument
 
-extends [DOMDocument](http://php.net/manual/en/domdocument.php)
+extends [DOMDocument](http://php.net/manual/en/class.domdocument.php)
 
 ## Methods
 
@@ -12,7 +12,7 @@ extends [DOMDocument](http://php.net/manual/en/domdocument.php)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load HTML from a file
 
-##### public string [saveHTML](ivopetkov.html5domdocument.savehtml.method.md) ( [ [DOMNode](http://php.net/manual/en/domnode.php) $node ] )
+##### public string [saveHTML](ivopetkov.html5domdocument.savehtml.method.md) ( [ [DOMNode](http://php.net/manual/en/class.domnode.php) $node ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dumps the internal document into a string using HTML formatting
 
@@ -20,15 +20,15 @@ extends [DOMDocument](http://php.net/manual/en/domdocument.php)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dumps the internal document into a file using HTML formatting
 
-##### public [DOMElement](http://php.net/manual/en/domelement.php)|null [querySelector](ivopetkov.html5domdocument.queryselector.method.md) ( string $selector )
+##### public [DOMElement](http://php.net/manual/en/class.domelement.php)|null [querySelector](ivopetkov.html5domdocument.queryselector.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first document element matching the selector
 
-##### public [DOMNodeList](http://php.net/manual/en/domnodelist.php) [querySelectorAll](ivopetkov.html5domdocument.queryselectorall.method.md) ( string $selector )
+##### public [DOMNodeList](http://php.net/manual/en/class.domnodelist.php) [querySelectorAll](ivopetkov.html5domdocument.queryselectorall.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of document elements matching the selector
 
-##### public [DOMElement](http://php.net/manual/en/domelement.php) [createInsertTarget](ivopetkov.html5domdocument.createinserttarget.method.md) ( string $name )
+##### public [DOMElement](http://php.net/manual/en/class.domelement.php) [createInsertTarget](ivopetkov.html5domdocument.createinserttarget.method.md) ( string $name )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates an element that will be replaced by the new body in insertHTML
 

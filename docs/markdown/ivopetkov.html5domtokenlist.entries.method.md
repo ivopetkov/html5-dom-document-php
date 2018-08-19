@@ -3,7 +3,7 @@
 Returns an iterator allowing you to go through all tokens contained in the list.
 
 ```php
-public [ArrayIterator](http://php.net/manual/en/arrayiterator.php) entries ( void )
+public ArrayIterator entries ( void )
 ```
 
 ## Returns

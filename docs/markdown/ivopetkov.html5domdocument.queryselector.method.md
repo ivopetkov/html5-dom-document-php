@@ -3,7 +3,7 @@
 Returns the first document element matching the selector
 
 ```php
-public [DOMElement](http://php.net/manual/en/domelement.php)|null querySelector ( string $selector )
+public DOMElement|null querySelector ( string $selector )
 ```
 
 ## Parameters

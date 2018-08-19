@@ -1,6 +1,6 @@
 # IvoPetkov\HTML5DOMElement
 
-extends [DOMElement](http://php.net/manual/en/domelement.php)
+extends [DOMElement](http://php.net/manual/en/class.domelement.php)
 
 ## Properties
 
@@ -26,11 +26,11 @@ extends [DOMElement](http://php.net/manual/en/domelement.php)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array containing all attributes
 
-##### public [DOMElement](http://php.net/manual/en/domelement.php)|null [querySelector](ivopetkov.html5domelement.queryselector.method.md) ( string $selector )
+##### public [DOMElement](http://php.net/manual/en/class.domelement.php)|null [querySelector](ivopetkov.html5domelement.queryselector.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first child element matching the selector
 
-##### public [DOMNodeList](http://php.net/manual/en/domnodelist.php) [querySelectorAll](ivopetkov.html5domelement.queryselectorall.method.md) ( string $selector )
+##### public [DOMNodeList](http://php.net/manual/en/class.domnodelist.php) [querySelectorAll](ivopetkov.html5domelement.queryselectorall.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of children elements matching the selector
 

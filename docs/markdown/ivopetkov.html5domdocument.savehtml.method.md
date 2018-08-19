@@ -3,7 +3,7 @@
 Dumps the internal document into a string using HTML formatting
 
 ```php
-public string saveHTML ( [ [DOMNode](http://php.net/manual/en/domnode.php) $node ] )
+public string saveHTML ( [ DOMNode $node ] )
 ```
 
 ## Parameters

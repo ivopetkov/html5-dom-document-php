@@ -3,7 +3,7 @@
 Returns the item at the specified index
 
 ```php
-public [IvoPetkov\HTML5DOMElement](ivopetkov.html5domelement.class.md)|null item ( int $index )
+public IvoPetkov\HTML5DOMElement|null item ( int $index )
 ```
 
 ## Parameters

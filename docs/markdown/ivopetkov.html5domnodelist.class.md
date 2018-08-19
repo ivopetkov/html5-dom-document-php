@@ -1,6 +1,6 @@
 # IvoPetkov\HTML5DOMNodeList
 
-extends [ArrayObject](http://php.net/manual/en/arrayobject.php)
+extends [ArrayObject](http://php.net/manual/en/class.arrayobject.php)
 
 ## Constants
 
