@@ -28,7 +28,7 @@ Full [documentation](https://github.com/ivopetkov/html5-dom-document-php/blob/ma
 
 ## Examples
 
-Use just like you should use DOMDocument.
+Use just like you should use DOMDocument:
 ```php
 <?php
 require 'vendor/autoload.php';
