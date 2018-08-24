@@ -10,7 +10,7 @@
 namespace IvoPetkov;
 
 /**
- *
+ * Represents a live (can be manipulated) representation of a HTML5 document.
  */
 class HTML5DOMDocument extends \DOMDocument
 {
@@ -31,14 +31,14 @@ class HTML5DOMDocument extends \DOMDocument
     static private $newObjectsCache = [];
 
     /**
-     * Indicates whether an HTML code is loaded
+     * Indicates whether an HTML code is loaded.
      *
      * @var boolean
      */
     private $loaded = false;
 
     /**
-     * Creates a new \IvoPetkov\HTML5DOMDocument object
+     * Creates a new HTML5DOMDocument object.
      *
      * @param string $version The version number of the document as part of the XML declaration.
      * @param string $encoding The encoding of the document as part of the XML declaration.
@@ -50,11 +50,11 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Load HTML from a string
+     * Load HTML from a string.
      *
-     * @param string $source The HTML code
-     * @param int $options Additional Libxml parameters
-     * @return boolean TRUE on success or FALSE on failure
+     * @param string $source The HTML code.
+     * @param int $options Additional Libxml parameters.
+     * @return boolean TRUE on success or FALSE on failure.
      */
     public function loadHTML($source, $options = 0)
     {
@@ -212,10 +212,10 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Load HTML from a file
+     * Load HTML from a file.
      *
-     * @param string $filename The path to the HTML file
-     * @param int $options Additional Libxml parameters
+     * @param string $filename The path to the HTML file.
+     * @param int $options Additional Libxml parameters.
      */
     public function loadHTMLFile($filename, $options = 0)
     {
@@ -223,9 +223,9 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Adds the HTML tag to the document if missing
+     * Adds the HTML tag to the document if missing.
      *
-     * @return boolean TRUE on success, FALSE otherwise
+     * @return boolean TRUE on success, FALSE otherwise.
      */
     private function addHtmlElementIfMissing(): bool
     {
@@ -240,9 +240,9 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Adds the HEAD tag to the document if missing
+     * Adds the HEAD tag to the document if missing.
      *
-     * @return boolean TRUE on success, FALSE otherwise
+     * @return boolean TRUE on success, FALSE otherwise.
      */
     private function addHeadElementIfMissing(): bool
     {
@@ -263,9 +263,9 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Adds the BODY tag to the document if missing
+     * Adds the BODY tag to the document if missing.
      *
-     * @return boolean TRUE on success, FALSE otherwise
+     * @return boolean TRUE on success, FALSE otherwise.
      */
     private function addBodyElementIfMissing(): bool
     {
@@ -280,10 +280,10 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Dumps the internal document into a string using HTML formatting
+     * Dumps the internal document into a string using HTML formatting.
      *
      * @param \DOMNode $node Optional parameter to output a subset of the document.
-     * @return string The document (or node) HTML code as string
+     * @return string The document (or node) HTML code as string.
      */
     public function saveHTML(\DOMNode $node = null): string
     {
@@ -387,9 +387,10 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Dumps the internal document into a file using HTML formatting
+     * Dumps the internal document into a file using HTML formatting.
+     * 
      * @param string $filename The path to the saved HTML document.
-     * @return int the number of bytes written or FALSE if an error occurred
+     * @return int the number of bytes written or FALSE if an error occurred.
      */
     public function saveHTMLFile($filename)
     {
@@ -406,10 +407,10 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Returns the first document element matching the selector
+     * Returns the first document element matching the selector.
      *
-     * @param string $selector CSS query selector
-     * @return \DOMElement|null The result DOMElement or null if not found
+     * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector].
+     * @return \DOMElement|null The result DOMElement or null if not found.
      * @throws \InvalidArgumentException
      */
     public function querySelector(string $selector)
@@ -418,10 +419,10 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Returns a list of document elements matching the selector
+     * Returns a list of document elements matching the selector.
      *
-     * @param string $selector CSS query selector
-     * @return \DOMNodeList Returns a list of DOMElements matching the criteria
+     * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector].
+     * @return \DOMNodeList Returns a list of DOMElements matching the criteria.
      * @throws \InvalidArgumentException
      */
     public function querySelectorAll(string $selector)
@@ -430,10 +431,10 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Creates an element that will be replaced by the new body in insertHTML
+     * Creates an element that will be replaced by the new body in insertHTML.
      *
-     * @param string $name The name of the insert target
-     * @return \DOMElement A new DOMElement that must be set in the place where the new body will be inserted
+     * @param string $name The name of the insert target.
+     * @return \DOMElement A new DOMElement that must be set in the place where the new body will be inserted.
      */
     public function createInsertTarget(string $name)
     {
@@ -448,7 +449,7 @@ class HTML5DOMDocument extends \DOMDocument
     /**
      * Inserts a HTML document into the current document. The elements from the head and the body will be moved to their proper locations.
      *
-     * @param string $source The HTML code to be inserted
+     * @param string $source The HTML code to be inserted.
      * @param string $target Body target position. Available values: afterBodyBegin, beforeBodyEnd or insertTarget name.
      */
     public function insertHTML(string $source, string $target = 'beforeBodyEnd')
@@ -749,6 +750,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Returns and associative array containing the id of an element and potential occurrences.
+     * 
      * @param string $html
      */
     private function getPotentialElementsIDs($html)
@@ -760,6 +762,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Moves the title element and the metatags first
+     * 
      * @param \DOMElement $headElement
      */
     private function optimizeHeadElementsOrder(&$headElement)

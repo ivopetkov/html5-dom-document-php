@@ -10,9 +10,11 @@
 namespace IvoPetkov;
 
 /**
- * @property string $innerHTML The HTML code inside the element
- * @property string $outerHTML The HTML code for the element including the code inside
- * @property \IvoPetkov\HTML5DOMTokenList $classList A collection of the class attributes of the element
+ * Represents a live (can be manipulated) representation of an element in a HTML5 document.
+ * 
+ * @property string $innerHTML The HTML code inside the element.
+ * @property string $outerHTML The HTML code for the element including the code inside.
+ * @property \IvoPetkov\HTML5DOMTokenList $classList A collection of the class attributes of the element.
  */
 class HTML5DOMElement extends \DOMElement
 {
@@ -38,10 +40,10 @@ class HTML5DOMElement extends \DOMElement
     private $classList = null;
 
     /**
-     * Returns the value for the property specified
+     * Returns the value for the property specified.
      *
-     * @param string $name The name of the property
-     * @return string The value of the property specified
+     * @param string $name
+     * @return string
      * @throws \Exception
      */
     public function __get(string $name)
@@ -79,7 +81,7 @@ class HTML5DOMElement extends \DOMElement
     }
 
     /**
-     * Sets the value for the property specified
+     * Sets the value for the property specified.
      *
      * @param string $name
      * @param string $value
@@ -121,7 +123,7 @@ class HTML5DOMElement extends \DOMElement
     }
 
     /**
-     * Updates the result value before returning it
+     * Updates the result value before returning it.
      *
      * @param string $value
      * @return string The updated value
@@ -151,10 +153,10 @@ class HTML5DOMElement extends \DOMElement
     }
 
     /**
-     * Returns the value for the attribute name specified
+     * Returns the value for the attribute name specified.
      *
-     * @param string $name The attribute name
-     * @return string
+     * @param string $name The attribute name.
+     * @return string The attribute value.
      * @throws \InvalidArgumentException
      */
     public function getAttribute($name): string
@@ -167,9 +169,9 @@ class HTML5DOMElement extends \DOMElement
     }
 
     /**
-     * Returns an array containing all attributes
+     * Returns an array containing all attributes.
      *
-     * @return array An associative array containing all attributes
+     * @return array An associative array containing all attributes.
      */
     public function getAttributes(): array
     {
@@ -182,9 +184,9 @@ class HTML5DOMElement extends \DOMElement
     }
 
     /**
-     * Returns the element outerHTML
+     * Returns the element outerHTML.
      *
-     * @return string The element outerHTML
+     * @return string The element outerHTML.
      */
     public function __toString(): string
     {
@@ -192,10 +194,10 @@ class HTML5DOMElement extends \DOMElement
     }
 
     /**
-     * Returns the first child element matching the selector
+     * Returns the first child element matching the selector.
      *
-     * @param string $selector CSS query selector
-     * @return \DOMElement|null The result DOMElement or null if not found
+     * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector].
+     * @return \DOMElement|null The result DOMElement or null if not found.
      * @throws \InvalidArgumentException
      */
     public function querySelector(string $selector)
@@ -204,10 +206,10 @@ class HTML5DOMElement extends \DOMElement
     }
 
     /**
-     * Returns a list of children elements matching the selector
+     * Returns a list of children elements matching the selector.
      *
-     * @param string $selector CSS query selector
-     * @return \DOMNodeList Returns a list of DOMElements matching the criteria
+     * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector].
+     * @return \DOMNodeList Returns a list of DOMElements matching the criteria.
      * @throws \InvalidArgumentException
      */
     public function querySelectorAll(string $selector)
