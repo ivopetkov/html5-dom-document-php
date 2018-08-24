@@ -1,6 +1,6 @@
 # IvoPetkov\HTML5DOMDocument::loadHTMLFile
 
-Load HTML from a file
+Load HTML from a file.
 
 ```php
 public void loadHTMLFile ( string $filename [, int $options = 0 ] )
@@ -10,11 +10,11 @@ public void loadHTMLFile ( string $filename [, int $options = 0 ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$filename`
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The path to the HTML file
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The path to the HTML file.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$options`
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional Libxml parameters
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional Libxml parameters.
 
 ## Returns
 

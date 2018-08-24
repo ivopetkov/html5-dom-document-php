@@ -1,6 +1,6 @@
 # IvoPetkov\HTML5DOMElement::getAttributes
 
-Returns an array containing all attributes
+Returns an array containing all attributes.
 
 ```php
 public array getAttributes ( void )
@@ -8,7 +8,7 @@ public array getAttributes ( void )
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An associative array containing all attributes
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An associative array containing all attributes.
 
 ## Details
 

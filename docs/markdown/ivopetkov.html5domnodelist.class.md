@@ -4,6 +4,8 @@ extends [ArrayObject](http://php.net/manual/en/class.arrayobject.php)
 
 implements [Countable](http://php.net/manual/en/class.countable.php), [Serializable](http://php.net/manual/en/class.serializable.php), [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php), [Traversable](http://php.net/manual/en/class.traversable.php), [IteratorAggregate](http://php.net/manual/en/class.iteratoraggregate.php)
 
+Represents a list of DOM nodes.
+
 ## Constants
 
 ##### const integer ARRAY_AS_PROPS
@@ -20,7 +22,7 @@ implements [Countable](http://php.net/manual/en/class.countable.php), [Serializa
 
 ##### public [IvoPetkov\HTML5DOMElement](ivopetkov.html5domelement.class.md)|null [item](ivopetkov.html5domnodelist.item.method.md) ( int $index )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the item at the specified index
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the item at the specified index.
 
 ### Inherited from ArrayObject:
 

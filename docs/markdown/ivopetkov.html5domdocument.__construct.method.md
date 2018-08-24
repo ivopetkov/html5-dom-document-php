@@ -1,6 +1,6 @@
 # IvoPetkov\HTML5DOMDocument::__construct
 
-Creates a new \IvoPetkov\HTML5DOMDocument object
+Creates a new HTML5DOMDocument object.
 
 ```php
 public __construct ( [ string $version ]  [, string $encoding ] )

@@ -1,6 +1,6 @@
 # IvoPetkov\HTML5DOMNodeList::item
 
-Returns the item at the specified index
+Returns the item at the specified index.
 
 ```php
 public IvoPetkov\HTML5DOMElement|null item ( int $index )
@@ -10,11 +10,11 @@ public IvoPetkov\HTML5DOMElement|null item ( int $index )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$index`
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The item index
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The item index.
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The item at the specified index or null if not existent
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The item at the specified index or null if not existent.
 
 ## Details
 

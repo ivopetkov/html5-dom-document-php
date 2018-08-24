@@ -1,6 +1,6 @@
 # IvoPetkov\HTML5DOMElement::getAttribute
 
-Returns the value for the attribute name specified
+Returns the value for the attribute name specified.
 
 ```php
 public string getAttribute ( string $name )
@@ -10,11 +10,11 @@ public string getAttribute ( string $name )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$name`
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The attribute name
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The attribute name.
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The attribute value.
 
 ## Details
 

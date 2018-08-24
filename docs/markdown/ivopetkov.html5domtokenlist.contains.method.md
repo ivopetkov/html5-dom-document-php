@@ -10,7 +10,7 @@ public bool contains ( string $token )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$token`
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to check for the existance of in the list.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to check for the existence of in the list.
 
 ## Returns
 

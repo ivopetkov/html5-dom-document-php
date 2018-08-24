@@ -1,6 +1,6 @@
 # IvoPetkov\HTML5DOMDocument::saveHTMLFile
 
-Dumps the internal document into a file using HTML formatting
+Dumps the internal document into a file using HTML formatting.
 
 ```php
 public int saveHTMLFile ( string $filename )
@@ -14,7 +14,7 @@ public int saveHTMLFile ( string $filename )
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the number of bytes written or FALSE if an error occurred
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the number of bytes written or FALSE if an error occurred.
 
 ## Details
 

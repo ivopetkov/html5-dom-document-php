@@ -10,7 +10,7 @@ public void insertHTML ( string $source [, string $target = 'beforeBodyEnd' ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$source`
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code to be inserted
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code to be inserted.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$target`
 

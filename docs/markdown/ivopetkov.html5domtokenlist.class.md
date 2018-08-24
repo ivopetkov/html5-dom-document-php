@@ -6,6 +6,12 @@ Represents a set of space-separated tokens of an element attribute.
 
 ##### public readonly int $length
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The number of tokens.
+
+##### public readonly string $value
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A space-separated list of the tokens.
+
 ## Methods
 
 ##### public [__construct](ivopetkov.html5domtokenlist.__construct.method.md) ( [DOMElement](http://php.net/manual/en/class.domelement.php) $element , string $attributeName )

@@ -2,37 +2,39 @@
 
 extends [DOMElement](http://php.net/manual/en/class.domelement.php)
 
+Represents a live (can be manipulated) representation of an element in a HTML5 document.
+
 ## Properties
 
 ##### public [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md) $classList
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A collection of the class attributes of the element
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A collection of the class attributes of the element.
 
-##### public readonly string $innerHTML
+##### public string $innerHTML
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code inside the element
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code inside the element.
 
-##### public readonly string $outerHTML
+##### public string $outerHTML
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code for the element including the code inside
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code for the element including the code inside.
 
 ## Methods
 
 ##### public string [getAttribute](ivopetkov.html5domelement.getattribute.method.md) ( string $name )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the value for the attribute name specified
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the value for the attribute name specified.
 
 ##### public array [getAttributes](ivopetkov.html5domelement.getattributes.method.md) ( void )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array containing all attributes
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array containing all attributes.
 
 ##### public [DOMElement](http://php.net/manual/en/class.domelement.php)|null [querySelector](ivopetkov.html5domelement.queryselector.method.md) ( string $selector )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first child element matching the selector
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first child element matching the selector.
 
 ##### public [DOMNodeList](http://php.net/manual/en/class.domnodelist.php) [querySelectorAll](ivopetkov.html5domelement.queryselectorall.method.md) ( string $selector )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of children elements matching the selector
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of children elements matching the selector.
 
 ### Inherited from DOMNode:
 

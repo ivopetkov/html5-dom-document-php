@@ -1,6 +1,6 @@
 # IvoPetkov\HTML5DOMDocument::saveHTML
 
-Dumps the internal document into a string using HTML formatting
+Dumps the internal document into a string using HTML formatting.
 
 ```php
 public string saveHTML ( [ DOMNode $node ] )
@@ -14,7 +14,7 @@ public string saveHTML ( [ DOMNode $node ] )
 
 ## Returns
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The document (or node) HTML code as string
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The document (or node) HTML code as string.
 
 ## Details
 

@@ -2,15 +2,17 @@
 
 extends [DOMDocument](http://php.net/manual/en/class.domdocument.php)
 
+Represents a live (can be manipulated) representation of a HTML5 document.
+
 ## Methods
 
 ##### public [__construct](ivopetkov.html5domdocument.__construct.method.md) ( [ string $version ]  [, string $encoding ] )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new \IvoPetkov\HTML5DOMDocument object
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new HTML5DOMDocument object.
 
 ##### public [DOMElement](http://php.net/manual/en/class.domelement.php) [createInsertTarget](ivopetkov.html5domdocument.createinserttarget.method.md) ( string $name )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates an element that will be replaced by the new body in insertHTML
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates an element that will be replaced by the new body in insertHTML.
 
 ##### public void [insertHTML](ivopetkov.html5domdocument.inserthtml.method.md) ( string $source [, string $target = 'beforeBodyEnd' ] )
 
@@ -22,27 +24,27 @@ extends [DOMDocument](http://php.net/manual/en/class.domdocument.php)
 
 ##### public boolean [loadHTML](ivopetkov.html5domdocument.loadhtml.method.md) ( string $source [, int $options = 0 ] )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load HTML from a string
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load HTML from a string.
 
 ##### public void [loadHTMLFile](ivopetkov.html5domdocument.loadhtmlfile.method.md) ( string $filename [, int $options = 0 ] )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load HTML from a file
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load HTML from a file.
 
 ##### public [DOMElement](http://php.net/manual/en/class.domelement.php)|null [querySelector](ivopetkov.html5domdocument.queryselector.method.md) ( string $selector )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first document element matching the selector
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first document element matching the selector.
 
 ##### public [DOMNodeList](http://php.net/manual/en/class.domnodelist.php) [querySelectorAll](ivopetkov.html5domdocument.queryselectorall.method.md) ( string $selector )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of document elements matching the selector
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of document elements matching the selector.
 
 ##### public string [saveHTML](ivopetkov.html5domdocument.savehtml.method.md) ( [ [DOMNode](http://php.net/manual/en/class.domnode.php) $node ] )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dumps the internal document into a string using HTML formatting
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dumps the internal document into a string using HTML formatting.
 
 ##### public int [saveHTMLFile](ivopetkov.html5domdocument.savehtmlfile.method.md) ( string $filename )
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dumps the internal document into a file using HTML formatting
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dumps the internal document into a file using HTML formatting.
 
 ### Inherited from DOMNode:
 
