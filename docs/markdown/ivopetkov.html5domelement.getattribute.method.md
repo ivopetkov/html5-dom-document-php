@@ -10,6 +10,8 @@ public string getAttribute ( string $name )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$name`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The attribute name
+
 ## Returns
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -19,4 +21,8 @@ public string getAttribute ( string $name )
 Class: [IvoPetkov\HTML5DOMElement](ivopetkov.html5domelement.class.md)
 
 File: /src/HTML5DOMElement.php
+
+---
+
+[back to index](index.md)
 

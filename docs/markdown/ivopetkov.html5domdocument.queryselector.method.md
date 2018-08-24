@@ -10,6 +10,8 @@ public DOMElement|null querySelector ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$selector`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CSS query selector
+
 ## Returns
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The result DOMElement or null if not found
@@ -19,4 +21,8 @@ public DOMElement|null querySelector ( string $selector )
 Class: [IvoPetkov\HTML5DOMDocument](ivopetkov.html5domdocument.class.md)
 
 File: /src/HTML5DOMDocument.php
+
+---
+
+[back to index](index.md)
 

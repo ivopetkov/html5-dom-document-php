@@ -10,7 +10,11 @@ public boolean loadHTML ( string $source [, int $options = 0 ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$source`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$options`
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional Libxml parameters
 
 ## Returns
 
@@ -21,4 +25,8 @@ public boolean loadHTML ( string $source [, int $options = 0 ] )
 Class: [IvoPetkov\HTML5DOMDocument](ivopetkov.html5domdocument.class.md)
 
 File: /src/HTML5DOMDocument.php
+
+---
+
+[back to index](index.md)
 

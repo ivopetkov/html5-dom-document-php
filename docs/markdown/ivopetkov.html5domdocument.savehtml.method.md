@@ -10,6 +10,8 @@ public string saveHTML ( [ DOMNode $node ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$node`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Optional parameter to output a subset of the document.
+
 ## Returns
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The document (or node) HTML code as string
@@ -19,4 +21,8 @@ public string saveHTML ( [ DOMNode $node ] )
 Class: [IvoPetkov\HTML5DOMDocument](ivopetkov.html5domdocument.class.md)
 
 File: /src/HTML5DOMDocument.php
+
+---
+
+[back to index](index.md)
 

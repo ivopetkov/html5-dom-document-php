@@ -16,3 +16,7 @@ Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)
 
 File: /src/HTML5DOMTokenList.php
 
+---
+
+[back to index](index.md)
+

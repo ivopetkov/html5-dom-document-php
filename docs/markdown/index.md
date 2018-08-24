@@ -8,3 +8,5 @@
 
 ### [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Represents a set of space-separated tokens of an element attribute.
+

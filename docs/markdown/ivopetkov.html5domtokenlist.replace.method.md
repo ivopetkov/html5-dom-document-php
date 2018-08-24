@@ -10,7 +10,11 @@ public void replace ( string $old , string $new )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$old`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to replace.
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$new`
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to replace $old with.
 
 ## Returns
 
@@ -21,4 +25,8 @@ public void replace ( string $old , string $new )
 Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)
 
 File: /src/HTML5DOMTokenList.php
+
+---
+
+[back to index](index.md)
 

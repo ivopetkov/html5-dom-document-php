@@ -10,6 +10,8 @@ public void add ( [ string[] $tokens ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$tokens`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The tokens you want to add to the list.
+
 ## Returns
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -19,4 +21,8 @@ public void add ( [ string[] $tokens ] )
 Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)
 
 File: /src/HTML5DOMTokenList.php
+
+---
+
+[back to index](index.md)
 

@@ -10,6 +10,8 @@ public IvoPetkov\HTML5DOMElement|null item ( int $index )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$index`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The item index
+
 ## Returns
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The item at the specified index or null if not existent
@@ -19,4 +21,8 @@ public IvoPetkov\HTML5DOMElement|null item ( int $index )
 Class: [IvoPetkov\HTML5DOMNodeList](ivopetkov.html5domnodelist.class.md)
 
 File: /src/HTML5DOMNodeList.php
+
+---
+
+[back to index](index.md)
 

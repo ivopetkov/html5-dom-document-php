@@ -10,7 +10,11 @@ public void insertHTML ( string $source [, string $target = 'beforeBodyEnd' ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$source`
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code to be inserted
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$target`
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Body target position. Available values: afterBodyBegin, beforeBodyEnd or insertTarget name.
 
 ## Returns
 
@@ -21,4 +25,8 @@ public void insertHTML ( string $source [, string $target = 'beforeBodyEnd' ] )
 Class: [IvoPetkov\HTML5DOMDocument](ivopetkov.html5domdocument.class.md)
 
 File: /src/HTML5DOMDocument.php
+
+---
+
+[back to index](index.md)
 

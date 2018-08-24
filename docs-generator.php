@@ -10,4 +10,4 @@
 require __DIR__ . '/vendor/autoload.php';
 
 $docsGenerator = new IvoPetkov\DocsGenerator(__DIR__, ['/src']);
-$docsGenerator->generateMarkDown(__DIR__ . '/docs/markdown');
+$docsGenerator->generateMarkdown(__DIR__ . '/docs/markdown');

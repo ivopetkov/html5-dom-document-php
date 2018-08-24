@@ -16,3 +16,7 @@ Class: [IvoPetkov\HTML5DOMElement](ivopetkov.html5domelement.class.md)
 
 File: /src/HTML5DOMElement.php
 
+---
+
+[back to index](index.md)
+
