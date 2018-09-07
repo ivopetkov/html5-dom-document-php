@@ -53,7 +53,7 @@ echo $dom->querySelector('.content')->outerHTML;
 // <div class="content">This is some text</div>
 ```
 
-Inser HTML code into a HTML document (other HTML code):
+Insert HTML code into a HTML document (other HTML code):
 
 ```php
 $dom = new IvoPetkov\HTML5DOMDocument();
