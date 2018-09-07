@@ -6,4 +6,3 @@
 /.travis.yml export-ignore
 /phpunit.xml export-ignore
 /README.md export-ignore
-/CODE-OF-CONDUCT.md export-ignore
