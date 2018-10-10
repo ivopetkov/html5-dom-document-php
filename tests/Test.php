@@ -368,6 +368,8 @@ class Test extends PHPUnit\Framework\TestCase
         $this->assertTrue($dom->querySelectorAll('div#text4')->length === 0);
         $this->assertTrue($dom->querySelectorAll('div.class1')->length === 2);
         $this->assertTrue($dom->querySelectorAll('.class1')->length === 4);
+        $this->assertTrue($dom->querySelectorAll('.class1.class2')->length === 1);
+        $this->assertTrue($dom->querySelectorAll('.class2.class1')->length === 1);
         $this->assertTrue($dom->querySelectorAll('div.class2')->length === 0);
         $this->assertTrue($dom->querySelectorAll('span.class2')->length === 1);
         $this->assertTrue($dom->querySelectorAll('my-custom-element')->length === 1);

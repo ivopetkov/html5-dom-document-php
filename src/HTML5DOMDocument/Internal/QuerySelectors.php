@@ -173,21 +173,30 @@ trait QuerySelectors
                 return new \IvoPetkov\HTML5DOMNodeList([$element]);
             }
             return new \IvoPetkov\HTML5DOMNodeList();
-        } elseif (preg_match('/^([a-z0-9\-]*)\.(.+)$/', $selector, $matches) === 1) { // tagname.classname or .classname
+        } elseif (preg_match('/^([a-z0-9\-]*)\.(.+)$/', $selector, $matches) === 1) { // tagname.classname1, .classname1, tagname.classname1.classname2, .classname1.classname2
             $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
-            $classSelector = $matches[2];
             $result = [];
-            $walkChildren($this, $tagName, function($element) use (&$result, $classSelector, $preferredLimit) {
-                if ($element->attributes->length > 0) {
-                    $classAttribute = $element->getAttribute('class');
-                    if ($classAttribute === $classSelector || strpos($classAttribute, $classSelector . ' ') === 0 || substr($classAttribute, -(strlen($classSelector) + 1)) === ' ' . $classSelector || strpos($classAttribute, ' ' . $classSelector . ' ') !== false) {
-                        $result[] = $element;
-                        if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
-                            return true;
+            $classesSelector = explode('.', $matches[2]);
+            if (!empty($classesSelector)) {
+                $walkChildren($this, $tagName, function($element) use (&$result, $classesSelector, $preferredLimit) {
+                    if ($element->attributes->length > 0) {
+                        $classAttribute = $element->getAttribute('class');
+                        $allClassesFound = true;
+                        foreach ($classesSelector as $classSelector) {
+                            if (!($classAttribute === $classSelector || strpos($classAttribute, $classSelector . ' ') === 0 || substr($classAttribute, -(strlen($classSelector) + 1)) === ' ' . $classSelector || strpos($classAttribute, ' ' . $classSelector . ' ') !== false)) {
+                                $allClassesFound = false;
+                                break;
+                            }
+                        }
+                        if ($allClassesFound) {
+                            $result[] = $element;
+                            if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
+                                return true;
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
             return new \IvoPetkov\HTML5DOMNodeList($result);
         }
         throw new \InvalidArgumentException('Unsupported selector (' . $selector . ')');
