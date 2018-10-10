@@ -173,7 +173,7 @@ trait QuerySelectors
                 return new \IvoPetkov\HTML5DOMNodeList([$element]);
             }
             return new \IvoPetkov\HTML5DOMNodeList();
-        } elseif (preg_match('/^([a-z0-9\-]*)\.(.+)$/', $selector, $matches) === 1) { // tagname.classname1, .classname1, tagname.classname1.classname2, .classname1.classname2
+        } elseif (preg_match('/^([a-z0-9\-]*)\.(.+)$/', $selector, $matches) === 1) { // tagname.classname, .classname, tagname.classname.classname2, .classname.classname2
             $tagName = strlen($matches[1]) > 0 ? $matches[1] : null;
             $result = [];
             $classesSelector = explode('.', $matches[2]);
