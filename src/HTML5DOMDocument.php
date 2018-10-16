@@ -67,8 +67,8 @@ class HTML5DOMDocument extends \DOMDocument
 
         $source = trim($source);
 
-        $autoAddHtmlAndBodyTags = ($options & LIBXML_HTML_NOIMPLIED) !== LIBXML_HTML_NOIMPLIED;
-        $autoAddDoctype = ($options & LIBXML_HTML_NODEFDTD) !== LIBXML_HTML_NODEFDTD;
+        $autoAddHtmlAndBodyTags = !defined('LIBXML_HTML_NOIMPLIED') || ($options & LIBXML_HTML_NOIMPLIED) !== LIBXML_HTML_NOIMPLIED;
+        $autoAddDoctype = !defined('LIBXML_HTML_NODEFDTD') || ($options & LIBXML_HTML_NODEFDTD) !== LIBXML_HTML_NODEFDTD;
 
         // Add body tag if missing
         if ($autoAddHtmlAndBodyTags && $source !== '' && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html.*?\>/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
