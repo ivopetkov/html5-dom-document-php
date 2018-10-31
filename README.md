@@ -13,7 +13,7 @@ HTML5DOMDocument extends the native [DOMDocument](http://php.net/manual/en/class
 - Preserves html entities (DOMDocument does not)
 - Preserves void tags (DOMDocument does not)
 - Allows **inserting HTML code** that moves the correct parts to their proper places (head elements are inserted in the head, body elements in the body)
-- Allows **querying the DOM with CSS selectors** (currently available: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2, .classname.classname2, tagname[attribute-selector] and [attribute-selector])
+- Allows **querying the DOM with CSS selectors** (currently available: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2, .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p, div > p, div + p and p ~ ul.)
 - Adds support for element->classList.
 - Adds support for element->innerHTML.
 - Adds support for element->outerHTML.

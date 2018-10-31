@@ -451,6 +451,42 @@ class Test extends PHPUnit\Framework\TestCase
     /**
      *
      */
+    public function testComplexQuerySelectors()
+    {
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<html><body>'
+                . '<span>text1</span>'
+                . '<span>text2</span>'
+                . '<span>text3</span>'
+                . '<div><span>text4</span></div>'
+                . '<div id="id,1">text5</div>'
+                . '<a href="#">text6</a>'
+                . '<div"><a href="#">text7</a></div>'
+                . '</body></html>');
+
+        $this->assertTrue($dom->querySelectorAll('span, div')->length === 7); // 4 spans + 3 divs
+        $this->assertTrue($dom->querySelectorAll('span, [id="id,1"]')->length === 5); // 4 spans + 1 div
+        $this->assertTrue($dom->querySelectorAll('div, [id="id,1"]')->length === 3); // 3 divs
+
+        $this->assertTrue($dom->querySelectorAll('body div')->length === 3);
+        $this->assertTrue($dom->querySelectorAll('body a')->length === 2);
+
+        $this->assertTrue($dom->querySelectorAll('body > a')->length === 1);
+        $this->assertTrue($dom->querySelector('body > a')->innerHTML === 'text6');
+        $this->assertTrue($dom->querySelectorAll('div > a')->length === 1);
+        $this->assertTrue($dom->querySelector('div > a')->innerHTML === 'text7');
+
+        $this->assertTrue($dom->querySelectorAll('span + span')->length === 2);
+        $this->assertTrue($dom->querySelectorAll('span + span')[0]->innerHTML === 'text2');
+        $this->assertTrue($dom->querySelectorAll('span + span')[1]->innerHTML === 'text3');
+
+        $this->assertTrue($dom->querySelectorAll('span ~ div')->length === 3);
+    }
+
+    /**
+     *
+     */
     public function testInnerHTML()
     {
 
