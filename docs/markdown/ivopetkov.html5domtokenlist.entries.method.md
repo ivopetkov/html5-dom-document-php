@@ -6,10 +6,6 @@ Returns an iterator allowing you to go through all tokens contained in the list.
 public ArrayIterator entries ( void )
 ```
 
-## Returns
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
 ## Details
 
 Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)

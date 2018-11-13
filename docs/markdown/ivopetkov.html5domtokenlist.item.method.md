@@ -12,10 +12,6 @@ public null|string item ( int $index )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The zero-based index of the item you want to return.
 
-## Returns
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
 ## Details
 
 Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)

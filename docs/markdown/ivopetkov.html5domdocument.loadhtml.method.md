@@ -3,7 +3,7 @@
 Load HTML from a string.
 
 ```php
-public boolean loadHTML ( string $source [, int $options = 0 ] )
+public bool loadHTML ( string $source [, int $options = 0 ] )
 ```
 
 ## Parameters

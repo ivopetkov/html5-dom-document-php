@@ -6,12 +6,6 @@ implements [Countable](http://php.net/manual/en/class.countable.php), [Serializa
 
 Represents a list of DOM nodes.
 
-## Constants
-
-##### const integer ARRAY_AS_PROPS
-
-##### const integer STD_PROP_LIST
-
 ## Properties
 
 ##### public readonly int $length
@@ -24,7 +18,11 @@ Represents a list of DOM nodes.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the item at the specified index.
 
-### Inherited from ArrayObject:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: The item at the specified index or null if not existent.
+
+### Inherited from [ArrayObject](http://php.net/manual/en/class.arrayobject.php):
+
+##### public [__construct](http://php.net/manual/en/arrayobject.__construct.php) ( [  $array [,  $ar_flags [,  $iterator_class ]]] )
 
 ##### public void [append](http://php.net/manual/en/arrayobject.append.php) ( $value )
 

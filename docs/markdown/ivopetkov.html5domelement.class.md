@@ -24,23 +24,69 @@ Represents a live (can be manipulated) representation of an element in a HTML5 d
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the value for the attribute name specified.
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: The attribute value.
+
 ##### public array [getAttributes](ivopetkov.html5domelement.getattributes.method.md) ( void )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array containing all attributes.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: An associative array containing all attributes.
 
 ##### public [DOMElement](http://php.net/manual/en/class.domelement.php)|null [querySelector](ivopetkov.html5domelement.queryselector.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first child element matching the selector.
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: The result DOMElement or null if not found.
+
 ##### public [DOMNodeList](http://php.net/manual/en/class.domnodelist.php) [querySelectorAll](ivopetkov.html5domelement.queryselectorall.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of children elements matching the selector.
 
-### Inherited from DOMNode:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: Returns a list of DOMElements matching the criteria.
 
-##### public void [C14N](http://php.net/manual/en/domnode.c14n.php) ( [ NULL $exclusive ]  [, NULL $with_comments ]  [, array $xpath ]  [, array $ns_prefixes ] )
+### Inherited from [DOMElement](http://php.net/manual/en/class.domelement.php):
 
-##### public void [C14NFile](http://php.net/manual/en/domnode.c14nfile.php) ( $uri [, NULL $exclusive ]  [, NULL $with_comments ]  [, array $xpath ]  [, array $ns_prefixes ] )
+##### public [__construct](http://php.net/manual/en/domelement.__construct.php) ( $name [,  $value [,  $uri ]] )
+
+##### public void [getAttributeNS](http://php.net/manual/en/domelement.getattributens.php) ( $namespaceURI ,  $localName )
+
+##### public void [getAttributeNode](http://php.net/manual/en/domelement.getattributenode.php) ( $name )
+
+##### public void [getAttributeNodeNS](http://php.net/manual/en/domelement.getattributenodens.php) ( $namespaceURI ,  $localName )
+
+##### public void [getElementsByTagName](http://php.net/manual/en/domelement.getelementsbytagname.php) ( $name )
+
+##### public void [getElementsByTagNameNS](http://php.net/manual/en/domelement.getelementsbytagnamens.php) ( $namespaceURI ,  $localName )
+
+##### public void [hasAttribute](http://php.net/manual/en/domelement.hasattribute.php) ( $name )
+
+##### public void [hasAttributeNS](http://php.net/manual/en/domelement.hasattributens.php) ( $namespaceURI ,  $localName )
+
+##### public void [removeAttribute](http://php.net/manual/en/domelement.removeattribute.php) ( $name )
+
+##### public void [removeAttributeNS](http://php.net/manual/en/domelement.removeattributens.php) ( $namespaceURI ,  $localName )
+
+##### public void [removeAttributeNode](http://php.net/manual/en/domelement.removeattributenode.php) ( [DOMAttr](http://php.net/manual/en/class.domattr.php) $oldAttr )
+
+##### public void [setAttribute](http://php.net/manual/en/domelement.setattribute.php) ( $name ,  $value )
+
+##### public void [setAttributeNS](http://php.net/manual/en/domelement.setattributens.php) ( $namespaceURI ,  $qualifiedName ,  $value )
+
+##### public void [setAttributeNode](http://php.net/manual/en/domelement.setattributenode.php) ( [DOMAttr](http://php.net/manual/en/class.domattr.php) $newAttr )
+
+##### public void [setAttributeNodeNS](http://php.net/manual/en/domelement.setattributenodens.php) ( [DOMAttr](http://php.net/manual/en/class.domattr.php) $newAttr )
+
+##### public void [setIdAttribute](http://php.net/manual/en/domelement.setidattribute.php) ( $name ,  $isId )
+
+##### public void [setIdAttributeNS](http://php.net/manual/en/domelement.setidattributens.php) ( $namespaceURI ,  $localName ,  $isId )
+
+##### public void [setIdAttributeNode](http://php.net/manual/en/domelement.setidattributenode.php) ( [DOMAttr](http://php.net/manual/en/class.domattr.php) $attr ,  $isId )
+
+### Inherited from [DOMNode](http://php.net/manual/en/class.domnode.php):
+
+##### public void [C14N](http://php.net/manual/en/domnode.c14n.php) ( [  $exclusive [,  $with_comments [, array $xpath [, array $ns_prefixes ]]]] )
+
+##### public void [C14NFile](http://php.net/manual/en/domnode.c14nfile.php) ( $uri [,  $exclusive [,  $with_comments [, array $xpath [, array $ns_prefixes ]]]] )
 
 ##### public void [appendChild](http://php.net/manual/en/domnode.appendchild.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $newChild )
 
@@ -81,42 +127,6 @@ Represents a live (can be manipulated) representation of an element in a HTML5 d
 ##### public void [replaceChild](http://php.net/manual/en/domnode.replacechild.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $newChild , [DOMNode](http://php.net/manual/en/class.domnode.php) $oldChild )
 
 ##### public void [setUserData](http://php.net/manual/en/domnode.setuserdata.php) ( $key ,  $data ,  $handler )
-
-### Inherited from DOMElement:
-
-##### public void [getAttributeNS](http://php.net/manual/en/domelement.getattributens.php) ( $namespaceURI ,  $localName )
-
-##### public void [getAttributeNode](http://php.net/manual/en/domelement.getattributenode.php) ( $name )
-
-##### public void [getAttributeNodeNS](http://php.net/manual/en/domelement.getattributenodens.php) ( $namespaceURI ,  $localName )
-
-##### public void [getElementsByTagName](http://php.net/manual/en/domelement.getelementsbytagname.php) ( $name )
-
-##### public void [getElementsByTagNameNS](http://php.net/manual/en/domelement.getelementsbytagnamens.php) ( $namespaceURI ,  $localName )
-
-##### public void [hasAttribute](http://php.net/manual/en/domelement.hasattribute.php) ( $name )
-
-##### public void [hasAttributeNS](http://php.net/manual/en/domelement.hasattributens.php) ( $namespaceURI ,  $localName )
-
-##### public void [removeAttribute](http://php.net/manual/en/domelement.removeattribute.php) ( $name )
-
-##### public void [removeAttributeNS](http://php.net/manual/en/domelement.removeattributens.php) ( $namespaceURI ,  $localName )
-
-##### public void [removeAttributeNode](http://php.net/manual/en/domelement.removeattributenode.php) ( [DOMAttr](http://php.net/manual/en/class.domattr.php) $oldAttr )
-
-##### public void [setAttribute](http://php.net/manual/en/domelement.setattribute.php) ( $name ,  $value )
-
-##### public void [setAttributeNS](http://php.net/manual/en/domelement.setattributens.php) ( $namespaceURI ,  $qualifiedName ,  $value )
-
-##### public void [setAttributeNode](http://php.net/manual/en/domelement.setattributenode.php) ( [DOMAttr](http://php.net/manual/en/class.domattr.php) $newAttr )
-
-##### public void [setAttributeNodeNS](http://php.net/manual/en/domelement.setattributenodens.php) ( [DOMAttr](http://php.net/manual/en/class.domattr.php) $newAttr )
-
-##### public void [setIdAttribute](http://php.net/manual/en/domelement.setidattribute.php) ( $name ,  $isId )
-
-##### public void [setIdAttributeNS](http://php.net/manual/en/domelement.setidattributens.php) ( $namespaceURI ,  $localName ,  $isId )
-
-##### public void [setIdAttributeNode](http://php.net/manual/en/domelement.setidattributenode.php) ( [DOMAttr](http://php.net/manual/en/class.domattr.php) $attr ,  $isId )
 
 ## Details
 

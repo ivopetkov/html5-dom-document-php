@@ -217,6 +217,7 @@ class Test extends PHPUnit\Framework\TestCase
                 . '<div>1</div>'
                 . '<div id="value1">2</div>'
                 . '<div>3</div>'
+                . '<div id="value1">5</div>'
                 . '<div>4</div>'
                 . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
@@ -593,9 +594,10 @@ class Test extends PHPUnit\Framework\TestCase
         $dom->loadHTML('<!DOCTYPE html><html><head>'
                 . '<script id="script1">var script1=1;</script>'
                 . '<script id="script1">var script1=2;</script>'
-                . '</head><body></body></html>');
+                . '</head><body></body></html>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head>'
                 . '<script id="script1">var script1=1;</script>'
+                . '<script id="script1">var script1=2;</script>'
                 . '</head><body></body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
@@ -625,6 +627,7 @@ class Test extends PHPUnit\Framework\TestCase
                 . '<script id="script1">var script1=1;</script>'
                 . '<script id="script2">var script2=1;</script>'
                 . '<script id="script0">var script0=1;</script>'
+                . '<script id="script1">var script1=1;</script>'
                 . '<script id="script3">var script3=1;</script>'
                 . '</head><body>'
                 . 'hello<div id="text1">text1</div>'
@@ -633,8 +636,10 @@ class Test extends PHPUnit\Framework\TestCase
                 . '<div><span id="span1">hi1</span></div>'
                 . '<span id="span2">hi2</span>'
                 . '<div id="text0">text0</div>'
+                . '<div id="text2">text2</div>'
                 . '<div id="text4">text4</div>'
-                . '<div></div>'
+                . '<span id="span1">hi11</span>'
+                . '<div><span id="span1">hi22</span></div>'
                 . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
@@ -651,7 +656,11 @@ class Test extends PHPUnit\Framework\TestCase
                 . '</body></html>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>'
                 . '<div id="text1">text1</div>'
-                . '<div><div></div><div id="text2">text2</div></div>'
+                . '<div>'
+                . '<div id="text1">text1</div>'
+                . '<div><div id="text1">text1</div></div>'
+                . '<div id="text2">text2</div>'
+                . '</div>'
                 . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
@@ -667,7 +676,10 @@ class Test extends PHPUnit\Framework\TestCase
                 . '</body></html>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>'
                 . '<div id="text1">text1</div>'
-                . '<div><div id="text2">text2</div></div>'
+                . '<div>'
+                . '<div id="text2">text2</div>'
+                . '<div id="text2">text2</div>'
+                . '</div>'
                 . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
@@ -685,6 +697,7 @@ class Test extends PHPUnit\Framework\TestCase
         $dom->insertHTML('<head>'
                 . '<title>Title2</title>'
                 . '</head>');
+        $dom->modify(HTML5DOMDocument::FIX_MULTIPLE_TITLES);
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head>'
                 . '<title>Title2</title>'
                 . '</head></html>';
@@ -701,9 +714,15 @@ class Test extends PHPUnit\Framework\TestCase
                 . '<meta content="dom" name="keywords">'
                 . '<meta charset="us-ascii">'
                 . '<meta content="video.movie" property="og:type">'
+                . '<title>Title1</title>'
                 . '</head>');
+        $dom->modify(
+                HTML5DOMDocument::FIX_DUPLICATE_METATAGS |
+                HTML5DOMDocument::OPTIMIZE_HEAD
+        );
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head>'
                 . '<meta charset="us-ascii">'
+                . '<title>Title1</title>'
                 . '<meta content="index,follow" name="robots">'
                 . '<meta content="dom" name="keywords">'
                 . '<meta content="video.movie" property="og:type">'
@@ -775,6 +794,11 @@ class Test extends PHPUnit\Framework\TestCase
                 . '<div>TextB</div>'
                 . '</body>'
                 . '</html>');
+        $dom->modify(
+                HTML5DOMDocument::FIX_MULTIPLE_HEADS |
+                HTML5DOMDocument::FIX_MULTIPLE_BODIES |
+                HTML5DOMDocument::FIX_MULTIPLE_TITLES
+        );
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html>'
                 . '<head>'
                 . '<meta charset="utf-8">'
@@ -1245,6 +1269,33 @@ class Test extends PHPUnit\Framework\TestCase
         $compareContent('<body>hello</body>');
         $compareContent('<html><div>hello</div></html>');
         $compareContent('<html><head></head><body><div>hello</div></body></html>');
+    }
+
+    /**
+     *
+     */
+    public function testDuplicateElementIDsQueries()
+    {
+        $content = '<div id="key1">1</div><div id="key1">2</div><div id="key1">3</div><div id="keyA">A</div>';
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($content, HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
+        $this->assertEquals($dom->getElementById('key1')->innerHTML, '1');
+        $this->assertEquals($dom->querySelector('[id="key1"]')->innerHTML, '1');
+        $this->assertEquals($dom->querySelectorAll('[id="key1"]')->length, 3);
+        $this->assertEquals($dom->querySelectorAll('[id="key1"]')[0]->innerHTML, '1');
+        $this->assertEquals($dom->querySelectorAll('[id="key1"]')[1]->innerHTML, '2');
+        $this->assertEquals($dom->querySelectorAll('[id="key1"]')[2]->innerHTML, '3');
+    }
+
+    /**
+     *
+     */
+    public function testDuplicateElementIDsException()
+    {
+        $content = '<div id="key1">1</div><div><div id="key1">2</div></div>';
+        $dom = new HTML5DOMDocument();
+        $this->expectException('\Exception');
+        $dom->loadHTML($content);
     }
 
 }
