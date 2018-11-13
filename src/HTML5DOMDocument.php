@@ -28,7 +28,7 @@ class HTML5DOMDocument extends \DOMDocument
     const FIX_MULTIPLE_TITLES = 2;
 
     /**
-     * A modification (passed to modify()) that removes all bul the last metatags with matching name or property attributes.
+     * A modification (passed to modify()) that removes all but the last metatags with matching name or property attributes.
      */
     const FIX_DUPLICATE_METATAGS = 4;
 
@@ -572,11 +572,11 @@ class HTML5DOMDocument extends \DOMDocument
      * Applies the modifications specified to the DOM document.
      * 
      * @param int $modifications The modifications to apply. Available values:
-     *  - HTML5DOMDocument::FIX_MULTIPLE_TITLES,
-     *  - HTML5DOMDocument::FIX_DUPLICATE_METATAGS,
-     *  - HTML5DOMDocument::FIX_MULTIPLE_HEADS,
-     *  - HTML5DOMDocument::FIX_MULTIPLE_BODIES,
-     *  - HTML5DOMDocument::OPTIMIZE_HEAD
+     *  - HTML5DOMDocument::FIX_MULTIPLE_TITLES - removes all but the last title elements.
+     *  - HTML5DOMDocument::FIX_DUPLICATE_METATAGS - removes all but the last metatags with matching name or property attributes.
+     *  - HTML5DOMDocument::FIX_MULTIPLE_HEADS - merges multiple head elements.
+     *  - HTML5DOMDocument::FIX_MULTIPLE_BODIES - merges multiple body elements.
+     *  - HTML5DOMDocument::OPTIMIZE_HEAD - moves charset metatag and title elements first.
      */
     public function modify($modifications = 0)
     {
