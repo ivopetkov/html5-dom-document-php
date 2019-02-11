@@ -486,6 +486,21 @@ class Test extends PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests multiple query selectors matching. If a query selector is not greedy problems may arise.
+     */
+    public function testComplexQuerySelectors2()
+    {
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<body>'
+                . '<div class="a1">1</div>'
+                . '<div class="a2">2</div>'
+                . '<div class="a3">3</div>'
+                . '</body>');
+        $elements = $dom->querySelectorAll('.a1,.a2,.a3');
+        $this->assertEquals($elements->length, 3);
+    }
+
+    /**
      *
      */
     public function testInnerHTML()

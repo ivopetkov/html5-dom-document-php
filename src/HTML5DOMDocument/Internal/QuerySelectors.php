@@ -98,11 +98,11 @@ trait QuerySelectors
         };
 
         // tagname[target] or [target] // Available values for targets: attr, attr="value", attr~="value", attr|="value", attr^="value", attr$="value", attr*="value"
-        $simpleSelectors['(?:[a-z0-9\-]*)(?:\[.+\])'] = function(string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['(?:[a-z0-9\-]*)(?:\[.+?\])'] = function(string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
             $attributeSelectors = explode('][', substr($match[2], 1, -1));
             foreach ($attributeSelectors as $i => $attributeSelector) {
                 $attributeSelectorMatches = null;
-                if (preg_match('/^(.+?)(=|~=|\|=|\^=|\$=|\*=)\"(.+)\"$/', $attributeSelector, $attributeSelectorMatches) === 1) {
+                if (preg_match('/^(.+?)(=|~=|\|=|\^=|\$=|\*=)\"(.+?)\"$/', $attributeSelector, $attributeSelectorMatches) === 1) {
                     $attributeSelectors[$i] = [
                         'name' => $attributeSelectorMatches[1],
                         'value' => $attributeSelectorMatches[3],
@@ -200,7 +200,7 @@ trait QuerySelectors
         };
 
         // tagname.classname, .classname, tagname.classname.classname2, .classname.classname2
-        $simpleSelectors['(?:[a-z0-9\-]*)\.(?:.+)'] = function(string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['(?:[a-z0-9\-]*)\.(?:.+?)'] = function(string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
             $tagName = strlen($match[1]) > 0 ? $match[1] : null;
             $classesSelector = explode('.', $match[2]);
             if (empty($classesSelector)) {
