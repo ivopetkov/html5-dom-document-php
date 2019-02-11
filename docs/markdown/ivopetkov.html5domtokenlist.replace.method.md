@@ -8,19 +8,19 @@ public void replace ( string $old , string $new )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$old`
+##### old
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to replace.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to replace.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$new`
+##### new
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to replace $old with.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to replace $old with.
 
 ## Details
 
 Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)
 
-File: /src/HTML5DOMTokenList.php
+Location: ~/src/HTML5DOMTokenList.php
 
 ---
 

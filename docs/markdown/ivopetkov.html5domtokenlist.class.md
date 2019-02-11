@@ -2,6 +2,26 @@
 
 Represents a set of space-separated tokens of an element attribute.
 
+```php
+IvoPetkov\HTML5DOMTokenList {
+
+	/* Properties */
+	public readonly int $length
+	public readonly string $value
+
+	/* Methods */
+	public __construct ( DOMElement $element , string $attributeName )
+	public void add ( [ string[] $tokens ] )
+	public bool contains ( string $token )
+	public ArrayIterator entries ( void )
+	public null|string item ( int $index )
+	public void remove ( [ string[] $tokens ] )
+	public void replace ( string $old , string $new )
+	public bool toggle ( string $token [, bool $force ] )
+
+}
+```
+
 ## Properties
 
 ##### public readonly int $length
@@ -26,8 +46,6 @@ Represents a set of space-separated tokens of an element attribute.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns true if the list contains the given token, otherwise false.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: true if the list contains the given token, otherwise false.
-
 ##### public [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php) [entries](ivopetkov.html5domtokenlist.entries.method.md) ( void )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an iterator allowing you to go through all tokens contained in the list.
@@ -48,11 +66,9 @@ Represents a set of space-separated tokens of an element attribute.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Removes a given token from the list and returns false. If token doesn't exist it's added and the function returns true.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: false if the token is not in the list after the call, or true if the token is in the list after the call.
-
 ## Details
 
-File: /src/HTML5DOMTokenList.php
+Location: ~/src/HTML5DOMTokenList.php
 
 ---
 

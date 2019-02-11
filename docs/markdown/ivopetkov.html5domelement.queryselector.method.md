@@ -8,9 +8,9 @@ public DOMElement|null querySelector ( string $selector )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$selector`
+##### selector
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2, .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p, div > p, div + p and p ~ ul.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2, .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p, div > p, div + p and p ~ ul.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public DOMElement|null querySelector ( string $selector )
 
 Class: [IvoPetkov\HTML5DOMElement](ivopetkov.html5domelement.class.md)
 
-File: /src/HTML5DOMElement.php
+Location: ~/src/HTML5DOMElement.php
 
 ---
 

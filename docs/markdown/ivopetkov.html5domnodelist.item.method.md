@@ -8,9 +8,9 @@ public IvoPetkov\HTML5DOMElement|null item ( int $index )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$index`
+##### index
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The item index.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The item index.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public IvoPetkov\HTML5DOMElement|null item ( int $index )
 
 Class: [IvoPetkov\HTML5DOMNodeList](ivopetkov.html5domnodelist.class.md)
 
-File: /src/HTML5DOMNodeList.php
+Location: ~/src/HTML5DOMNodeList.php
 
 ---
 

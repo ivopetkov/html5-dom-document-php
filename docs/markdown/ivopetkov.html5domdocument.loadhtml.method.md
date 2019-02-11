@@ -8,13 +8,13 @@ public bool loadHTML ( string $source [, int $options = 0 ] )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$source`
+##### source
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The HTML code.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$options`
+##### options
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional Libxml parameters.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Additional Libxml parameters.
 
 ## Returns
 
@@ -24,7 +24,7 @@ public bool loadHTML ( string $source [, int $options = 0 ] )
 
 Class: [IvoPetkov\HTML5DOMDocument](ivopetkov.html5domdocument.class.md)
 
-File: /src/HTML5DOMDocument.php
+Location: ~/src/HTML5DOMDocument.php
 
 ---
 

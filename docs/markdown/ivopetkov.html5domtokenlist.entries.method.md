@@ -10,7 +10,7 @@ public ArrayIterator entries ( void )
 
 Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)
 
-File: /src/HTML5DOMTokenList.php
+Location: ~/src/HTML5DOMTokenList.php
 
 ---
 

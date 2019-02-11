@@ -1,8 +1,63 @@
 # IvoPetkov\HTML5DOMDocument
 
-extends [DOMDocument](http://php.net/manual/en/class.domdocument.php)
-
 Represents a live (can be manipulated) representation of a HTML5 document.
+
+```php
+IvoPetkov\HTML5DOMDocument extends DOMDocument {
+
+	/* Constants */
+	const int ALLOW_DUPLICATE_IDS
+	const int FIX_DUPLICATE_METATAGS
+	const int FIX_MULTIPLE_BODIES
+	const int FIX_MULTIPLE_HEADS
+	const int FIX_MULTIPLE_TITLES
+	const int OPTIMIZE_HEAD
+
+	/* Methods */
+	public __construct ( [ string $version [, string $encoding ]] )
+	public DOMElement createInsertTarget ( string $name )
+	public void insertHTML ( string $source [, string $target = 'beforeBodyEnd' ] )
+	public void insertHTMLMulti ( array $sources )
+	public bool loadHTML ( string $source [, int $options = 0 ] )
+	public void loadHTMLFile ( string $filename [, int $options = 0 ] )
+	public void modify ( [ int $modifications = 0 ] )
+	public DOMElement|null querySelector ( string $selector )
+	public DOMNodeList querySelectorAll ( string $selector )
+	public string saveHTML ( [ DOMNode $node ] )
+	public int saveHTMLFile ( string $filename )
+
+}
+```
+
+## Extends
+
+##### [DOMDocument](http://php.net/manual/en/class.domdocument.php)
+
+## Constants
+
+##### const int ALLOW_DUPLICATE_IDS
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An option passed to loadHTML() and loadHTMLFile() to disable duplicate element IDs exception.
+
+##### const int FIX_DUPLICATE_METATAGS
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A modification (passed to modify()) that removes all but the last metatags with matching name or property attributes.
+
+##### const int FIX_MULTIPLE_BODIES
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A modification (passed to modify()) that merges multiple body elements.
+
+##### const int FIX_MULTIPLE_HEADS
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A modification (passed to modify()) that merges multiple head elements.
+
+##### const int FIX_MULTIPLE_TITLES
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A modification (passed to modify()) that removes all but the last title elements.
+
+##### const int OPTIMIZE_HEAD
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A modification (passed to modify()) that moves charset metatag and title elements first.
 
 ## Methods
 
@@ -13,8 +68,6 @@ Represents a live (can be manipulated) representation of a HTML5 document.
 ##### public [DOMElement](http://php.net/manual/en/class.domelement.php) [createInsertTarget](ivopetkov.html5domdocument.createinserttarget.method.md) ( string $name )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates an element that will be replaced by the new body in insertHTML.
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: A new DOMElement that must be set in the place where the new body will be inserted.
 
 ##### public void [insertHTML](ivopetkov.html5domdocument.inserthtml.method.md) ( string $source [, string $target = 'beforeBodyEnd' ] )
 
@@ -28,8 +81,6 @@ Represents a live (can be manipulated) representation of a HTML5 document.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load HTML from a string.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: TRUE on success or FALSE on failure.
-
 ##### public void [loadHTMLFile](ivopetkov.html5domdocument.loadhtmlfile.method.md) ( string $filename [, int $options = 0 ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load HTML from a file.
@@ -42,27 +93,19 @@ Represents a live (can be manipulated) representation of a HTML5 document.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first document element matching the selector.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: The result DOMElement or null if not found.
-
 ##### public [DOMNodeList](http://php.net/manual/en/class.domnodelist.php) [querySelectorAll](ivopetkov.html5domdocument.queryselectorall.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of document elements matching the selector.
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: Returns a list of DOMElements matching the criteria.
 
 ##### public string [saveHTML](ivopetkov.html5domdocument.savehtml.method.md) ( [ [DOMNode](http://php.net/manual/en/class.domnode.php) $node ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dumps the internal document into a string using HTML formatting.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: The document (or node) HTML code as string.
-
 ##### public int [saveHTMLFile](ivopetkov.html5domdocument.savehtmlfile.method.md) ( string $filename )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dumps the internal document into a file using HTML formatting.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: the number of bytes written or FALSE if an error occurred.
-
-### Inherited from [DOMDocument](http://php.net/manual/en/class.domdocument.php):
+### Inherited from [DOMDocument](http://php.net/manual/en/class.domdocument.php)
 
 ##### public void [adoptNode](http://php.net/manual/en/domdocument.adoptnode.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $source )
 
@@ -120,7 +163,7 @@ Represents a live (can be manipulated) representation of a HTML5 document.
 
 ##### public void [xinclude](http://php.net/manual/en/domdocument.xinclude.php) ( [  $options ] )
 
-### Inherited from [DOMNode](http://php.net/manual/en/class.domnode.php):
+### Inherited from [DOMNode](http://php.net/manual/en/class.domnode.php)
 
 ##### public void [C14N](http://php.net/manual/en/domnode.c14n.php) ( [  $exclusive [,  $with_comments [, array $xpath [, array $ns_prefixes ]]]] )
 
@@ -168,7 +211,7 @@ Represents a live (can be manipulated) representation of a HTML5 document.
 
 ## Details
 
-File: /src/HTML5DOMDocument.php
+Location: ~/src/HTML5DOMDocument.php
 
 ---
 

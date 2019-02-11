@@ -8,15 +8,15 @@ public null|string item ( int $index )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$index`
+##### index
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The zero-based index of the item you want to return.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The zero-based index of the item you want to return.
 
 ## Details
 
 Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)
 
-File: /src/HTML5DOMTokenList.php
+Location: ~/src/HTML5DOMTokenList.php
 
 ---
 

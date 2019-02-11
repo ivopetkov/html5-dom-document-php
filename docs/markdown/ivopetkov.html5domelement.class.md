@@ -1,8 +1,27 @@
 # IvoPetkov\HTML5DOMElement
 
-extends [DOMElement](http://php.net/manual/en/class.domelement.php)
-
 Represents a live (can be manipulated) representation of an element in a HTML5 document.
+
+```php
+IvoPetkov\HTML5DOMElement extends DOMElement {
+
+	/* Properties */
+	public IvoPetkov\HTML5DOMTokenList $classList
+	public string $innerHTML
+	public string $outerHTML
+
+	/* Methods */
+	public string getAttribute ( string $name )
+	public array getAttributes ( void )
+	public DOMElement|null querySelector ( string $selector )
+	public DOMNodeList querySelectorAll ( string $selector )
+
+}
+```
+
+## Extends
+
+##### [DOMElement](http://php.net/manual/en/class.domelement.php)
 
 ## Properties
 
@@ -24,29 +43,21 @@ Represents a live (can be manipulated) representation of an element in a HTML5 d
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the value for the attribute name specified.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: The attribute value.
-
 ##### public array [getAttributes](ivopetkov.html5domelement.getattributes.method.md) ( void )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array containing all attributes.
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: An associative array containing all attributes.
 
 ##### public [DOMElement](http://php.net/manual/en/class.domelement.php)|null [querySelector](ivopetkov.html5domelement.queryselector.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first child element matching the selector.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: The result DOMElement or null if not found.
-
 ##### public [DOMNodeList](http://php.net/manual/en/class.domnodelist.php) [querySelectorAll](ivopetkov.html5domelement.queryselectorall.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of children elements matching the selector.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: Returns a list of DOMElements matching the criteria.
+### Inherited from [DOMElement](http://php.net/manual/en/class.domelement.php)
 
-### Inherited from [DOMElement](http://php.net/manual/en/class.domelement.php):
-
-##### public [__construct](http://php.net/manual/en/domelement.__construct.php) ( $name [,  $value [,  $uri ]] )
+##### public [__construct](http://php.net/manual/en/domelement.construct.php) ( $name [,  $value [,  $uri ]] )
 
 ##### public void [getAttributeNS](http://php.net/manual/en/domelement.getattributens.php) ( $namespaceURI ,  $localName )
 
@@ -82,7 +93,7 @@ Represents a live (can be manipulated) representation of an element in a HTML5 d
 
 ##### public void [setIdAttributeNode](http://php.net/manual/en/domelement.setidattributenode.php) ( [DOMAttr](http://php.net/manual/en/class.domattr.php) $attr ,  $isId )
 
-### Inherited from [DOMNode](http://php.net/manual/en/class.domnode.php):
+### Inherited from [DOMNode](http://php.net/manual/en/class.domnode.php)
 
 ##### public void [C14N](http://php.net/manual/en/domnode.c14n.php) ( [  $exclusive [,  $with_comments [, array $xpath [, array $ns_prefixes ]]]] )
 
@@ -130,7 +141,7 @@ Represents a live (can be manipulated) representation of an element in a HTML5 d
 
 ## Details
 
-File: /src/HTML5DOMElement.php
+Location: ~/src/HTML5DOMElement.php
 
 ---
 

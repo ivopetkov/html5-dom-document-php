@@ -8,9 +8,9 @@ public string getAttribute ( string $name )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$name`
+##### name
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The attribute name.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The attribute name.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public string getAttribute ( string $name )
 
 Class: [IvoPetkov\HTML5DOMElement](ivopetkov.html5domelement.class.md)
 
-File: /src/HTML5DOMElement.php
+Location: ~/src/HTML5DOMElement.php
 
 ---
 

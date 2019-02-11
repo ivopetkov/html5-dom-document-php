@@ -14,7 +14,7 @@ public array getAttributes ( void )
 
 Class: [IvoPetkov\HTML5DOMElement](ivopetkov.html5domelement.class.md)
 
-File: /src/HTML5DOMElement.php
+Location: ~/src/HTML5DOMElement.php
 
 ---
 

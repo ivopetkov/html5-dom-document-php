@@ -8,15 +8,15 @@ public void add ( [ string[] $tokens ] )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$tokens`
+##### tokens
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The tokens you want to add to the list.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The tokens you want to add to the list.
 
 ## Details
 
 Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)
 
-File: /src/HTML5DOMTokenList.php
+Location: ~/src/HTML5DOMTokenList.php
 
 ---
 

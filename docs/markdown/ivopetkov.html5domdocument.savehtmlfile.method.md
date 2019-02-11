@@ -8,9 +8,9 @@ public int saveHTMLFile ( string $filename )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$filename`
+##### filename
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The path to the saved HTML document.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The path to the saved HTML document.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public int saveHTMLFile ( string $filename )
 
 Class: [IvoPetkov\HTML5DOMDocument](ivopetkov.html5domdocument.class.md)
 
-File: /src/HTML5DOMDocument.php
+Location: ~/src/HTML5DOMDocument.php
 
 ---
 

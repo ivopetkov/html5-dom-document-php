@@ -8,15 +8,15 @@ public void insertHTMLMulti ( array $sources )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$sources`
+##### sources
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An array containing the source of the document to be inserted in the following format: [ ['source'=>'', 'target'=>''], ['source'=>'', 'target'=>''], ... ]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An array containing the source of the document to be inserted in the following format: [ ['source'=>'', 'target'=>''], ['source'=>'', 'target'=>''], ... ]
 
 ## Details
 
 Class: [IvoPetkov\HTML5DOMDocument](ivopetkov.html5domdocument.class.md)
 
-File: /src/HTML5DOMDocument.php
+Location: ~/src/HTML5DOMDocument.php
 
 ---
 

@@ -8,9 +8,9 @@ public string saveHTML ( [ DOMNode $node ] )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$node`
+##### node
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Optional parameter to output a subset of the document.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Optional parameter to output a subset of the document.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public string saveHTML ( [ DOMNode $node ] )
 
 Class: [IvoPetkov\HTML5DOMDocument](ivopetkov.html5domdocument.class.md)
 
-File: /src/HTML5DOMDocument.php
+Location: ~/src/HTML5DOMDocument.php
 
 ---
 

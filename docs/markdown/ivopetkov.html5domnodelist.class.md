@@ -1,10 +1,44 @@
 # IvoPetkov\HTML5DOMNodeList
 
-extends [ArrayObject](http://php.net/manual/en/class.arrayobject.php)
-
-implements [Countable](http://php.net/manual/en/class.countable.php), [Serializable](http://php.net/manual/en/class.serializable.php), [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php), [Traversable](http://php.net/manual/en/class.traversable.php), [IteratorAggregate](http://php.net/manual/en/class.iteratoraggregate.php)
-
 Represents a list of DOM nodes.
+
+```php
+IvoPetkov\HTML5DOMNodeList extends ArrayObject implements Countable, Serializable, ArrayAccess, Traversable, IteratorAggregate {
+
+	/* Constants */
+	const int ARRAY_AS_PROPS
+	const int STD_PROP_LIST
+
+	/* Properties */
+	public readonly int $length
+
+	/* Methods */
+	public IvoPetkov\HTML5DOMElement|null item ( int $index )
+
+}
+```
+
+## Extends
+
+##### [ArrayObject](http://php.net/manual/en/class.arrayobject.php)
+
+## Implements
+
+##### [Countable](http://php.net/manual/en/class.countable.php)
+
+##### [Serializable](http://php.net/manual/en/class.serializable.php)
+
+##### [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php)
+
+##### [Traversable](http://php.net/manual/en/class.traversable.php)
+
+##### [IteratorAggregate](http://php.net/manual/en/class.iteratoraggregate.php)
+
+## Constants
+
+##### const int ARRAY_AS_PROPS
+
+##### const int STD_PROP_LIST
 
 ## Properties
 
@@ -18,11 +52,9 @@ Represents a list of DOM nodes.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the item at the specified index.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns: The item at the specified index or null if not existent.
+### Inherited from [ArrayObject](http://php.net/manual/en/class.arrayobject.php)
 
-### Inherited from [ArrayObject](http://php.net/manual/en/class.arrayobject.php):
-
-##### public [__construct](http://php.net/manual/en/arrayobject.__construct.php) ( [  $array [,  $ar_flags [,  $iterator_class ]]] )
+##### public [__construct](http://php.net/manual/en/arrayobject.construct.php) ( [  $array [,  $ar_flags [,  $iterator_class ]]] )
 
 ##### public void [append](http://php.net/manual/en/arrayobject.append.php) ( $value )
 
@@ -60,7 +92,7 @@ Represents a list of DOM nodes.
 
 ## Details
 
-File: /src/HTML5DOMNodeList.php
+Location: ~/src/HTML5DOMNodeList.php
 
 ---
 

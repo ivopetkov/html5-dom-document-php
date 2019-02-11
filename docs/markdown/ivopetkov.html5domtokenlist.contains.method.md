@@ -8,9 +8,9 @@ public bool contains ( string $token )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$token`
+##### token
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to check for the existence of in the list.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to check for the existence of in the list.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public bool contains ( string $token )
 
 Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)
 
-File: /src/HTML5DOMTokenList.php
+Location: ~/src/HTML5DOMTokenList.php
 
 ---
 

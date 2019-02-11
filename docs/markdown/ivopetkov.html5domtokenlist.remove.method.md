@@ -8,15 +8,15 @@ public void remove ( [ string[] $tokens ] )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$tokens`
+##### tokens
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to remove from the list.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to remove from the list.
 
 ## Details
 
 Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)
 
-File: /src/HTML5DOMTokenList.php
+Location: ~/src/HTML5DOMTokenList.php
 
 ---
 

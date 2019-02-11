@@ -8,19 +8,19 @@ public __construct ( DOMElement $element , string $attributeName )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$element`
+##### element
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The DOM element.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The DOM element.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$attributeName`
+##### attributeName
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the attribute.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the attribute.
 
 ## Details
 
 Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)
 
-File: /src/HTML5DOMTokenList.php
+Location: ~/src/HTML5DOMTokenList.php
 
 ---
 

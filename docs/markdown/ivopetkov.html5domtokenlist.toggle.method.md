@@ -8,13 +8,13 @@ public bool toggle ( string $token [, bool $force ] )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$token`
+##### token
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to toggle.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The token you want to toggle.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$force`
+##### force
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Boolean that, if included, turns the toggle into a one way-only operation. If set to false, the token will only be removed but not added again. If set to true, the token will only be added but not removed again.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A Boolean that, if included, turns the toggle into a one way-only operation. If set to false, the token will only be removed but not added again. If set to true, the token will only be added but not removed again.
 
 ## Returns
 
@@ -24,7 +24,7 @@ public bool toggle ( string $token [, bool $force ] )
 
 Class: [IvoPetkov\HTML5DOMTokenList](ivopetkov.html5domtokenlist.class.md)
 
-File: /src/HTML5DOMTokenList.php
+Location: ~/src/HTML5DOMTokenList.php
 
 ---
 

@@ -8,9 +8,9 @@ public DOMElement createInsertTarget ( string $name )
 
 ## Parameters
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`$name`
+##### name
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the insert target.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The name of the insert target.
 
 ## Returns
 
@@ -20,7 +20,7 @@ public DOMElement createInsertTarget ( string $name )
 
 Class: [IvoPetkov\HTML5DOMDocument](ivopetkov.html5domdocument.class.md)
 
-File: /src/HTML5DOMDocument.php
+Location: ~/src/HTML5DOMDocument.php
 
 ---
 
