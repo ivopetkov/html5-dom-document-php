@@ -108,23 +108,21 @@ class HTML5DOMDocument extends \DOMDocument
         $charsetTag = '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8" />';
         $matches = [];
         preg_match('/\<head.*?\>/', $source, $matches);
-        $removeHeadTag = true;
-        $removeHtmlTag = true;
+        $removeHeadTag = false;
+        $removeHtmlTag = false;
         if (isset($matches[0])) { // has head tag
-            $removeHeadTag = false;
-            $removeHtmlTag = false;
             $insertPosition = strpos($source, $matches[0]) + strlen($matches[0]);
             $source = substr($source, 0, $insertPosition) . $charsetTag . substr($source, $insertPosition);
         } else {
             $matches = [];
             preg_match('/\<html.*?\>/', $source, $matches);
             if (isset($matches[0])) { // has html tag
-                $removeHtmlTag = false;
-                $source = str_replace($matches[0], $matches[0] . $charsetTag, $source);
+                $source = str_replace($matches[0], $matches[0] . '<head>' . $charsetTag . '</head>', $source);
             } else {
-                $insertPosition = strpos($source, '>') + 1;
-                $source = substr($source, 0, $insertPosition) . $charsetTag . substr($source, $insertPosition);
+                $source = '<head>' . $charsetTag . '</head>' . $source;
+                $removeHtmlTag = true;
             }
+            $removeHeadTag = true;
         }
 
         // Preserve html entities
@@ -151,10 +149,10 @@ class HTML5DOMDocument extends \DOMDocument
                 $headElement = $metaTagElement->parentNode;
                 $htmlElement = $headElement->parentNode;
                 $metaTagElement->parentNode->removeChild($metaTagElement);
-                if ($headElement !== null && $removeHeadTag && ($headElement->firstChild === null || ($headElement->childNodes->length === 1 && $headElement->firstChild instanceof \DOMText))) {
+                if ($removeHeadTag && $headElement !== null && $headElement->parentNode !== null && ($headElement->firstChild === null || ($headElement->childNodes->length === 1 && $headElement->firstChild instanceof \DOMText))) {
                     $headElement->parentNode->removeChild($headElement);
                 }
-                if ($htmlElement !== null && $removeHtmlTag && $htmlElement->firstChild === null) {
+                if ($removeHtmlTag && $htmlElement !== null && $htmlElement->parentNode !== null && $htmlElement->firstChild === null) {
                     $htmlElement->parentNode->removeChild($htmlElement);
                 }
             }

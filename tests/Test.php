@@ -52,7 +52,7 @@ class Test extends PHPUnit\Framework\TestCase
         $testSource = function($source, $expectedSource) {
             $dom = new HTML5DOMDocument();
             $dom->loadHTML($source);
-            $this->assertTrue($expectedSource === $dom->saveHTML());
+            $this->assertEquals($expectedSource, $dom->saveHTML());
         };
 
         $bodyContent = '<div>hello</div>';
@@ -1311,6 +1311,24 @@ class Test extends PHPUnit\Framework\TestCase
         $dom = new HTML5DOMDocument();
         $this->expectException('\Exception');
         $dom->loadHTML($content);
+    }
+
+    /**
+     *
+     */
+    public function testFragments()
+    {
+        $fragments = [
+            '<div>text</div>',
+            '<p>text</p>',
+            '<script type="text/javascript">var a = 1;</script>',
+        ];
+        foreach ($fragments as $fragment) {
+            $dom = new HTML5DOMDocument();
+            $dom->loadHTML($fragment, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+            $this->assertEquals($dom->querySelectorAll('*')->length, 1);
+            $this->assertEquals($fragment, $dom->saveHTML());
+        }
     }
 
 }
