@@ -2,6 +2,8 @@
 
 namespace IvoPetkov\HTML5DOMDocument\Internal;
 
+use IvoPetkov\HTML5DOMElement;
+
 trait QuerySelectors
 {
 
@@ -9,7 +11,7 @@ trait QuerySelectors
      * Returns the first element matching the selector.
      * 
      * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector].
-     * @return \DOMElement|null The result DOMElement or null if not found
+     * @return HTML5DOMElement|null The result DOMElement or null if not found
      */
     private function internalQuerySelector(string $selector)
     {
