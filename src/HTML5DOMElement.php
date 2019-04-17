@@ -197,7 +197,7 @@ class HTML5DOMElement extends \DOMElement
      * Returns the first child element matching the selector.
      *
      * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2, .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p, div > p, div + p and p ~ ul.
-     * @return \DOMElement|null The result DOMElement or null if not found.
+     * @return HTML5DOMElement|null The result DOMElement or null if not found.
      * @throws \InvalidArgumentException
      */
     public function querySelector(string $selector)
@@ -209,7 +209,7 @@ class HTML5DOMElement extends \DOMElement
      * Returns a list of children elements matching the selector.
      *
      * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2, .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p, div > p, div + p and p ~ ul.
-     * @return \DOMNodeList Returns a list of DOMElements matching the criteria.
+     * @return HTML5DOMNodeList Returns a list of DOMElements matching the criteria.
      * @throws \InvalidArgumentException
      */
     public function querySelectorAll(string $selector)
