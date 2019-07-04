@@ -11,7 +11,7 @@ namespace IvoPetkov;
 
 /**
  * Represents a live (can be manipulated) representation of an element in a HTML5 document.
- * 
+ *
  * @property string $innerHTML The HTML code inside the element.
  * @property string $outerHTML The HTML code for the element including the code inside.
  * @property \IvoPetkov\HTML5DOMTokenList $classList A collection of the class attributes of the element.
@@ -25,16 +25,16 @@ class HTML5DOMElement extends \DOMElement
      *
      * @var array
      */
-    static private $foundEntitiesCache = [[], []];
+    private static $foundEntitiesCache = [[], []];
 
     /**
      *
      * @var array
      */
-    static private $newObjectsCache = [];
+    private static $newObjectsCache = [];
 
     /*
-     * 
+     *
      * @var HTML5DOMTokenList
      */
     private $classList = null;
@@ -216,5 +216,4 @@ class HTML5DOMElement extends \DOMElement
     {
         return $this->internalQuerySelectorAll($selector);
     }
-
 }

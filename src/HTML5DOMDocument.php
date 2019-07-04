@@ -51,7 +51,7 @@ class HTML5DOMDocument extends \DOMDocument
      *
      * @var array
      */
-    static private $newObjectsCache = [];
+    private static $newObjectsCache = [];
 
     /**
      * Indicates whether an HTML code is loaded.
@@ -163,7 +163,7 @@ class HTML5DOMDocument extends \DOMDocument
             preg_match_all('/\sid[\s]*=[\s]*(["\'])(.*?)\1/', $source, $matches);
             if (!empty($matches[2]) && max(array_count_values($matches[2])) > 1) {
                 $elementIDs = [];
-                $walkChildren = function($element) use (&$walkChildren, &$elementIDs) {
+                $walkChildren = function ($element) use (&$walkChildren, &$elementIDs) {
                     foreach ($element->childNodes as $child) {
                         if ($child instanceof \DOMElement) {
                             if ($child->attributes->length > 0) { // Performance optimization
@@ -364,7 +364,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Dumps the internal document into a file using HTML formatting.
-     * 
+     *
      * @param string $filename The path to the saved HTML document.
      * @return int the number of bytes written or FALSE if an error occurred.
      */
@@ -451,7 +451,7 @@ class HTML5DOMDocument extends \DOMDocument
 
         $currentDomDocument = &$this;
 
-        $copyAttributes = function($sourceNode, $targetNode) {
+        $copyAttributes = function ($sourceNode, $targetNode) {
             foreach ($sourceNode->attributes as $attributeName => $attribute) {
                 $targetNode->setAttribute($attributeName, $attribute->value);
             }
@@ -529,7 +529,7 @@ class HTML5DOMDocument extends \DOMDocument
                             }
                         }
                     }
-                } else if ($target === 'beforeBodyEnd') {
+                } elseif ($target === 'beforeBodyEnd') {
                     foreach ($bodyElementChildren as $bodyElementChild) {
                         $newNode = $currentDomDocument->importNode($bodyElementChild, true);
                         if ($newNode !== null) {
@@ -568,7 +568,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Applies the modifications specified to the DOM document.
-     * 
+     *
      * @param int $modifications The modifications to apply. Available values:
      *  - HTML5DOMDocument::FIX_MULTIPLE_TITLES - removes all but the last title elements.
      *  - HTML5DOMDocument::FIX_DUPLICATE_METATAGS - removes all but the last metatags with matching name or property attributes.
@@ -604,7 +604,6 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         foreach ($headElements as $headElement) {
-
             if ($fixMultipleTitles) { // Remove all title elements except the last one.
                 $titleTags = $headElement->getElementsByTagName('title');
                 $titleTagsCount = $titleTags->length;
@@ -706,5 +705,4 @@ class HTML5DOMDocument extends \DOMDocument
             }
         }
     }
-
 }

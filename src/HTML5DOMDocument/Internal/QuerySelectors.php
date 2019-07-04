@@ -9,7 +9,7 @@ trait QuerySelectors
 
     /**
      * Returns the first element matching the selector.
-     * 
+     *
      * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector].
      * @return HTML5DOMElement|null The result DOMElement or null if not found
      */
@@ -21,7 +21,7 @@ trait QuerySelectors
 
     /**
      * Returns a list of document elements matching the selector.
-     * 
+     *
      * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector].
      * @param int|null $preferredLimit Preferred maximum number of elements to return.
      * @return DOMNodeList Returns a list of DOMElements matching the criteria.
@@ -30,7 +30,8 @@ trait QuerySelectors
     private function internalQuerySelectorAll(string $selector, $preferredLimit = null)
     {
         $selector = trim($selector);
-        $walkChildren = function(\DOMNode $context, $tagName, callable $callback) use (&$walkChildren) { // $walkChildren is a lot faster than $this->getElementsByTagName('*') for 300+ elements
+        $walkChildren = function (\DOMNode $context, $tagName, callable $callback) use (&$walkChildren) {
+ // $walkChildren is a lot faster than $this->getElementsByTagName('*') for 300+ elements
             if ($tagName !== null) {
                 $children = $context->getElementsByTagName($tagName);
                 foreach ($children as $child) {
@@ -52,7 +53,7 @@ trait QuerySelectors
             }
         };
 
-        $getElementById = function(\DOMNode $context, $id, $tagName) use (&$walkChildren) {
+        $getElementById = function (\DOMNode $context, $id, $tagName) use (&$walkChildren) {
             if ($context instanceof \DOMDocument) {
                 $element = $context->getElementById($id);
                 if ($element && ($tagName === null || $element->tagName === $tagName)) {
@@ -60,7 +61,7 @@ trait QuerySelectors
                 }
             } else {
                 $foundElement = null;
-                $walkChildren($context, $tagName, function($element) use ($id, &$foundElement) {
+                $walkChildren($context, $tagName, function ($element) use ($id, &$foundElement) {
                     if ($element->attributes->length > 0 && $element->getAttribute('id') === $id) {
                         $foundElement = $element;
                         return true;
@@ -74,11 +75,11 @@ trait QuerySelectors
         $simpleSelectors = [];
 
         // all
-        $simpleSelectors['\*'] = function(string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['\*'] = function (string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
             if ($mode === 'validate') {
                 return true;
             } else {
-                $walkChildren($context, null, function($element) use ($add) {
+                $walkChildren($context, null, function ($element) use ($add) {
                     if ($add($element)) {
                         return true;
                     }
@@ -87,11 +88,11 @@ trait QuerySelectors
         };
 
         // tagname
-        $simpleSelectors['[a-z0-9\-]+'] = function(string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['[a-z0-9\-]+'] = function (string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
             if ($mode === 'validate') {
                 return $context->tagName === $match[0];
             } else {
-                $walkChildren($context, $match[0], function($element) use ($add) {
+                $walkChildren($context, $match[0], function ($element) use ($add) {
                     if ($add($element)) {
                         return true;
                     }
@@ -100,7 +101,7 @@ trait QuerySelectors
         };
 
         // tagname[target] or [target] // Available values for targets: attr, attr="value", attr~="value", attr|="value", attr^="value", attr$="value", attr*="value"
-        $simpleSelectors['(?:[a-z0-9\-]*)(?:\[.+?\])'] = function(string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['(?:[a-z0-9\-]*)(?:\[.+?\])'] = function (string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
             $attributeSelectors = explode('][', substr($match[2], 1, -1));
             foreach ($attributeSelectors as $i => $attributeSelector) {
                 $attributeSelectorMatches = null;
@@ -117,7 +118,7 @@ trait QuerySelectors
                 }
             }
             $tagName = strlen($match[1]) > 0 ? $match[1] : null;
-            $check = function($element) use ($attributeSelectors) {
+            $check = function ($element) use ($attributeSelectors) {
                 if ($element->attributes->length > 0) {
                     foreach ($attributeSelectors as $attributeSelector) {
                         $isMatch = false;
@@ -177,7 +178,7 @@ trait QuerySelectors
             if ($mode === 'validate') {
                 return ($tagName === null ? true : $context->tagName === $tagName) && $check($context);
             } else {
-                $walkChildren($context, $tagName, function($element) use ($check, $add) {
+                $walkChildren($context, $tagName, function ($element) use ($check, $add) {
                     if ($check($element)) {
                         if ($add($element)) {
                             return true;
@@ -188,7 +189,7 @@ trait QuerySelectors
         };
 
         // tagname#id or #id
-        $simpleSelectors['(?:[a-z0-9\-]*)#(?:.+)'] = function(string $mode, array $match, \DOMNode $context, callable $add = null) use ($getElementById) {
+        $simpleSelectors['(?:[a-z0-9\-]*)#(?:.+)'] = function (string $mode, array $match, \DOMNode $context, callable $add = null) use ($getElementById) {
             $tagName = strlen($match[1]) > 0 ? $match[1] : null;
             $id = $match[2];
             if ($mode === 'validate') {
@@ -202,13 +203,13 @@ trait QuerySelectors
         };
 
         // tagname.classname, .classname, tagname.classname.classname2, .classname.classname2
-        $simpleSelectors['(?:[a-z0-9\-]*)\.(?:.+?)'] = function(string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['(?:[a-z0-9\-]*)\.(?:.+?)'] = function (string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
             $tagName = strlen($match[1]) > 0 ? $match[1] : null;
             $classesSelector = explode('.', $match[2]);
             if (empty($classesSelector)) {
                 return false;
             }
-            $check = function($element) use ($classesSelector) {
+            $check = function ($element) use ($classesSelector) {
                 if ($element->attributes->length > 0) {
                     $classAttribute = $element->getAttribute('class');
                     $allClassesFound = true;
@@ -227,7 +228,7 @@ trait QuerySelectors
             if ($mode === 'validate') {
                 return ($tagName === null ? true : $context->tagName === $tagName) && $check($context);
             } else {
-                $walkChildren($context, $tagName, function($element) use ($check, $add) {
+                $walkChildren($context, $tagName, function ($element) use ($check, $add) {
                     if ($check($element)) {
                         if ($add($element)) {
                             return true;
@@ -237,7 +238,7 @@ trait QuerySelectors
             }
         };
 
-        $isMatchingElement = function(\DOMNode $context, string $selector) use ($simpleSelectors) {
+        $isMatchingElement = function (\DOMNode $context, string $selector) use ($simpleSelectors) {
             foreach ($simpleSelectors as $simpleSelector => $callback) {
                 $match = null;
                 if (preg_match('/^' . (str_replace('?:', '', $simpleSelector)) . '$/', $selector, $match) === 1) {
@@ -248,9 +249,9 @@ trait QuerySelectors
 
         $complexSelectors = [];
 
-        $getMatchingElements = function(\DOMNode $context, string $selector, $preferredLimit = null) use (&$simpleSelectors, &$complexSelectors) {
+        $getMatchingElements = function (\DOMNode $context, string $selector, $preferredLimit = null) use (&$simpleSelectors, &$complexSelectors) {
 
-            $processSelector = function(string $mode, string $selector, $operator = null) use (&$processSelector, $simpleSelectors, $complexSelectors, $context, $preferredLimit) {
+            $processSelector = function (string $mode, string $selector, $operator = null) use (&$processSelector, $simpleSelectors, $complexSelectors, $context, $preferredLimit) {
                 $supportedSimpleSelectors = array_keys($simpleSelectors);
                 $supportedSimpleSelectorsExpression = '(?:(?:' . implode(')|(?:', $supportedSimpleSelectors) . '))';
                 $supportedSelectors = $supportedSimpleSelectors;
@@ -271,7 +272,7 @@ trait QuerySelectors
 
                 $result = [];
                 if ($mode === 'execute') {
-                    $add = function($element) use ($preferredLimit, &$result) {
+                    $add = function ($element) use ($preferredLimit, &$result) {
                         $found = false;
                         foreach ($result as $addedElement) {
                             if ($addedElement === $element) {
@@ -334,7 +335,7 @@ trait QuerySelectors
         };
 
         // div p (space between) - all <p> elements inside <div> elements
-        $complexSelectors[' '] = function(array $parts, \DOMNode $context, callable $add = null) use (&$getMatchingElements) {
+        $complexSelectors[' '] = function (array $parts, \DOMNode $context, callable $add = null) use (&$getMatchingElements) {
             $elements = null;
             foreach ($parts as $part) {
                 if ($elements === null) {
@@ -353,7 +354,7 @@ trait QuerySelectors
         };
 
         // div > p - all <p> elements where the parent is a <div> element
-        $complexSelectors['>'] = function(array $parts, \DOMNode $context, callable $add = null) use (&$getMatchingElements, &$isMatchingElement) {
+        $complexSelectors['>'] = function (array $parts, \DOMNode $context, callable $add = null) use (&$getMatchingElements, &$isMatchingElement) {
             $elements = null;
             foreach ($parts as $part) {
                 if ($elements === null) {
@@ -376,7 +377,7 @@ trait QuerySelectors
         };
 
         // div + p - all <p> elements that are placed immediately after <div> elements
-        $complexSelectors['+'] = function(array $parts, \DOMNode $context, callable $add = null) use (&$getMatchingElements, &$isMatchingElement) {
+        $complexSelectors['+'] = function (array $parts, \DOMNode $context, callable $add = null) use (&$getMatchingElements, &$isMatchingElement) {
             $elements = null;
             foreach ($parts as $part) {
                 if ($elements === null) {
@@ -396,8 +397,8 @@ trait QuerySelectors
             }
         };
 
-        // p ~ ul -	all <ul> elements that are preceded by a <p> element
-        $complexSelectors['~'] = function(array $parts, \DOMNode $context, callable $add = null) use (&$getMatchingElements, &$isMatchingElement) {
+        // p ~ ul - all <ul> elements that are preceded by a <p> element
+        $complexSelectors['~'] = function (array $parts, \DOMNode $context, callable $add = null) use (&$getMatchingElements, &$isMatchingElement) {
             $elements = null;
             foreach ($parts as $part) {
                 if ($elements === null) {
@@ -427,5 +428,4 @@ trait QuerySelectors
         }
         return new \IvoPetkov\HTML5DOMNodeList($result);
     }
-
 }

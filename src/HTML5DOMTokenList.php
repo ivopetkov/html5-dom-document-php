@@ -14,7 +14,7 @@ use DOMElement;
 
 /**
  * Represents a set of space-separated tokens of an element attribute.
- * 
+ *
  * @property-read int $length The number of tokens.
  * @property-read string $value A space-separated list of the tokens.
  */
@@ -43,7 +43,7 @@ class HTML5DOMTokenList
 
     /**
      * Creates a list of space-separated tokens based on the attribute value of an element.
-     * 
+     *
      * @param DOMElement $element The DOM element.
      * @param string $attributeName The name of the attribute.
      */
@@ -57,7 +57,7 @@ class HTML5DOMTokenList
 
     /**
      * Adds the given tokens to the list.
-     * 
+     *
      * @param string[] $tokens The tokens you want to add to the list.
      * @return void
      */
@@ -77,7 +77,7 @@ class HTML5DOMTokenList
 
     /**
      * Removes the specified tokens from the list. If the string does not exist in the list, no error is thrown.
-     * 
+     *
      * @param string[] $tokens The token you want to remove from the list.
      * @return void
      */
@@ -101,7 +101,7 @@ class HTML5DOMTokenList
 
     /**
      * Returns an item in the list by its index (returns null if the number is greater than or equal to the length of the list).
-     * 
+     *
      * @param int $index The zero-based index of the item you want to return.
      * @return null|string
      */
@@ -116,7 +116,7 @@ class HTML5DOMTokenList
 
     /**
      * Removes a given token from the list and returns false. If token doesn't exist it's added and the function returns true.
-     * 
+     *
      * @param string $token The token you want to toggle.
      * @param bool $force A Boolean that, if included, turns the toggle into a one way-only operation. If set to false, the token will only be removed but not added again. If set to true, the token will only be added but not removed again.
      * @return bool false if the token is not in the list after the call, or true if the token is in the list after the call.
@@ -151,7 +151,7 @@ class HTML5DOMTokenList
 
     /**
      * Returns true if the list contains the given token, otherwise false.
-     * 
+     *
      * @param string $token The token you want to check for the existence of in the list.
      * @return bool true if the list contains the given token, otherwise false.
      */
@@ -163,7 +163,7 @@ class HTML5DOMTokenList
 
     /**
      * Replaces an existing token with a new token.
-     * 
+     *
      * @param string $old The token you want to replace.
      * @param string $new The token you want to replace $old with.
      * @return void
@@ -187,7 +187,7 @@ class HTML5DOMTokenList
     }
 
     /**
-     * 
+     *
      * @return string
      */
     public function __toString(): string
@@ -198,7 +198,7 @@ class HTML5DOMTokenList
 
     /**
      * Returns an iterator allowing you to go through all tokens contained in the list.
-     * 
+     *
      * @return ArrayIterator
      */
     public function entries(): ArrayIterator
@@ -219,14 +219,14 @@ class HTML5DOMTokenList
         if ($name === 'length') {
             $this->tokenize();
             return count($this->tokens);
-        } else if ($name === 'value') {
+        } elseif ($name === 'value') {
             return $this->__toString();
         }
         throw new \Exception('Undefined property: HTML5DOMTokenList::$' . $name);
     }
 
     /**
-     * 
+     *
      * @return void
      */
     private function tokenize()
@@ -239,17 +239,19 @@ class HTML5DOMTokenList
         $tokens = explode(' ', $current);
         $finals = [];
         foreach ($tokens as $token) {
-            if ($token === '')
+            if ($token === '') {
                 continue;
-            if (in_array($token, $finals))
+            }
+            if (in_array($token, $finals)) {
                 continue;
+            }
             $finals[] = $token;
         }
         $this->tokens = $finals;
     }
 
     /**
-     * 
+     *
      * @return void
      */
     private function setAttributeValue()
@@ -261,5 +263,4 @@ class HTML5DOMTokenList
         $this->previousValue = $value;
         $this->element->setAttribute($this->attributeName, $value);
     }
-
 }
