@@ -100,7 +100,8 @@ class HTML5DOMTokenList
     }
 
     /**
-     * Returns an item in the list by its index (returns null if the number is greater than or equal to the length of the list).
+     * Returns an item in the list by its index
+     * (returns null if the number is greater than or equal to the length of the list).
      *
      * @param int $index The zero-based index of the item you want to return.
      * @return null|string
@@ -115,11 +116,15 @@ class HTML5DOMTokenList
     }
 
     /**
-     * Removes a given token from the list and returns false. If token doesn't exist it's added and the function returns true.
+     * Removes a given token from the list and returns false.
+     * If token doesn't exist it's added and the function returns true.
      *
      * @param string $token The token you want to toggle.
-     * @param bool $force A Boolean that, if included, turns the toggle into a one way-only operation. If set to false, the token will only be removed but not added again. If set to true, the token will only be added but not removed again.
-     * @return bool false if the token is not in the list after the call, or true if the token is in the list after the call.
+     * @param bool $force A Boolean that, if included, turns the toggle into a one way-only operation.
+     * If set to false, the token will only be removed but not added again.
+     * If set to true, the token will only be added but not removed again.
+     * @return bool false if the token is not in the list after the call, or true
+     * if the token is in the list after the call.
      */
     public function toggle(string $token, bool $force = null): bool
     {
