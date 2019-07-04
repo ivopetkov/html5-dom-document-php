@@ -28,7 +28,8 @@ class HTML5DOMDocument extends \DOMDocument
     const FIX_MULTIPLE_TITLES = 2;
 
     /**
-     * A modification (passed to modify()) that removes all but the last metatags with matching name or property attributes.
+     * A modification (passed to modify()) that removes all but the last metatags
+     * with matching name or property attributes.
      */
     const FIX_DUPLICATE_METATAGS = 4;
 
@@ -51,7 +52,7 @@ class HTML5DOMDocument extends \DOMDocument
      *
      * @var array
      */
-    static private $newObjectsCache = [];
+    private static $newObjectsCache = [];
 
     /**
      * Indicates whether an HTML code is loaded.
@@ -95,7 +96,13 @@ class HTML5DOMDocument extends \DOMDocument
         $allowDuplicateIDs = ($options & self::ALLOW_DUPLICATE_IDS) !== 0;
 
         // Add body tag if missing
-        if ($autoAddHtmlAndBodyTags && $source !== '' && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html.*?\>/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
+        if ($autoAddHtmlAndBodyTags
+            && $source !== ''
+            && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0
+            && preg_match('/\<html.*?\>/', $source) === 0
+            && preg_match('/\<body.*?\>/', $source) === 0
+            && preg_match('/\<head.*?\>/', $source) === 0
+        ) {
             $source = '<body>' . $source . '</body>';
         }
 
@@ -105,7 +112,8 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         // Adds temporary head tag
-        $charsetTag = '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8" />';
+        $charsetTag = '<meta data-html5-dom-document-internal-attribute="charset-meta"'
+            . ' http-equiv="content-type" content="text/html; charset=utf-8" />';
         $matches = [];
         preg_match('/\<head.*?\>/', $source, $matches);
         $removeHeadTag = false;
@@ -149,10 +157,21 @@ class HTML5DOMDocument extends \DOMDocument
                 $headElement = $metaTagElement->parentNode;
                 $htmlElement = $headElement->parentNode;
                 $metaTagElement->parentNode->removeChild($metaTagElement);
-                if ($removeHeadTag && $headElement !== null && $headElement->parentNode !== null && ($headElement->firstChild === null || ($headElement->childNodes->length === 1 && $headElement->firstChild instanceof \DOMText))) {
+                if ($removeHeadTag
+                    && $headElement !== null
+                    && $headElement->parentNode !== null
+                    && (
+                        $headElement->firstChild === null
+                        || ($headElement->childNodes->length === 1 && $headElement->firstChild instanceof \DOMText)
+                    )
+                ) {
                     $headElement->parentNode->removeChild($headElement);
                 }
-                if ($removeHtmlTag && $htmlElement !== null && $htmlElement->parentNode !== null && $htmlElement->firstChild === null) {
+                if ($removeHtmlTag
+                    && $htmlElement !== null
+                    && $htmlElement->parentNode !== null
+                    && $htmlElement->firstChild === null
+                ) {
                     $htmlElement->parentNode->removeChild($htmlElement);
                 }
             }
@@ -163,14 +182,15 @@ class HTML5DOMDocument extends \DOMDocument
             preg_match_all('/\sid[\s]*=[\s]*(["\'])(.*?)\1/', $source, $matches);
             if (!empty($matches[2]) && max(array_count_values($matches[2])) > 1) {
                 $elementIDs = [];
-                $walkChildren = function($element) use (&$walkChildren, &$elementIDs) {
+                $walkChildren = function ($element) use (&$walkChildren, &$elementIDs) {
                     foreach ($element->childNodes as $child) {
                         if ($child instanceof \DOMElement) {
                             if ($child->attributes->length > 0) { // Performance optimization
                                 $id = $child->getAttribute('id');
                                 if ($id !== '') {
                                     if (isset($elementIDs[$id])) {
-                                        throw new \Exception('A DOM node with an ID value "' . $id . '" already exists!');
+                                        throw new \Exception('A DOM node with an ID value "'
+                                            . $id . '" already exists!');
                                     } else {
                                         $elementIDs[$id] = true;
                                     }
@@ -303,8 +323,11 @@ class HTML5DOMDocument extends \DOMDocument
                         break;
                     }
                 }
-                $tempDomDocument->loadHTML("<!DOCTYPE html>\n<html>" . ($isInHead ? '<head></head>' : '<body></body>') . '</html>');
-                $tempDomDocument->childNodes[1]->childNodes[0]->appendChild($tempDomDocument->importNode(clone($node), true));
+                $tempDomDocument->loadHTML("<!DOCTYPE html>\n<html>"
+                    . ($isInHead ? '<head></head>' : '<body></body>') . '</html>');
+                $tempDomDocument->childNodes[1]->childNodes[0]->appendChild(
+                    $tempDomDocument->importNode(clone($node), true)
+                );
                 $html = $tempDomDocument->saveHTML();
                 $html = substr($html, 28, -14); // remove the DOCTYPE + the new line + html + body or head tags
             }
@@ -347,8 +370,24 @@ class HTML5DOMDocument extends \DOMDocument
 
             $codeToRemove = [
                 'html5-dom-document-internal-content',
-                '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8">',
-                '</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>'
+                '<meta data-html5-dom-document-internal-attribute="charset-meta"'
+                    . ' http-equiv="content-type" content="text/html; charset=utf-8">',
+                '</area>',
+                '</base>',
+                '</br>',
+                '</col>',
+                '</command>',
+                '</embed>',
+                '</hr>',
+                '</img>',
+                '</input>',
+                '</keygen>',
+                '</link>',
+                '</meta>',
+                '</param>',
+                '</source>',
+                '</track>',
+                '</wbr>'
             ];
             if ($removeHeadElement) {
                 $codeToRemove[] = '<head></head>';
@@ -364,7 +403,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Dumps the internal document into a file using HTML formatting.
-     * 
+     *
      * @param string $filename The path to the saved HTML document.
      * @return int the number of bytes written or FALSE if an error occurred.
      */
@@ -385,7 +424,10 @@ class HTML5DOMDocument extends \DOMDocument
     /**
      * Returns the first document element matching the selector.
      *
-     * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2, .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p, div > p, div + p and p ~ ul.
+     * @param string $selector A CSS query selector. Available values:
+     * *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2,
+     * .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p,
+     * div > p, div + p and p ~ ul.
      * @return HTML5DOMElement|null The result DOMElement or null if not found.
      * @throws \InvalidArgumentException
      */
@@ -397,7 +439,10 @@ class HTML5DOMDocument extends \DOMDocument
     /**
      * Returns a list of document elements matching the selector.
      *
-     * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2, .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p, div > p, div + p and p ~ ul.
+     * @param string $selector A CSS query selector. Available values:
+     * *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2,
+     * .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p,
+     * div > p, div + p and p ~ ul.
      * @return HTML5DOMNodeList Returns a list of DOMElements matching the criteria.
      * @throws \InvalidArgumentException
      */
@@ -423,7 +468,8 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Inserts a HTML document into the current document. The elements from the head and the body will be moved to their proper locations.
+     * Inserts a HTML document into the current document.
+     * The elements from the head and the body will be moved to their proper locations.
      *
      * @param string $source The HTML code to be inserted.
      * @param string $target Body target position. Available values: afterBodyBegin, beforeBodyEnd or insertTarget name.
@@ -434,9 +480,11 @@ class HTML5DOMDocument extends \DOMDocument
     }
 
     /**
-     * Inserts multiple HTML documents into the current document. The elements from the head and the body will be moved to their proper locations.
+     * Inserts multiple HTML documents into the current document.
+     * The elements from the head and the body will be moved to their proper locations.
      *
-     * @param array $sources An array containing the source of the document to be inserted in the following format: [ ['source'=>'', 'target'=>''], ['source'=>'', 'target'=>''], ... ]
+     * @param array $sources An array containing the source of the document to be inserted in the following format:
+     * [ ['source'=>'', 'target'=>''], ['source'=>'', 'target'=>''], ... ]
      * @throws \Exception
      */
     public function insertHTMLMulti(array $sources)
@@ -451,7 +499,7 @@ class HTML5DOMDocument extends \DOMDocument
 
         $currentDomDocument = &$this;
 
-        $copyAttributes = function($sourceNode, $targetNode) {
+        $copyAttributes = function ($sourceNode, $targetNode) {
             foreach ($sourceNode->attributes as $attributeName => $attribute) {
                 $targetNode->setAttribute($attributeName, $attribute->value);
             }
@@ -529,7 +577,7 @@ class HTML5DOMDocument extends \DOMDocument
                             }
                         }
                     }
-                } else if ($target === 'beforeBodyEnd') {
+                } elseif ($target === 'beforeBodyEnd') {
                     foreach ($bodyElementChildren as $bodyElementChild) {
                         $newNode = $currentDomDocument->importNode($bodyElementChild, true);
                         if ($newNode !== null) {
@@ -568,10 +616,11 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Applies the modifications specified to the DOM document.
-     * 
+     *
      * @param int $modifications The modifications to apply. Available values:
      *  - HTML5DOMDocument::FIX_MULTIPLE_TITLES - removes all but the last title elements.
-     *  - HTML5DOMDocument::FIX_DUPLICATE_METATAGS - removes all but the last metatags with matching name or property attributes.
+     *  - HTML5DOMDocument::FIX_DUPLICATE_METATAGS - removes all but the last metatags with
+     * matching name or property attributes.
      *  - HTML5DOMDocument::FIX_MULTIPLE_HEADS - merges multiple head elements.
      *  - HTML5DOMDocument::FIX_MULTIPLE_BODIES - merges multiple body elements.
      *  - HTML5DOMDocument::OPTIMIZE_HEAD - moves charset metatag and title elements first.
@@ -604,7 +653,6 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         foreach ($headElements as $headElement) {
-
             if ($fixMultipleTitles) { // Remove all title elements except the last one.
                 $titleTags = $headElement->getElementsByTagName('title');
                 $titleTagsCount = $titleTags->length;
@@ -706,5 +754,4 @@ class HTML5DOMDocument extends \DOMDocument
             }
         }
     }
-
 }

@@ -11,7 +11,7 @@ namespace IvoPetkov;
 
 /**
  * Represents a list of DOM nodes.
- * 
+ *
  * @property-read int $length The list items count
  */
 class HTML5DOMNodeList extends \ArrayObject
@@ -19,7 +19,7 @@ class HTML5DOMNodeList extends \ArrayObject
 
     /**
      * Returns the item at the specified index.
-     * 
+     *
      * @param int $index The item index.
      * @return \IvoPetkov\HTML5DOMElement|null The item at the specified index or null if not existent.
      */
@@ -30,7 +30,7 @@ class HTML5DOMNodeList extends \ArrayObject
 
     /**
      * Returns the value for the property specified.
-     * 
+     *
      * @param string $name The name of the property.
      * @return mixed
      * @throws \Exception
@@ -42,5 +42,4 @@ class HTML5DOMNodeList extends \ArrayObject
         }
         throw new \Exception('Undefined property: \IvoPetkov\HTML5DOMNodeList::$' . $name);
     }
-
 }
