@@ -1331,7 +1331,7 @@ class Test extends PHPUnit\Framework\TestCase
         $this->assertEquals($scripts[0]->innerHTML, '');
         $this->assertEquals($scripts[1]->innerHTML, $js1);
         $this->assertEquals($scripts[2]->innerHTML, $js2);
-        $this->assertEquals($dom->saveHTML(), "<!DOCTYPE html>\n" . $content);
+        $this->assertEquals($dom->saveHTML(), "<!DOCTYPE html>\n" . str_replace('<script src="url"/>', '<script src="url"></script>', $content));
     }
 
     /**
