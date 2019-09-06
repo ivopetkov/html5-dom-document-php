@@ -1324,14 +1324,15 @@ class Test extends PHPUnit\Framework\TestCase
         $js2 = 'var f2=function(t){
             return t.replace(/</g,"&lt;").replace(/>/g,"&gt;");
         };';
-        $content = '<html><head><script src="url"/><script type="text/javascript">' . $js1 . '</script><script>' . $js2 . '</script></head></html>';
+        $content = '<html><head><script src="url1"/><script src="url2"></script><script type="text/javascript">' . $js1 . '</script><script>' . $js2 . '</script></head></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($content);
         $scripts = $dom->querySelectorAll('script');
         $this->assertEquals($scripts[0]->innerHTML, '');
-        $this->assertEquals($scripts[1]->innerHTML, $js1);
-        $this->assertEquals($scripts[2]->innerHTML, $js2);
-        $this->assertEquals($dom->saveHTML(), "<!DOCTYPE html>\n" . str_replace('<script src="url"/>', '<script src="url"></script>', $content));
+        $this->assertEquals($scripts[1]->innerHTML, '');
+        $this->assertEquals($scripts[2]->innerHTML, $js1);
+        $this->assertEquals($scripts[3]->innerHTML, $js2);
+        $this->assertEquals($dom->saveHTML(), "<!DOCTYPE html>\n" . str_replace('<script src="url1"/>', '<script src="url1"></script>', $content));
     }
 
     /**

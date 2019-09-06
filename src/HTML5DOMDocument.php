@@ -88,9 +88,12 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         $source = trim($source);
+
+        // Add CDATA around script tags content
         $matches = null;
         preg_match_all('/<script(.*?)>/', $source, $matches);
         if (isset($matches[0])) {
+            $matches[0] = array_unique($matches[0]);
             foreach ($matches[0] as $match) {
                 if (substr($match, -2, 1) !== '/') { // check if ends with />
                     $source = str_replace($match, $match . '<![CDATA[html5-dom-document-internal-cdata', $source);
@@ -98,7 +101,17 @@ class HTML5DOMDocument extends \DOMDocument
             }
         }
         $source = str_replace('</script>', 'html5-dom-document-internal-cdata]]></script>', $source);
-        $source = preg_replace('/(\<!\[CDATA\[html5-dom-document-internal-cdata.*?)\<\/(.*?html5-dom-document-internal-cdata\]\]>)/s', '$1<html5-dom-document-internal-cdata-endtagfix/$2', $source);
+        $source = str_replace('<![CDATA[html5-dom-document-internal-cdatahtml5-dom-document-internal-cdata]]>', '', $source); // clean empty script tags
+        $matches = null;
+        preg_match_all('/\<!\[CDATA\[html5-dom-document-internal-cdata.*?html5-dom-document-internal-cdata\]\]>/s', $source, $matches);
+        if (isset($matches[0])) {
+            $matches[0] = array_unique($matches[0]);
+            foreach ($matches[0] as $match) {
+                if (strpos($match, '</') !== false) { // check if contains </
+                    $source = str_replace($match, str_replace('</', '<html5-dom-document-internal-cdata-endtagfix/', $match), $source);
+                }
+            }
+        }
 
         $autoAddHtmlAndBodyTags = !defined('LIBXML_HTML_NOIMPLIED') || ($options & LIBXML_HTML_NOIMPLIED) === 0;
         $autoAddDoctype = !defined('LIBXML_HTML_NODEFDTD') || ($options & LIBXML_HTML_NODEFDTD) === 0;
