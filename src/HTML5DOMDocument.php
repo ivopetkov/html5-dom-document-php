@@ -88,7 +88,15 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         $source = trim($source);
-        $source = preg_replace('/<script(.*?)>/', '<script$1><![CDATA[html5-dom-document-internal-cdata', $source);
+        $matches = null;
+        preg_match_all('/<script(.*?)>/', $source, $matches);
+        if (isset($matches[0])) {
+            foreach ($matches[0] as $match) {
+                if (substr($match, -2, 1) !== '/') { // check if ends with />
+                    $source = str_replace($match, $match . '<![CDATA[html5-dom-document-internal-cdata', $source);
+                }
+            }
+        }
         $source = str_replace('</script>', 'html5-dom-document-internal-cdata]]></script>', $source);
         $source = preg_replace('/(\<!\[CDATA\[html5-dom-document-internal-cdata.*?)\<\/(.*?html5-dom-document-internal-cdata\]\]>)/s', '$1<html5-dom-document-internal-cdata-endtagfix/$2', $source);
 

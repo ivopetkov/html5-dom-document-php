@@ -1318,14 +1318,19 @@ class Test extends PHPUnit\Framework\TestCase
      */
     public function testSpecialCharsInScriptTags()
     {
-        $js = 'var f=function(t){
+        $js1 = 'var f1=function(t){
             return t.replace(/</g,"&lt;").replace(/>/g,"&gt;");
         };';
-        $content = '<html><head><script type="text/javascript">' . $js . '</script></head></html>';
+        $js2 = 'var f2=function(t){
+            return t.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+        };';
+        $content = '<html><head><script src="url"/><script type="text/javascript">' . $js1 . '</script><script>' . $js2 . '</script></head></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($content);
-        $script = $dom->querySelector('script');
-        $this->assertEquals($script->innerHTML, $js);
+        $scripts = $dom->querySelectorAll('script');
+        $this->assertEquals($scripts[0]->innerHTML, '');
+        $this->assertEquals($scripts[1]->innerHTML, $js1);
+        $this->assertEquals($scripts[2]->innerHTML, $js2);
         $this->assertEquals($dom->saveHTML(), "<!DOCTYPE html>\n" . $content);
     }
 
