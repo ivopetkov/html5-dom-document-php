@@ -21,7 +21,7 @@ class Test extends PHPUnit\Framework\TestCase
     public function testSaveHTML()
     {
 
-        $testSource = function($source, $expectedSource) {
+        $testSource = function ($source, $expectedSource) {
             $dom = new HTML5DOMDocument();
             $dom->loadHTML($source);
             $this->assertTrue($expectedSource === $dom->saveHTML());
@@ -49,7 +49,7 @@ class Test extends PHPUnit\Framework\TestCase
      */
     public function testOmitedElements()
     {
-        $testSource = function($source, $expectedSource) {
+        $testSource = function ($source, $expectedSource) {
             $dom = new HTML5DOMDocument();
             $dom->loadHTML($source);
             $this->assertEquals($expectedSource, $dom->saveHTML());
@@ -77,8 +77,8 @@ class Test extends PHPUnit\Framework\TestCase
     public function testUTF()
     {
         $bodyContent = '<div>hello</div>'
-                . '<div>здравей</div>'
-                . '<div>你好</div>';
+            . '<div>здравей</div>'
+            . '<div>你好</div>';
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>' . $bodyContent . '</body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($bodyContent);
@@ -91,14 +91,14 @@ class Test extends PHPUnit\Framework\TestCase
     public function testNbspAndWhiteSpace()
     {
         $bodyContent = '<div> &nbsp; &nbsp; &nbsp; </div>'
-                . '<div> &nbsp;&nbsp;&nbsp; </div>'
-                . '<div> &nbsp; <span>&nbsp;</span></div>'
-                . '<div>text1 text2 </div>';
-// Has problems with:
-//    <label>Label 1</label>
-//    <input>
-//    <label>Label 2</label>
-//    <input>
+            . '<div> &nbsp;&nbsp;&nbsp; </div>'
+            . '<div> &nbsp; <span>&nbsp;</span></div>'
+            . '<div>text1 text2 </div>';
+        // Has problems with:
+        //    <label>Label 1</label>
+        //    <input>
+        //    <label>Label 2</label>
+        //    <input>
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>' . $bodyContent . '</body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($bodyContent);
@@ -128,36 +128,36 @@ class Test extends PHPUnit\Framework\TestCase
     {
         // insert beforeBodyEnd
         $source = '<!DOCTYPE html><html><body>'
-                . 'text1'
-                . '</body></html>';
+            . 'text1'
+            . '</body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($source);
         $dom->insertHTML('<html><head><meta custom="value"></head><body>'
-                . '<div>text2</div>'
-                . '<div>text3</div>'
-                . '</body></html>');
+            . '<div>text2</div>'
+            . '<div>text3</div>'
+            . '</body></html>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head><meta custom="value"></head><body>'
-                . 'text1'
-                . '<div>text2</div>'
-                . '<div>text3</div>'
-                . '</body></html>';
+            . 'text1'
+            . '<div>text2</div>'
+            . '<div>text3</div>'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         // insert afterBodyBegin
         $source = '<!DOCTYPE html><html><body>'
-                . 'text1'
-                . '</body></html>';
+            . 'text1'
+            . '</body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($source);
         $dom->insertHTML('<html><head><meta custom="value"></head><body>'
-                . '<div>text2</div>'
-                . '<div>text3</div>'
-                . '</body></html>', 'afterBodyBegin');
+            . '<div>text2</div>'
+            . '<div>text3</div>'
+            . '</body></html>', 'afterBodyBegin');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head><meta custom="value"></head><body>'
-                . '<div>text2</div>'
-                . '<div>text3</div>'
-                . 'text1'
-                . '</body></html>';
+            . '<div>text2</div>'
+            . '<div>text3</div>'
+            . 'text1'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         // insert afterBodyBegin in empty elements
@@ -165,37 +165,37 @@ class Test extends PHPUnit\Framework\TestCase
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($source);
         $dom->insertHTML('<html><head><meta custom="value"></head><body>'
-                . '<div>text1</div>'
-                . '<div>text2</div>'
-                . '</body></html>', 'afterBodyBegin');
+            . '<div>text1</div>'
+            . '<div>text2</div>'
+            . '</body></html>', 'afterBodyBegin');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head><meta custom="value"></head><body>'
-                . '<div>text1</div>'
-                . '<div>text2</div>'
-                . '</body></html>';
+            . '<div>text1</div>'
+            . '<div>text2</div>'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         // insert in target
         $source = '<!DOCTYPE html><html><body>'
-                . '<div></div>'
-                . '<div></div>'
-                . '<div></div>'
-                . '</body></html>';
+            . '<div></div>'
+            . '<div></div>'
+            . '<div></div>'
+            . '</body></html>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($source);
         $secondDiv = $dom->querySelectorAll('div')->item(1);
         $secondDiv->appendChild($dom->createInsertTarget('name1'));
         $dom->insertHTML('<html><head><meta custom="value"></head><body>'
-                . '<div>text1</div>'
-                . '<div>text2</div>'
-                . '</body></html>', 'name1');
+            . '<div>text1</div>'
+            . '<div>text2</div>'
+            . '</body></html>', 'name1');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head><meta custom="value"></head><body>'
-                . '<div></div>'
-                . '<div>'
-                . '<div>text1</div>'
-                . '<div>text2</div>'
-                . '</div>'
-                . '<div></div>'
-                . '</body></html>';
+            . '<div></div>'
+            . '<div>'
+            . '<div>text1</div>'
+            . '<div>text2</div>'
+            . '</div>'
+            . '<div></div>'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         // insert in target in empty dom
@@ -210,16 +210,16 @@ class Test extends PHPUnit\Framework\TestCase
         // Insert duplicate ID
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<div>1</div>'
-                . '<div id="value1">2</div>'
-                . '<div>3</div>');
+            . '<div id="value1">2</div>'
+            . '<div>3</div>');
         $dom->insertHTML('<div id="value1">5</div><div>4</div>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>'
-                . '<div>1</div>'
-                . '<div id="value1">2</div>'
-                . '<div>3</div>'
-                . '<div id="value1">5</div>'
-                . '<div>4</div>'
-                . '</body></html>';
+            . '<div>1</div>'
+            . '<div id="value1">2</div>'
+            . '<div>3</div>'
+            . '<div id="value1">5</div>'
+            . '<div>4</div>'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         // Empty source
@@ -227,48 +227,48 @@ class Test extends PHPUnit\Framework\TestCase
         $dom->loadHTML('');
         $dom->insertHTML('<div>text1</div>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>'
-                . '<div>text1</div>'
-                . '</body></html>';
+            . '<div>text1</div>'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         // No source
         $dom = new HTML5DOMDocument();
         $dom->insertHTML('<div>text1</div>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>'
-                . '<div>text1</div>'
-                . '</body></html>';
+            . '<div>text1</div>'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         // Text
         $dom = new HTML5DOMDocument();
         $dom->insertHTML('text1');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>'
-                . 'text1'
-                . '</body></html>';
+            . 'text1'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         // Script tag
         $dom = new HTML5DOMDocument();
         $dom->insertHTML('<script>alert(1);</script>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>'
-                . '<script>alert(1);</script>'
-                . '</body></html>';
+            . '<script>alert(1);</script>'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         // Script tag in the head
         $dom = new HTML5DOMDocument();
         $dom->insertHTML('<head><script>alert(1);</script></head>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html>'
-                . '<head><script>alert(1);</script></head>'
-                . '</html>';
+            . '<head><script>alert(1);</script></head>'
+            . '</html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         // Custom tag
         $dom = new HTML5DOMDocument();
         $dom->insertHTML('<component></component>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>'
-                . '<component></component>'
-                . '</body></html>';
+            . '<component></component>'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         // Empty content
@@ -311,7 +311,7 @@ class Test extends PHPUnit\Framework\TestCase
     public function testEmpty()
     {
 
-        $testSource = function($source, $expectedSource) {
+        $testSource = function ($source, $expectedSource) {
             $dom = new HTML5DOMDocument();
             $dom->loadHTML($source);
             $this->assertTrue($expectedSource === $dom->saveHTML());
@@ -339,15 +339,15 @@ class Test extends PHPUnit\Framework\TestCase
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<html><body>'
-                . '<h1>text0</h1>'
-                . '<div id="text1" class="class1">text1</div>'
-                . '<div>text2</div>'
-                . '<div>'
-                . '<div class="text3 class1">text3</div>'
-                . '</div>'
-                . '<my-custom-element class="text5 class1">text5</my-custom-element>'
-                . '<span id="text4" class="class1 class2">text4</div>'
-                . '</body></html>');
+            . '<h1>text0</h1>'
+            . '<div id="text1" class="class1">text1</div>'
+            . '<div>text2</div>'
+            . '<div>'
+            . '<div class="text3 class1">text3</div>'
+            . '</div>'
+            . '<my-custom-element class="text5 class1">text5</my-custom-element>'
+            . '<span id="text4" class="class1 class2">text4</div>'
+            . '</body></html>');
 
         $this->assertTrue($dom->querySelector('#text1')->innerHTML === 'text1');
 
@@ -393,17 +393,17 @@ class Test extends PHPUnit\Framework\TestCase
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<html><head>'
-                . '<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">'
-                . '<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32"></head>'
-                . '<body><div id="container">'
-                . '<div id="text1" class="class1">text1</div>'
-                . '<div>text2</div>'
-                . '<div>'
-                . '<div class="class3 class1">text3</div>'
-                . '</div>'
-                . '<my-custom-element class="class5 class1">text5</my-custom-element>'
-                . '<span id="text4" class="class1 class2">text4</div>'
-                . '</div></body></html>');
+            . '<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">'
+            . '<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32"></head>'
+            . '<body><div id="container">'
+            . '<div id="text1" class="class1">text1</div>'
+            . '<div>text2</div>'
+            . '<div>'
+            . '<div class="class3 class1">text3</div>'
+            . '</div>'
+            . '<my-custom-element class="class5 class1">text5</my-custom-element>'
+            . '<span id="text4" class="class1 class2">text4</div>'
+            . '</div></body></html>');
 
         $this->assertTrue($dom->querySelector('#container')->querySelector('#text1')->innerHTML === 'text1');
 
@@ -457,14 +457,14 @@ class Test extends PHPUnit\Framework\TestCase
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<html><body>'
-                . '<span>text1</span>'
-                . '<span>text2</span>'
-                . '<span>text3</span>'
-                . '<div><span>text4</span></div>'
-                . '<div id="id,1">text5</div>'
-                . '<a href="#">text6</a>'
-                . '<div"><a href="#">text7</a></div>'
-                . '</body></html>');
+            . '<span>text1</span>'
+            . '<span>text2</span>'
+            . '<span>text3</span>'
+            . '<div><span>text4</span></div>'
+            . '<div id="id,1">text5</div>'
+            . '<a href="#">text6</a>'
+            . '<div"><a href="#">text7</a></div>'
+            . '</body></html>');
 
         $this->assertTrue($dom->querySelectorAll('span, div')->length === 7); // 4 spans + 3 divs
         $this->assertTrue($dom->querySelectorAll('span, [id="id,1"]')->length === 5); // 4 spans + 1 div
@@ -492,10 +492,10 @@ class Test extends PHPUnit\Framework\TestCase
     {
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<body>'
-                . '<div class="a1">1</div>'
-                . '<div class="a2">2</div>'
-                . '<div class="a3">3</div>'
-                . '</body>');
+            . '<div class="a1">1</div>'
+            . '<div class="a2">2</div>'
+            . '<div class="a3">3</div>'
+            . '</body>');
         $elements = $dom->querySelectorAll('.a1,.a2,.a3');
         $this->assertEquals($elements->length, 3);
     }
@@ -508,8 +508,8 @@ class Test extends PHPUnit\Framework\TestCase
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<html><body>'
-                . '<div>text1</div>'
-                . '</body></html>');
+            . '<div>text1</div>'
+            . '</body></html>');
 
         $this->assertTrue($dom->querySelector('body')->innerHTML === '<div>text1</div>');
 
@@ -534,8 +534,8 @@ class Test extends PHPUnit\Framework\TestCase
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<html><body>'
-                . '<div>text1</div><span title="hi"></span><br/>'
-                . '</body></html>');
+            . '<div>text1</div><span title="hi"></span><br/>'
+            . '</body></html>');
 
         $this->assertTrue($dom->querySelector('div')->outerHTML === '<div>text1</div>');
         $this->assertTrue((string) $dom->querySelector('div') === '<div>text1</div>');
@@ -569,8 +569,8 @@ class Test extends PHPUnit\Framework\TestCase
         $expectedDataAttributeValue = '"<>&*;';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<html><body>'
-                . '<div class="text1" data-value="' . $dataAttributeValue . '">text1</div>'
-                . '</body></html>');
+            . '<div class="text1" data-value="' . $dataAttributeValue . '">text1</div>'
+            . '</body></html>');
 
         $this->assertTrue($dom->querySelector('div')->getAttribute('class') === 'text1');
         $this->assertTrue($dom->querySelector('div')->getAttribute('unknown') === '');
@@ -588,16 +588,16 @@ class Test extends PHPUnit\Framework\TestCase
 
         $filename = sys_get_temp_dir() . '/html5-dom-document-test-file-' . md5(uniqid());
         file_put_contents($filename, '<!DOCTYPE html><html><body>'
-                . '<div>text1</div>'
-                . '<div>text2</div>'
-                . '</body></html>');
+            . '<div>text1</div>'
+            . '<div>text2</div>'
+            . '</body></html>');
         $dom = new HTML5DOMDocument();
         $dom->loadHTMLFile($filename);
         $dom->querySelector('body')->removeChild($dom->querySelector('div')); // remove first div
         $dom->saveHTMLFile($filename);
         $this->assertTrue(file_get_contents($filename) === '<!DOCTYPE html>' . "\n" . '<html><body>'
-                . '<div>text2</div>'
-                . '</body></html>');
+            . '<div>text2</div>'
+            . '</body></html>');
     }
 
     /**
@@ -607,95 +607,95 @@ class Test extends PHPUnit\Framework\TestCase
     {
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<!DOCTYPE html><html><head>'
-                . '<script id="script1">var script1=1;</script>'
-                . '<script id="script1">var script1=2;</script>'
-                . '</head><body></body></html>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
+            . '<script id="script1">var script1=1;</script>'
+            . '<script id="script1">var script1=2;</script>'
+            . '</head><body></body></html>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head>'
-                . '<script id="script1">var script1=1;</script>'
-                . '<script id="script1">var script1=2;</script>'
-                . '</head><body></body></html>';
+            . '<script id="script1">var script1=1;</script>'
+            . '<script id="script1">var script1=2;</script>'
+            . '</head><body></body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<!DOCTYPE html><html><head>'
-                . '<script id="script1">var script1=1;</script>'
-                . '<script id="script2">var script2=1;</script>'
-                . '</head><body>'
-                . 'hello<div id="text1">text1</div>'
-                . '<div id="text2">text2</div>'
-                . '<div id="text3">text3</div>'
-                . '<div><span id="span1">hi1</span></div>'
-                . '<span id="span2">hi2</span>'
-                . '</body></html>');
+            . '<script id="script1">var script1=1;</script>'
+            . '<script id="script2">var script2=1;</script>'
+            . '</head><body>'
+            . 'hello<div id="text1">text1</div>'
+            . '<div id="text2">text2</div>'
+            . '<div id="text3">text3</div>'
+            . '<div><span id="span1">hi1</span></div>'
+            . '<span id="span2">hi2</span>'
+            . '</body></html>');
         $dom->insertHTML('<!DOCTYPE html><html><head>'
-                . '<script id="script0">var script0=1;</script>'
-                . '<script id="script1">var script1=1;</script>'
-                . '<script id="script3">var script3=1;</script>'
-                . '</head><body>'
-                . '<div id="text0">text0</div>'
-                . '<div id="text2">text2</div>'
-                . '<div id="text4">text4</div>'
-                . '<span id="span1">hi11</span>'
-                . '<div><span id="span1">hi22</span></div>'
-                . '</body></html>');
+            . '<script id="script0">var script0=1;</script>'
+            . '<script id="script1">var script1=1;</script>'
+            . '<script id="script3">var script3=1;</script>'
+            . '</head><body>'
+            . '<div id="text0">text0</div>'
+            . '<div id="text2">text2</div>'
+            . '<div id="text4">text4</div>'
+            . '<span id="span1">hi11</span>'
+            . '<div><span id="span1">hi22</span></div>'
+            . '</body></html>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head>'
-                . '<script id="script1">var script1=1;</script>'
-                . '<script id="script2">var script2=1;</script>'
-                . '<script id="script0">var script0=1;</script>'
-                . '<script id="script1">var script1=1;</script>'
-                . '<script id="script3">var script3=1;</script>'
-                . '</head><body>'
-                . 'hello<div id="text1">text1</div>'
-                . '<div id="text2">text2</div>'
-                . '<div id="text3">text3</div>'
-                . '<div><span id="span1">hi1</span></div>'
-                . '<span id="span2">hi2</span>'
-                . '<div id="text0">text0</div>'
-                . '<div id="text2">text2</div>'
-                . '<div id="text4">text4</div>'
-                . '<span id="span1">hi11</span>'
-                . '<div><span id="span1">hi22</span></div>'
-                . '</body></html>';
+            . '<script id="script1">var script1=1;</script>'
+            . '<script id="script2">var script2=1;</script>'
+            . '<script id="script0">var script0=1;</script>'
+            . '<script id="script1">var script1=1;</script>'
+            . '<script id="script3">var script3=1;</script>'
+            . '</head><body>'
+            . 'hello<div id="text1">text1</div>'
+            . '<div id="text2">text2</div>'
+            . '<div id="text3">text3</div>'
+            . '<div><span id="span1">hi1</span></div>'
+            . '<span id="span2">hi2</span>'
+            . '<div id="text0">text0</div>'
+            . '<div id="text2">text2</div>'
+            . '<div id="text4">text4</div>'
+            . '<span id="span1">hi11</span>'
+            . '<div><span id="span1">hi22</span></div>'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<!DOCTYPE html><html><body>'
-                . '<div id="text1">text1</div>'
-                . '</body></html>');
+            . '<div id="text1">text1</div>'
+            . '</body></html>');
         $dom->insertHTML('<!DOCTYPE html><html><body>'
-                . '<div>'
-                . '<div id="text1">text1</div>'
-                . '<div><div id="text1">text1</div></div>'
-                . '<div id="text2">text2</div>'
-                . '</div>'
-                . '</body></html>');
+            . '<div>'
+            . '<div id="text1">text1</div>'
+            . '<div><div id="text1">text1</div></div>'
+            . '<div id="text2">text2</div>'
+            . '</div>'
+            . '</body></html>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>'
-                . '<div id="text1">text1</div>'
-                . '<div>'
-                . '<div id="text1">text1</div>'
-                . '<div><div id="text1">text1</div></div>'
-                . '<div id="text2">text2</div>'
-                . '</div>'
-                . '</body></html>';
+            . '<div id="text1">text1</div>'
+            . '<div>'
+            . '<div id="text1">text1</div>'
+            . '<div><div id="text1">text1</div></div>'
+            . '<div id="text2">text2</div>'
+            . '</div>'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<!DOCTYPE html><html><body>'
-                . '<div id="text1">text1</div>'
-                . '</body></html>');
+            . '<div id="text1">text1</div>'
+            . '</body></html>');
         $dom->insertHTML('<!DOCTYPE html><html><body>'
-                . '<div>'
-                . '<div id="text2">text2</div>'
-                . '<div id="text2">text2</div>'
-                . '</div>'
-                . '</body></html>');
+            . '<div>'
+            . '<div id="text2">text2</div>'
+            . '<div id="text2">text2</div>'
+            . '</div>'
+            . '</body></html>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><body>'
-                . '<div id="text1">text1</div>'
-                . '<div>'
-                . '<div id="text2">text2</div>'
-                . '<div id="text2">text2</div>'
-                . '</div>'
-                . '</body></html>';
+            . '<div id="text1">text1</div>'
+            . '<div>'
+            . '<div id="text2">text2</div>'
+            . '<div id="text2">text2</div>'
+            . '</div>'
+            . '</body></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
@@ -707,41 +707,41 @@ class Test extends PHPUnit\Framework\TestCase
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<!DOCTYPE html><html><head>'
-                . '<title>Title1</title>'
-                . '</head></html>');
+            . '<title>Title1</title>'
+            . '</head></html>');
         $dom->insertHTML('<head>'
-                . '<title>Title2</title>'
-                . '</head>');
+            . '<title>Title2</title>'
+            . '</head>');
         $dom->modify(HTML5DOMDocument::FIX_MULTIPLE_TITLES);
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head>'
-                . '<title>Title2</title>'
-                . '</head></html>';
+            . '<title>Title2</title>'
+            . '</head></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<!DOCTYPE html><html><head>'
-                . '<meta charset="utf-8">'
-                . '<meta content="index,follow" name="robots">'
-                . '<meta content="html5" name="keywords">'
-                . '<meta content="website" property="og:type">'
-                . '</head></html>');
+            . '<meta charset="utf-8">'
+            . '<meta content="index,follow" name="robots">'
+            . '<meta content="html5" name="keywords">'
+            . '<meta content="website" property="og:type">'
+            . '</head></html>');
         $dom->insertHTML('<head>'
-                . '<meta content="dom" name="keywords">'
-                . '<meta charset="us-ascii">'
-                . '<meta content="video.movie" property="og:type">'
-                . '<title>Title1</title>'
-                . '</head>');
+            . '<meta content="dom" name="keywords">'
+            . '<meta charset="us-ascii">'
+            . '<meta content="video.movie" property="og:type">'
+            . '<title>Title1</title>'
+            . '</head>');
         $dom->modify(
-                HTML5DOMDocument::FIX_DUPLICATE_METATAGS |
+            HTML5DOMDocument::FIX_DUPLICATE_METATAGS |
                 HTML5DOMDocument::OPTIMIZE_HEAD
         );
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html><head>'
-                . '<meta charset="us-ascii">'
-                . '<title>Title1</title>'
-                . '<meta content="index,follow" name="robots">'
-                . '<meta content="dom" name="keywords">'
-                . '<meta content="video.movie" property="og:type">'
-                . '</head></html>';
+            . '<meta charset="us-ascii">'
+            . '<title>Title1</title>'
+            . '<meta content="index,follow" name="robots">'
+            . '<meta content="dom" name="keywords">'
+            . '<meta content="video.movie" property="og:type">'
+            . '</head></html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
@@ -792,41 +792,41 @@ class Test extends PHPUnit\Framework\TestCase
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<!DOCTYPE html><html>'
-                . '<head>'
-                . '<title>Title1</title>'
-                . '<meta charset="utf-8">'
-                . '</head>'
-                . '<head>'
-                . '<title>Title2</title>'
-                . '<meta content="index,follow" name="robots">'
-                . '</head>'
-                . '<body>'
-                . 'Text1'
-                . '<div>TextA</div>'
-                . '</body>'
-                . '<body>'
-                . 'Text2'
-                . '<div>TextB</div>'
-                . '</body>'
-                . '</html>');
+            . '<head>'
+            . '<title>Title1</title>'
+            . '<meta charset="utf-8">'
+            . '</head>'
+            . '<head>'
+            . '<title>Title2</title>'
+            . '<meta content="index,follow" name="robots">'
+            . '</head>'
+            . '<body>'
+            . 'Text1'
+            . '<div>TextA</div>'
+            . '</body>'
+            . '<body>'
+            . 'Text2'
+            . '<div>TextB</div>'
+            . '</body>'
+            . '</html>');
         $dom->modify(
-                HTML5DOMDocument::FIX_MULTIPLE_HEADS |
+            HTML5DOMDocument::FIX_MULTIPLE_HEADS |
                 HTML5DOMDocument::FIX_MULTIPLE_BODIES |
                 HTML5DOMDocument::FIX_MULTIPLE_TITLES
         );
         $expectedSource = '<!DOCTYPE html>' . "\n" . '<html>'
-                . '<head>'
-                . '<meta charset="utf-8">'
-                . '<title>Title2</title>'
-                . '<meta content="index,follow" name="robots">'
-                . '</head>'
-                . '<body>'
-                . 'Text1'
-                . '<div>TextA</div>'
-                . 'Text2'
-                . '<div>TextB</div>'
-                . '</body>'
-                . '</html>';
+            . '<head>'
+            . '<meta charset="utf-8">'
+            . '<title>Title2</title>'
+            . '<meta content="index,follow" name="robots">'
+            . '</head>'
+            . '<body>'
+            . 'Text1'
+            . '<div>TextA</div>'
+            . 'Text2'
+            . '<div>TextB</div>'
+            . '</body>'
+            . '</html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
@@ -838,19 +838,19 @@ class Test extends PHPUnit\Framework\TestCase
 
         $dom = new HTML5DOMDocument();
         $dom->loadHTML('<!DOCTYPE html>'
-                . '<html data-html-custom-1="1">'
-                . '<head data-head-custom-1="1"></head>'
-                . '<body data-body-custom-1="1"></body>'
-                . '</html>');
+            . '<html data-html-custom-1="1">'
+            . '<head data-head-custom-1="1"></head>'
+            . '<body data-body-custom-1="1"></body>'
+            . '</html>');
         $dom->insertHTML('<html data-html-custom-1="A" data-html-custom-2="B">'
-                . '<head data-head-custom-1="A" data-head-custom-2="B"></head>'
-                . '<body data-body-custom-1="A" data-body-custom-2="B"></body>'
-                . '</html>');
+            . '<head data-head-custom-1="A" data-head-custom-2="B"></head>'
+            . '<body data-body-custom-1="A" data-body-custom-2="B"></body>'
+            . '</html>');
         $expectedSource = '<!DOCTYPE html>' . "\n" . ''
-                . '<html data-html-custom-1="A" data-html-custom-2="B">'
-                . '<head data-head-custom-1="A" data-head-custom-2="B"></head>'
-                . '<body data-body-custom-1="A" data-body-custom-2="B"></body>'
-                . '</html>';
+            . '<html data-html-custom-1="A" data-html-custom-2="B">'
+            . '<head data-head-custom-1="A" data-head-custom-2="B"></head>'
+            . '<body data-body-custom-1="A" data-body-custom-2="B"></body>'
+            . '</html>';
         $this->assertTrue($expectedSource === $dom->saveHTML());
     }
 
@@ -1218,12 +1218,12 @@ class Test extends PHPUnit\Framework\TestCase
     public function testCompatibilityWithDOMDocument()
     {
 
-        $compareDOMs = function(HTML5DOMDocument $dom1, DOMDocument $dom2) {
+        $compareDOMs = function (HTML5DOMDocument $dom1, DOMDocument $dom2) {
             $this->assertEquals($dom1->getElementsByTagName('html')->length, $dom2->getElementsByTagName('html')->length);
             $this->assertEquals($dom1->getElementsByTagName('head')->length, $dom2->getElementsByTagName('head')->length);
             $this->assertEquals($dom1->getElementsByTagName('body')->length, $dom2->getElementsByTagName('body')->length);
 
-            $updateNewLines = function(&$content) {
+            $updateNewLines = function (&$content) {
                 $content = str_replace("\n<head>", '<head>', $content);
                 $content = str_replace("\n<body>", '<body>', $content);
                 $content = str_replace("\n</html>", '</html>', $content);
@@ -1258,7 +1258,7 @@ class Test extends PHPUnit\Framework\TestCase
             }
         };
 
-        $compareContent = function($content) use ($compareDOMs) {
+        $compareContent = function ($content) use ($compareDOMs) {
             $dom = new HTML5DOMDocument();
             $dom->loadHTML($content);
             $dom2 = new DOMDocument();
@@ -1316,6 +1316,22 @@ class Test extends PHPUnit\Framework\TestCase
     /**
      *
      */
+    public function testSpecialCharsInScriptTags()
+    {
+        $js = 'var f=function(t){
+            return t.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+        };';
+        $content = '<html><head><script type="text/javascript">' . $js . '</script></head></html>';
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($content);
+        $script = $dom->querySelector('script');
+        $this->assertEquals($script->innerHTML, $js);
+        $this->assertEquals($dom->saveHTML(), "<!DOCTYPE html>\n" . $content);
+    }
+
+    /**
+     *
+     */
     public function testFragments()
     {
         $fragments = [
@@ -1330,5 +1346,4 @@ class Test extends PHPUnit\Framework\TestCase
             $this->assertEquals($fragment, $dom->saveHTML());
         }
     }
-
 }

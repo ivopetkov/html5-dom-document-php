@@ -88,6 +88,9 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         $source = trim($source);
+        $source = preg_replace('/<script(.*?)>/', '<script$1><![CDATA[html5-dom-document-internal-cdata', $source);
+        $source = str_replace('</script>', 'html5-dom-document-internal-cdata]]></script>', $source);
+        $source = preg_replace('/(\<!\[CDATA\[html5-dom-document-internal-cdata.*?)\<\/(.*?html5-dom-document-internal-cdata\]\]>)/s', '$1<html5-dom-document-internal-cdata-endtagfix/$2', $source);
 
         $autoAddHtmlAndBodyTags = !defined('LIBXML_HTML_NOIMPLIED') || ($options & LIBXML_HTML_NOIMPLIED) === 0;
         $autoAddDoctype = !defined('LIBXML_HTML_NODEFDTD') || ($options & LIBXML_HTML_NODEFDTD) === 0;
@@ -163,7 +166,7 @@ class HTML5DOMDocument extends \DOMDocument
             preg_match_all('/\sid[\s]*=[\s]*(["\'])(.*?)\1/', $source, $matches);
             if (!empty($matches[2]) && max(array_count_values($matches[2])) > 1) {
                 $elementIDs = [];
-                $walkChildren = function($element) use (&$walkChildren, &$elementIDs) {
+                $walkChildren = function ($element) use (&$walkChildren, &$elementIDs) {
                     foreach ($element->childNodes as $child) {
                         if ($child instanceof \DOMElement) {
                             if ($child->attributes->length > 0) { // Performance optimization
@@ -210,7 +213,7 @@ class HTML5DOMDocument extends \DOMDocument
             if (!isset(self::$newObjectsCache['htmlelement'])) {
                 self::$newObjectsCache['htmlelement'] = new \DOMElement('html');
             }
-            $this->appendChild(clone(self::$newObjectsCache['htmlelement']));
+            $this->appendChild(clone (self::$newObjectsCache['htmlelement']));
             return true;
         }
         return false;
@@ -228,7 +231,7 @@ class HTML5DOMDocument extends \DOMDocument
             if (!isset(self::$newObjectsCache['headelement'])) {
                 self::$newObjectsCache['headelement'] = new \DOMElement('head');
             }
-            $headElement = clone(self::$newObjectsCache['headelement']);
+            $headElement = clone (self::$newObjectsCache['headelement']);
             if ($htmlElement->firstChild === null) {
                 $htmlElement->appendChild($headElement);
             } else {
@@ -250,7 +253,7 @@ class HTML5DOMDocument extends \DOMDocument
             if (!isset(self::$newObjectsCache['bodyelement'])) {
                 self::$newObjectsCache['bodyelement'] = new \DOMElement('body');
             }
-            $this->getElementsByTagName('html')->item(0)->appendChild(clone(self::$newObjectsCache['bodyelement']));
+            $this->getElementsByTagName('html')->item(0)->appendChild(clone (self::$newObjectsCache['bodyelement']));
             return true;
         }
         return false;
@@ -277,15 +280,15 @@ class HTML5DOMDocument extends \DOMDocument
             if (!isset(self::$newObjectsCache['html5domdocument'])) {
                 self::$newObjectsCache['html5domdocument'] = new HTML5DOMDocument();
             }
-            $tempDomDocument = clone(self::$newObjectsCache['html5domdocument']);
+            $tempDomDocument = clone (self::$newObjectsCache['html5domdocument']);
             if ($node->nodeName === 'html') {
                 $tempDomDocument->loadHTML('<!DOCTYPE html>');
-                $tempDomDocument->appendChild($tempDomDocument->importNode(clone($node), true));
+                $tempDomDocument->appendChild($tempDomDocument->importNode(clone ($node), true));
                 $html = $tempDomDocument->saveHTML();
                 $html = substr($html, 16); // remove the DOCTYPE + the new line after
             } elseif ($node->nodeName === 'head' || $node->nodeName === 'body') {
                 $tempDomDocument->loadHTML("<!DOCTYPE html>\n<html></html>");
-                $tempDomDocument->childNodes[1]->appendChild($tempDomDocument->importNode(clone($node), true));
+                $tempDomDocument->childNodes[1]->appendChild($tempDomDocument->importNode(clone ($node), true));
                 $html = $tempDomDocument->saveHTML();
                 $html = substr($html, 22, -7); // remove the DOCTYPE + the new line after + html tag
             } else {
@@ -304,7 +307,7 @@ class HTML5DOMDocument extends \DOMDocument
                     }
                 }
                 $tempDomDocument->loadHTML("<!DOCTYPE html>\n<html>" . ($isInHead ? '<head></head>' : '<body></body>') . '</html>');
-                $tempDomDocument->childNodes[1]->childNodes[0]->appendChild($tempDomDocument->importNode(clone($node), true));
+                $tempDomDocument->childNodes[1]->childNodes[0]->appendChild($tempDomDocument->importNode(clone ($node), true));
                 $html = $tempDomDocument->saveHTML();
                 $html = substr($html, 28, -14); // remove the DOCTYPE + the new line + html + body or head tags
             }
@@ -348,7 +351,8 @@ class HTML5DOMDocument extends \DOMDocument
             $codeToRemove = [
                 'html5-dom-document-internal-content',
                 '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8">',
-                '</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>'
+                '</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>',
+                '<![CDATA[html5-dom-document-internal-cdata', 'html5-dom-document-internal-cdata]]>', 'html5-dom-document-internal-cdata-endtagfix'
             ];
             if ($removeHeadElement) {
                 $codeToRemove[] = '<head></head>';
@@ -451,7 +455,7 @@ class HTML5DOMDocument extends \DOMDocument
 
         $currentDomDocument = &$this;
 
-        $copyAttributes = function($sourceNode, $targetNode) {
+        $copyAttributes = function ($sourceNode, $targetNode) {
             foreach ($sourceNode->attributes as $attributeName => $attribute) {
                 $targetNode->setAttribute($attributeName, $attribute->value);
             }
@@ -468,7 +472,7 @@ class HTML5DOMDocument extends \DOMDocument
             $source = $sourceData['source'];
             $target = isset($sourceData['target']) ? $sourceData['target'] : 'beforeBodyEnd';
 
-            $domDocument = clone(self::$newObjectsCache['html5domdocument']);
+            $domDocument = clone (self::$newObjectsCache['html5domdocument']);
             $domDocument->loadHTML($source, self::ALLOW_DUPLICATE_IDS);
 
             $htmlElement = $domDocument->getElementsByTagName('html')->item(0);
@@ -637,7 +641,7 @@ class HTML5DOMDocument extends \DOMDocument
                         if (!isset($idsList[$id])) {
                             $idsList[$id] = 0;
                         }
-                        $idsList[$id] ++;
+                        $idsList[$id]++;
                         $list[] = [$metaTag, $id];
                     }
                     foreach ($idsList as $id => $count) {
@@ -706,5 +710,4 @@ class HTML5DOMDocument extends \DOMDocument
             }
         }
     }
-
 }
