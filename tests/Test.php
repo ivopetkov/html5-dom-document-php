@@ -1352,4 +1352,29 @@ class Test extends PHPUnit\Framework\TestCase
             $this->assertEquals($fragment, $dom->saveHTML());
         }
     }
+
+    public function testInternalEntityBugWithXPath()
+    {
+        $dom = '<html><body><p><span>Lorem Ipsum</span> &mdash; <span>dolor sit amet,</span></p></body></html>';
+
+        $domDoc = new HTML5DOMDocument('1.0', 'utf-8');
+        $domDoc->loadHTML($dom);
+        $xpath = new DOMXPath($domDoc);
+
+        $xPathNodeList = $xpath->query('//p');
+
+        foreach ($xPathNodeList as $node) {
+            static::assertInstanceOf(HTML5DOMElement::class, $node);
+            static::assertEquals('Lorem Ipsum html5-dom-document-internal-entity1-mdash-end dolor sit amet,', $node->nodeValue);
+            static::assertEquals('Lorem Ipsum &mdash; dolor sit amet,', $node->getNodeValue());
+        }
+
+        $querySelectorNodeList = $domDoc->querySelectorAll('p');
+
+        foreach ($querySelectorNodeList as $node) {
+            static::assertInstanceOf(HTML5DOMElement::class, $node);
+            static::assertEquals('Lorem Ipsum html5-dom-document-internal-entity1-mdash-end dolor sit amet,', $node->nodeValue);
+            static::assertEquals('Lorem Ipsum &mdash; dolor sit amet,', $node->getNodeValue());
+        }
+    }
 }
