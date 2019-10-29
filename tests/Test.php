@@ -1367,7 +1367,7 @@ class Test extends PHPUnit\Framework\TestCase
         foreach ($xPathNodeList as $node) {
             static::assertInstanceOf(HTML5DOMElement::class, $node);
             static::assertEquals('Lorem Ipsum html5-dom-document-internal-entity1-mdash-end dolor sit amet,', $node->nodeValue);
-            static::assertEquals('Lorem Ipsum &mdash; dolor sit amet,', $node->getNodeValue());
+            static::assertEquals('Lorem Ipsum — dolor sit amet,', $node->getNodeValue());
         }
 
         $querySelectorNodeList = $domDoc->querySelectorAll('p');
@@ -1375,7 +1375,7 @@ class Test extends PHPUnit\Framework\TestCase
         foreach ($querySelectorNodeList as $node) {
             static::assertInstanceOf(HTML5DOMElement::class, $node);
             static::assertEquals('Lorem Ipsum html5-dom-document-internal-entity1-mdash-end dolor sit amet,', $node->nodeValue);
-            static::assertEquals('Lorem Ipsum &mdash; dolor sit amet,', $node->getNodeValue());
+            static::assertEquals('Lorem Ipsum — dolor sit amet,', $node->getNodeValue());
         }
     }
 }
