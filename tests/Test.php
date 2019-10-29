@@ -8,6 +8,7 @@
  */
 
 use IvoPetkov\HTML5DOMDocument;
+use IvoPetkov\HTML5DOMElement;
 
 /**
  * @runTestsInSeparateProcesses
