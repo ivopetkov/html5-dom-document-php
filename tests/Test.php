@@ -1366,7 +1366,7 @@ class Test extends PHPUnit\Framework\TestCase
     }
 
     /** @dataProvider propertyGetterTestDataProvider */
-    public function testInternalEntityFromGetters(string $dom, string $expectedFromProperty string $expectedFromGetter)
+    public function testInternalEntityFromGetters(string $dom, string $expectedFromProperty, string $expectedFromGetter)
     {
         $domDoc = new HTML5DOMDocument('1.0', 'utf-8');
         $domDoc->loadHTML($dom);
