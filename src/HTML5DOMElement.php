@@ -153,6 +153,26 @@ class HTML5DOMElement extends \DOMElement
     }
 
     /**
+     * Returns the updated nodeValue Property
+     * 
+     * @return string The updated $nodeValue
+     */
+    public function getNodeValue(): string
+    {
+        return $this->updateResult($this->nodeValue);
+    }
+
+    /**
+     * Returns the updated $textContent Property
+     * 
+     * @return string The updated $textContent
+     */
+    public function getTextContent(): string
+    {
+        return $this->updateResult($this->textContent);
+    }
+
+    /**
      * Returns the value for the attribute name specified.
      *
      * @param string $name The attribute name.

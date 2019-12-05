@@ -8,6 +8,7 @@
  */
 
 use IvoPetkov\HTML5DOMDocument;
+use IvoPetkov\HTML5DOMElement;
 
 /**
  * @runTestsInSeparateProcesses
@@ -1350,6 +1351,47 @@ class Test extends PHPUnit\Framework\TestCase
             $dom->loadHTML($fragment, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
             $this->assertEquals($dom->querySelectorAll('*')->length, 1);
             $this->assertEquals($fragment, $dom->saveHTML());
+        }
+    }
+
+    public function propertyGetterTestDataProvider()
+    {
+      return [
+        [
+            '<html><body><p><span>Lorem Ipsum</span> &mdash; <span>dolor sit amet,</span></p></body></html>',
+            'Lorem Ipsum html5-dom-document-internal-entity1-mdash-end dolor sit amet,',
+            'Lorem Ipsum — dolor sit amet,'
+        ]
+      ];
+    }
+
+    /** @dataProvider propertyGetterTestDataProvider */
+    public function testInternalEntityFromGetters(string $dom, string $expectedFromProperty, string $expectedFromGetter)
+    {
+        $domDoc = new HTML5DOMDocument('1.0', 'utf-8');
+        $domDoc->loadHTML($dom);
+        $xpath = new DOMXPath($domDoc);
+
+        $xPathNodeList = $xpath->query('//p');
+
+        foreach ($xPathNodeList as $node) {
+            static::assertInstanceOf(HTML5DOMElement::class, $node);
+            static::assertEquals($expectedFromProperty, $node->nodeValue);
+            static::assertEquals($expectedFromGetter, $node->getNodeValue());
+
+            static::assertEquals($expectedFromProperty, $node->textContent);
+            static::assertEquals($expectedFromGetter, $node->getTextContent());
+        }
+
+        $querySelectorNodeList = $domDoc->querySelectorAll('p');
+
+        foreach ($querySelectorNodeList as $node) {
+            static::assertInstanceOf(HTML5DOMElement::class, $node);
+            static::assertEquals($expectedFromProperty, $node->nodeValue);
+            static::assertEquals($expectedFromGetter, $node->getNodeValue());
+
+            static::assertEquals($expectedFromProperty, $node->textContent);
+            static::assertEquals($expectedFromGetter, $node->getTextContent());
         }
     }
 }
