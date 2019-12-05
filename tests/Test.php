@@ -1356,13 +1356,13 @@ class Test extends PHPUnit\Framework\TestCase
 
     public function propertyGetterTestDataProvider()
     {
-      return [
-        [
-            '<html><body><p><span>Lorem Ipsum</span> &mdash; <span>dolor sit amet,</span></p></body></html>',
-            'Lorem Ipsum html5-dom-document-internal-entity1-mdash-end dolor sit amet,',
-            'Lorem Ipsum — dolor sit amet,'
-        ]
-      ];
+        return [
+            [
+                '<html><body><p><span>Lorem Ipsum</span> &mdash; <span>dolor sit amet,</span></p></body></html>',
+                'Lorem Ipsum html5-dom-document-internal-entity1-mdash-end dolor sit amet,',
+                'Lorem Ipsum — dolor sit amet,'
+            ]
+        ];
     }
 
     /** @dataProvider propertyGetterTestDataProvider */
