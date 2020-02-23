@@ -270,8 +270,8 @@ trait QuerySelectors
                 $supportedComplexOperators = array_keys($complexSelectors);
                 if ($operator === null) {
                     $operator = ',';
-                    foreach ($supportedComplexOperators as $comprexOperator) {
-                        array_unshift($supportedSelectors, '(?:(?:(?:' . $supportedSimpleSelectorsExpression . '\s*\\' . $comprexOperator . '\s*))+' . $supportedSimpleSelectorsExpression . ')');
+                    foreach ($supportedComplexOperators as $complexOperator) {
+                        array_unshift($supportedSelectors, '(?:(?:(?:' . $supportedSimpleSelectorsExpression . '\s*\\' . $complexOperator . '\s*))+' . $supportedSimpleSelectorsExpression . ')');
                     }
                 }
                 $supportedSelectorsExpression = '(?:(?:' . implode(')|(?:', $supportedSelectors) . '))';
@@ -322,8 +322,8 @@ trait QuerySelectors
                             }
                         }
                         if (!$selectorFound) {
-                            foreach ($complexSelectors as $comprexOperator => $callback) {
-                                $subSelectorParts = $processSelector('parse', $subSelector, $comprexOperator);
+                            foreach ($complexSelectors as $complexOperator => $callback) {
+                                $subSelectorParts = $processSelector('parse', $subSelector, $complexOperator);
                                 if ($subSelectorParts !== false) {
                                     call_user_func($callback, $subSelectorParts, $context, $add);
                                     $selectorFound = true;
