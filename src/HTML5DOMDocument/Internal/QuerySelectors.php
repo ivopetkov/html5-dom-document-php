@@ -32,16 +32,31 @@ trait QuerySelectors
         $cache = [];
         $selector = trim($selector);
         $walkChildren = function (\DOMNode $context, $tagName, callable $callback) use (&$cache) {
-            $name = $tagName !== null ? $tagName : '*';
             $children = null;
+            $getChildren = function (\DOMNode $node) use ($tagName) {
+                if ($tagName !== null) {
+                    return $node->getElementsByTagName($tagName);
+                }
+                $result = [];
+                $process = function (\DOMNode $node) use (&$process, &$result) {
+                    foreach ($node->childNodes as $child) {
+                        if ($child instanceof \DOMElement) {
+                            $result[] = $child;
+                            $process($child);
+                        }
+                    }
+                };
+                $process($node);
+                return $result;
+            };
             if ($this === $context) {
-                $cacheKey = 'walk_children_' . $name;
+                $cacheKey = 'walk_children_' . $tagName;
                 if (!isset($cache[$cacheKey])) {
-                    $cache[$cacheKey] = $context->getElementsByTagName($name);
+                    $cache[$cacheKey] = $getChildren($context);
                 }
                 $children = $cache[$cacheKey];
             } else {
-                $children = $context->getElementsByTagName($name);
+                $children = $getChildren($context);
             }
             foreach ($children as $child) {
                 if ($callback($child) === true) {
