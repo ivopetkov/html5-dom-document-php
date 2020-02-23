@@ -30,7 +30,7 @@ trait QuerySelectors
     private function internalQuerySelectorAll(string $selector, $preferredLimit = null)
     {
         $selector = trim($selector);
-        
+
         $cache = [];
         $walkChildren = function (\DOMNode $context, $tagName, callable $callback) use (&$cache) {
             if ($tagName !== null) {
@@ -281,7 +281,7 @@ trait QuerySelectors
                 if (preg_match($vallidationExpression, $selector) !== 1) {
                     return false;
                 }
-                $selector .= $operator; // append the seprator at the back for easier matching bellow
+                $selector .= $operator; // append the seprator at the back for easier matching below
 
                 $result = [];
                 if ($mode === 'execute') {
