@@ -29,34 +29,35 @@ trait QuerySelectors
      */
     private function internalQuerySelectorAll(string $selector, $preferredLimit = null)
     {
-        $cache = [];
         $selector = trim($selector);
+        
+        $cache = [];
         $walkChildren = function (\DOMNode $context, $tagName, callable $callback) use (&$cache) {
-            $children = null;
-            $getChildren = function (\DOMNode $node) use ($tagName) {
-                if ($tagName !== null) {
-                    return $node->getElementsByTagName($tagName);
-                }
-                $result = [];
-                $process = function (\DOMNode $node) use (&$process, &$result) {
-                    foreach ($node->childNodes as $child) {
-                        if ($child instanceof \DOMElement) {
-                            $result[] = $child;
-                            $process($child);
-                        }
-                    }
-                };
-                $process($node);
-                return $result;
-            };
-            if ($this === $context) {
-                $cacheKey = 'walk_children_' . $tagName;
-                if (!isset($cache[$cacheKey])) {
-                    $cache[$cacheKey] = $getChildren($context);
-                }
-                $children = $cache[$cacheKey];
+            if ($tagName !== null) {
+                $children = $context->getElementsByTagName($tagName);
             } else {
-                $children = $getChildren($context);
+                $getChildren = function () use ($context, $tagName) {
+                    $result = [];
+                    $process = function (\DOMNode $node) use (&$process, &$result) {
+                        foreach ($node->childNodes as $child) {
+                            if ($child instanceof \DOMElement) {
+                                $result[] = $child;
+                                $process($child);
+                            }
+                        }
+                    };
+                    $process($context);
+                    return $result;
+                };
+                if ($this === $context) {
+                    $cacheKey = 'walk_children';
+                    if (!isset($cache[$cacheKey])) {
+                        $cache[$cacheKey] = $getChildren();
+                    }
+                    $children = $cache[$cacheKey];
+                } else {
+                    $children = $getChildren();
+                }
             }
             foreach ($children as $child) {
                 if ($callback($child) === true) {
