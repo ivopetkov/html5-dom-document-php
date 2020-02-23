@@ -42,5 +42,4 @@ class HTML5DOMNodeList extends \ArrayObject
         }
         throw new \Exception('Undefined property: \IvoPetkov\HTML5DOMNodeList::$' . $name);
     }
-
 }

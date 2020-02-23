@@ -261,5 +261,4 @@ class HTML5DOMTokenList
         $this->previousValue = $value;
         $this->element->setAttribute($this->attributeName, $value);
     }
-
 }
