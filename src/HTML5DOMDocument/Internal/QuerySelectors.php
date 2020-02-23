@@ -32,11 +32,17 @@ trait QuerySelectors
         $selector = trim($selector);
 
         $cache = [];
-        $walkChildren = function (\DOMNode $context, $tagName, callable $callback) use (&$cache) {
-            if ($tagName !== null) {
-                $children = $context->getElementsByTagName($tagName);
+        $walkChildren = function (\DOMNode $context, $tagNames, callable $callback) use (&$cache) {
+            if (!empty($tagNames)) {
+                $children = [];
+                foreach ($tagNames as $tagName) {
+                    $elements = $context->getElementsByTagName($tagName);
+                    foreach ($elements as $element) {
+                        $children[] = $element;
+                    }
+                }
             } else {
-                $getChildren = function () use ($context, $tagName) {
+                $getChildren = function () use ($context) {
                     $result = [];
                     $process = function (\DOMNode $node) use (&$process, &$result) {
                         foreach ($node->childNodes as $child) {
@@ -74,7 +80,7 @@ trait QuerySelectors
                 }
             } else {
                 $foundElement = null;
-                $walkChildren($context, $tagName, function ($element) use ($id, &$foundElement) {
+                $walkChildren($context, $tagName !== null ? [$tagName] : null, function ($element) use ($id, &$foundElement) {
                     if ($element->attributes->length > 0 && $element->getAttribute('id') === $id) {
                         $foundElement = $element;
                         return true;
@@ -88,11 +94,11 @@ trait QuerySelectors
         $simpleSelectors = [];
 
         // all
-        $simpleSelectors['\*'] = function (string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['\*'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
             if ($mode === 'validate') {
                 return true;
             } else {
-                $walkChildren($context, null, function ($element) use ($add) {
+                $walkChildren($context, [], function ($element) use ($add) {
                     if ($add($element)) {
                         return true;
                     }
@@ -101,161 +107,208 @@ trait QuerySelectors
         };
 
         // tagname
-        $simpleSelectors['[a-z0-9\-]+'] = function (string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
-            if ($mode === 'validate') {
-                return $context->tagName === $match[0];
-            } else {
-                $walkChildren($context, $match[0], function ($element) use ($add) {
-                    if ($add($element)) {
-                        return true;
-                    }
-                });
+        $simpleSelectors['[a-z0-9\-]+'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+            $tagNames = [];
+            foreach ($matches as $match) {
+                $tagNames[] = $match[0];
             }
+            if ($mode === 'validate') {
+                return array_search($context->tagName, $tagNames) !== false;
+            }
+            $walkChildren($context, $tagNames, function ($element) use ($add) {
+                if ($add($element)) {
+                    return true;
+                }
+            });
         };
 
         // tagname[target] or [target] // Available values for targets: attr, attr="value", attr~="value", attr|="value", attr^="value", attr$="value", attr*="value"
-        $simpleSelectors['(?:[a-z0-9\-]*)(?:\[.+?\])'] = function (string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
-            $attributeSelectors = explode('][', substr($match[2], 1, -1));
-            foreach ($attributeSelectors as $i => $attributeSelector) {
-                $attributeSelectorMatches = null;
-                if (preg_match('/^(.+?)(=|~=|\|=|\^=|\$=|\*=)\"(.+?)\"$/', $attributeSelector, $attributeSelectorMatches) === 1) {
-                    $attributeSelectors[$i] = [
-                        'name' => $attributeSelectorMatches[1],
-                        'value' => $attributeSelectorMatches[3],
-                        'operator' => $attributeSelectorMatches[2]
-                    ];
+        $simpleSelectors['(?:[a-z0-9\-]*)(?:\[.+?\])'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+            $run = function ($match) use ($mode, $context, $add, $walkChildren) {
+                $attributeSelectors = explode('][', substr($match[2], 1, -1));
+                foreach ($attributeSelectors as $i => $attributeSelector) {
+                    $attributeSelectorMatches = null;
+                    if (preg_match('/^(.+?)(=|~=|\|=|\^=|\$=|\*=)\"(.+?)\"$/', $attributeSelector, $attributeSelectorMatches) === 1) {
+                        $attributeSelectors[$i] = [
+                            'name' => $attributeSelectorMatches[1],
+                            'value' => $attributeSelectorMatches[3],
+                            'operator' => $attributeSelectorMatches[2]
+                        ];
+                    } else {
+                        $attributeSelectors[$i] = [
+                            'name' => $attributeSelector
+                        ];
+                    }
+                }
+                $tagName = strlen($match[1]) > 0 ? $match[1] : null;
+                $check = function ($element) use ($attributeSelectors) {
+                    if ($element->attributes->length > 0) {
+                        foreach ($attributeSelectors as $attributeSelector) {
+                            $isMatch = false;
+                            $attributeValue = $element->getAttribute($attributeSelector['name']);
+                            if (isset($attributeSelector['value'])) {
+                                $valueToMatch = $attributeSelector['value'];
+                                switch ($attributeSelector['operator']) {
+                                    case '=':
+                                        if ($attributeValue === $valueToMatch) {
+                                            $isMatch = true;
+                                        }
+                                        break;
+                                    case '~=':
+                                        $words = preg_split("/[\s]+/", $attributeValue);
+                                        if (array_search($valueToMatch, $words) !== false) {
+                                            $isMatch = true;
+                                        }
+                                        break;
+
+                                    case '|=':
+                                        if ($attributeValue === $valueToMatch || strpos($attributeValue, $valueToMatch . '-') === 0) {
+                                            $isMatch = true;
+                                        }
+                                        break;
+
+                                    case '^=':
+                                        if (strpos($attributeValue, $valueToMatch) === 0) {
+                                            $isMatch = true;
+                                        }
+                                        break;
+
+                                    case '$=':
+                                        if (substr($attributeValue, -strlen($valueToMatch)) === $valueToMatch) {
+                                            $isMatch = true;
+                                        }
+                                        break;
+
+                                    case '*=':
+                                        if (strpos($attributeValue, $valueToMatch) !== false) {
+                                            $isMatch = true;
+                                        }
+                                        break;
+                                }
+                            } else {
+                                if ($attributeValue !== '') {
+                                    $isMatch = true;
+                                }
+                            }
+                            if (!$isMatch) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                    return false;
+                };
+                if ($mode === 'validate') {
+                    return ($tagName === null ? true : $context->tagName === $tagName) && $check($context);
                 } else {
-                    $attributeSelectors[$i] = [
-                        'name' => $attributeSelector
-                    ];
+                    $walkChildren($context, $tagName !== null ? [$tagName] : null, function ($element) use ($check, $add) {
+                        if ($check($element)) {
+                            if ($add($element)) {
+                                return true;
+                            }
+                        }
+                    });
+                }
+            };
+            // todo optimize
+            foreach ($matches as $match) {
+                if ($mode === 'validate') {
+                    if ($run($match)) {
+                        return true;
+                    }
+                } else {
+                    $run($match);
                 }
             }
-            $tagName = strlen($match[1]) > 0 ? $match[1] : null;
-            $check = function ($element) use ($attributeSelectors) {
-                if ($element->attributes->length > 0) {
-                    foreach ($attributeSelectors as $attributeSelector) {
-                        $isMatch = false;
-                        $attributeValue = $element->getAttribute($attributeSelector['name']);
-                        if (isset($attributeSelector['value'])) {
-                            $valueToMatch = $attributeSelector['value'];
-                            switch ($attributeSelector['operator']) {
-                                case '=':
-                                    if ($attributeValue === $valueToMatch) {
-                                        $isMatch = true;
-                                    }
-                                    break;
-                                case '~=':
-                                    $words = preg_split("/[\s]+/", $attributeValue);
-                                    if (array_search($valueToMatch, $words) !== false) {
-                                        $isMatch = true;
-                                    }
-                                    break;
-
-                                case '|=':
-                                    if ($attributeValue === $valueToMatch || strpos($attributeValue, $valueToMatch . '-') === 0) {
-                                        $isMatch = true;
-                                    }
-                                    break;
-
-                                case '^=':
-                                    if (strpos($attributeValue, $valueToMatch) === 0) {
-                                        $isMatch = true;
-                                    }
-                                    break;
-
-                                case '$=':
-                                    if (substr($attributeValue, -strlen($valueToMatch)) === $valueToMatch) {
-                                        $isMatch = true;
-                                    }
-                                    break;
-
-                                case '*=':
-                                    if (strpos($attributeValue, $valueToMatch) !== false) {
-                                        $isMatch = true;
-                                    }
-                                    break;
-                            }
-                        } else {
-                            if ($attributeValue !== '') {
-                                $isMatch = true;
-                            }
-                        }
-                        if (!$isMatch) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-                return false;
-            };
             if ($mode === 'validate') {
-                return ($tagName === null ? true : $context->tagName === $tagName) && $check($context);
-            } else {
-                $walkChildren($context, $tagName, function ($element) use ($check, $add) {
-                    if ($check($element)) {
-                        if ($add($element)) {
-                            return true;
-                        }
-                    }
-                });
+                return false;
             }
         };
 
         // tagname#id or #id
-        $simpleSelectors['(?:[a-z0-9\-]*)#(?:.+)'] = function (string $mode, array $match, \DOMNode $context, callable $add = null) use ($getElementById) {
-            $tagName = strlen($match[1]) > 0 ? $match[1] : null;
-            $id = $match[2];
-            if ($mode === 'validate') {
-                return ($tagName === null ? true : $context->tagName === $tagName) && $context->getAttribute('id') === $id;
-            } else {
-                $element = $getElementById($context, $id, $tagName);
-                if ($element) {
-                    $add($element);
+        $simpleSelectors['(?:[a-z0-9\-]*)#(?:.+)'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($getElementById) {
+            $run = function ($match) use ($mode, $context, $add, $getElementById) {
+                $tagName = strlen($match[1]) > 0 ? $match[1] : null;
+                $id = $match[2];
+                if ($mode === 'validate') {
+                    return ($tagName === null ? true : $context->tagName === $tagName) && $context->getAttribute('id') === $id;
+                } else {
+                    $element = $getElementById($context, $id, $tagName);
+                    if ($element) {
+                        $add($element);
+                    }
                 }
+            };
+            // todo optimize
+            foreach ($matches as $match) {
+                if ($mode === 'validate') {
+                    if ($run($match)) {
+                        return true;
+                    }
+                } else {
+                    $run($match);
+                }
+            }
+            if ($mode === 'validate') {
+                return false;
             }
         };
 
         // tagname.classname, .classname, tagname.classname.classname2, .classname.classname2
-        $simpleSelectors['(?:[a-z0-9\-]*)\.(?:.+?)'] = function (string $mode, array $match, \DOMNode $context, callable $add = null) use ($walkChildren) {
-            $tagName = strlen($match[1]) > 0 ? $match[1] : null;
-            $classesSelector = explode('.', $match[2]);
-            if (empty($classesSelector)) {
-                return false;
+        $simpleSelectors['(?:[a-z0-9\-]*)\.(?:.+?)'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+            $rawData = []; // Array containing [tag, classnames]
+            $tagNames = [];
+            foreach ($matches as $match) {
+                $tagName = strlen($match[1]) > 0 ? $match[1] : null;
+                $classes = explode('.', $match[2]);
+                if (empty($classes)) {
+                    continue;
+                }
+                $rawData[] = [$tagName, $classes];
+                if ($tagName !== null) {
+                    $tagNames[] = $tagName;
+                }
             }
-            $check = function ($element) use ($classesSelector) {
+            $check = function ($element) use ($rawData) {
                 if ($element->attributes->length > 0) {
                     $classAttribute = $element->getAttribute('class');
-                    $allClassesFound = true;
-                    foreach ($classesSelector as $classSelector) {
-                        if (!($classAttribute === $classSelector || strpos($classAttribute, $classSelector . ' ') === 0 || substr($classAttribute, - (strlen($classSelector) + 1)) === ' ' . $classSelector || strpos($classAttribute, ' ' . $classSelector . ' ') !== false)) {
-                            $allClassesFound = false;
-                            break;
+                    foreach ($rawData as $rawMatch) {
+                        if ($rawMatch[0] !== null) {
+                            if ($element->tagName !== $rawMatch[0]) {
+                                continue;
+                            }
                         }
-                    }
-                    if ($allClassesFound) {
-                        return true;
+                        $allClassesFound = true;
+                        foreach ($rawMatch[1] as $classSelector) {
+                            if (!($classAttribute === $classSelector || strpos($classAttribute, $classSelector . ' ') === 0 || substr($classAttribute, - (strlen($classSelector) + 1)) === ' ' . $classSelector || strpos($classAttribute, ' ' . $classSelector . ' ') !== false)) {
+                                $allClassesFound = false;
+                                break;
+                            }
+                        }
+                        if ($allClassesFound) {
+                            return true;
+                        }
                     }
                 }
                 return false;
             };
             if ($mode === 'validate') {
-                return ($tagName === null ? true : $context->tagName === $tagName) && $check($context);
-            } else {
-                $walkChildren($context, $tagName, function ($element) use ($check, $add) {
-                    if ($check($element)) {
-                        if ($add($element)) {
-                            return true;
-                        }
-                    }
-                });
+                return $check($context);
             }
+            $walkChildren($context, $tagNames, function ($element) use ($check, $add) {
+                if ($check($element)) {
+                    if ($add($element)) {
+                        return true;
+                    }
+                }
+            });
         };
 
         $isMatchingElement = function (\DOMNode $context, string $selector) use ($simpleSelectors) {
             foreach ($simpleSelectors as $simpleSelector => $callback) {
                 $match = null;
                 if (preg_match('/^' . (str_replace('?:', '', $simpleSelector)) . '$/', $selector, $match) === 1) {
-                    return call_user_func($callback, 'validate', $match, $context);
+                    return call_user_func($callback, 'validate', [$match], $context);
                 }
             }
         };
@@ -293,17 +346,26 @@ trait QuerySelectors
                                 break;
                             }
                         }
-                        if ($found) {
-                            return false;
-                        }
-                        $result[] = $element;
-                        if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
-                            return true;
+                        if (!$found) {
+                            $result[] = $element;
+                            if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
+                                return true;
+                            }
                         }
                         return false;
                     };
                 }
 
+                $selectorsToCall = [];
+                $addSelectorToCall = function ($type, $selector, $argument) use (&$selectorsToCall) {
+                    $previousIndex = sizeof($selectorsToCall) - 1;
+                    // todo optimize complex too
+                    if ($type === 1 && isset($selectorsToCall[$previousIndex]) && $selectorsToCall[$previousIndex][0] === $type && $selectorsToCall[$previousIndex][1] === $selector) {
+                        $selectorsToCall[$previousIndex][2][] = $argument;
+                    } else {
+                        $selectorsToCall[] = [$type, $selector, [$argument]];
+                    }
+                };
                 for ($i = 0; $i < 100000; $i++) {
                     $matches = null;
                     preg_match('/^(?<subselector>' . $supportedSelectorsExpression . ')\s*\\' . $operator . '\s*/', $selector, $matches); // getting the next subselector
@@ -316,7 +378,8 @@ trait QuerySelectors
                                 if ($mode === 'parse') {
                                     $result[] = $match[0];
                                 } else {
-                                    call_user_func($callback, 'execute', $match, $context, $add);
+                                    $addSelectorToCall(1, $simpleSelector, $match);
+                                    //call_user_func($callback, 'execute', $match, $context, $add);
                                 }
                                 $selectorFound = true;
                                 break;
@@ -326,7 +389,8 @@ trait QuerySelectors
                             foreach ($complexSelectors as $complexOperator => $callback) {
                                 $subSelectorParts = $processSelector('parse', $subSelector, $complexOperator);
                                 if ($subSelectorParts !== false) {
-                                    call_user_func($callback, $subSelectorParts, $context, $add);
+                                    $addSelectorToCall(2, $complexOperator, $subSelectorParts);
+                                    //call_user_func($callback, $subSelectorParts, $context, $add);
                                     $selectorFound = true;
                                     break;
                                 }
@@ -339,6 +403,13 @@ trait QuerySelectors
                         if (strlen($selector) === 0) {
                             break;
                         }
+                    }
+                }
+                foreach ($selectorsToCall as $selectorToCall) {
+                    if ($selectorToCall[0] === 1) { // is simple selector
+                        call_user_func($simpleSelectors[$selectorToCall[1]], 'execute', $selectorToCall[2], $context, $add);
+                    } else { // is complex selector
+                        call_user_func($complexSelectors[$selectorToCall[1]], $selectorToCall[2][0], $context, $add); // todo optimize and send all arguments
                     }
                 }
                 return $result;
