@@ -29,25 +29,23 @@ trait QuerySelectors
      */
     private function internalQuerySelectorAll(string $selector, $preferredLimit = null)
     {
+        $cache = [];
         $selector = trim($selector);
-        $walkChildren = function (\DOMNode $context, $tagName, callable $callback) use (&$walkChildren) { // $walkChildren is a lot faster than $this->getElementsByTagName('*') for 300+ elements
-            if ($tagName !== null) {
-                $children = $context->getElementsByTagName($tagName);
-                foreach ($children as $child) {
-                    if ($callback($child) === true) {
-                        return true;
-                    }
+        $walkChildren = function (\DOMNode $context, $tagName, callable $callback) use (&$cache) {
+            $name = $tagName !== null ? $tagName : '*';
+            $children = null;
+            if ($this === $context) {
+                $cacheKey = 'walk_children_' . $name;
+                if (!isset($cache[$cacheKey])) {
+                    $cache[$cacheKey] = $context->getElementsByTagName($name);
                 }
+                $children = $cache[$cacheKey];
             } else {
-                foreach ($context->childNodes as $child) {
-                    if ($child instanceof \DOMElement) {
-                        if ($callback($child) === true) {
-                            return true;
-                        }
-                        if ($walkChildren($child, $tagName, $callback) === true) {
-                            return true;
-                        }
-                    }
+                $children = $context->getElementsByTagName($name);
+            }
+            foreach ($children as $child) {
+                if ($callback($child) === true) {
+                    return true;
                 }
             }
         };
