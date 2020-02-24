@@ -271,16 +271,15 @@ trait QuerySelectors
             }
             $check = function ($element) use ($rawData) {
                 if ($element->attributes->length > 0) {
-                    $classAttribute = $element->getAttribute('class');
+                    $classAttribute = ' ' . $element->getAttribute('class') . ' ';
+                    $tagName = $element->tagName;
                     foreach ($rawData as $rawMatch) {
-                        if ($rawMatch[0] !== null) {
-                            if ($element->tagName !== $rawMatch[0]) {
-                                continue;
-                            }
+                        if ($rawMatch[0] !== null && $tagName !== $rawMatch[0]) {
+                            continue;
                         }
                         $allClassesFound = true;
-                        foreach ($rawMatch[1] as $classSelector) {
-                            if (!($classAttribute === $classSelector || strpos($classAttribute, $classSelector . ' ') === 0 || substr($classAttribute, - (strlen($classSelector) + 1)) === ' ' . $classSelector || strpos($classAttribute, ' ' . $classSelector . ' ') !== false)) {
+                        foreach ($rawMatch[1] as $class) {
+                            if (strpos($classAttribute, ' ' . $class . ' ') === false) {
                                 $allClassesFound = false;
                                 break;
                             }
