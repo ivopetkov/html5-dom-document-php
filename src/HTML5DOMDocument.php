@@ -486,6 +486,17 @@ class HTML5DOMDocument extends \DOMDocument
         $currentDomHeadElement = null;
         $currentDomBodyElement = null;
 
+        $insertTargetsList = null;
+        $prepareInsertTargetsList = function () use (&$insertTargetsList) {
+            if ($insertTargetsList === null) {
+                $insertTargetsList = [];
+                $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
+                foreach ($targetElements as $targetElement) {
+                    $insertTargetsList[$targetElement->getAttribute('name')] = $targetElement;
+                }
+            }
+        };
+
         foreach ($sources as $sourceData) {
             if (!isset($sourceData['source'])) {
                 throw new \Exception('Missing source key');
@@ -562,30 +573,27 @@ class HTML5DOMDocument extends \DOMDocument
                         }
                     }
                 } else {
-                    $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
-                    foreach ($targetElements as $targetElement) {
-                        if ($targetElement->getAttribute('name') === $target) {
-                            foreach ($bodyElementChildren as $bodyElementChild) {
-                                $newNode = $currentDomDocument->importNode($bodyElementChild, true);
-                                if ($newNode !== null) {
-                                    $targetElement->parentNode->insertBefore($newNode, $targetElement);
-                                }
+                    $prepareInsertTargetsList();
+                    if (isset($insertTargetsList[$target])) {
+                        $targetElement = $insertTargetsList[$target];
+                        $targetElementParent = $targetElement->parentNode;
+                        foreach ($bodyElementChildren as $bodyElementChild) {
+                            $newNode = $currentDomDocument->importNode($bodyElementChild, true);
+                            if ($newNode !== null) {
+                                $targetElementParent->insertBefore($newNode, $targetElement);
                             }
-                            $targetElement->parentNode->removeChild($targetElement);
-                            break;
                         }
+                        $targetElementParent->removeChild($targetElement);
                     }
                 }
                 if ($bodyElement->attributes->length > 0) {
                     $copyAttributes($bodyElement, $currentDomBodyElement);
                 }
             } else { // clear the insert target when there is no body element
-                $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
-                foreach ($targetElements as $targetElement) {
-                    if ($targetElement->getAttribute('name') === $target) {
-                        $targetElement->parentNode->removeChild($targetElement);
-                        break;
-                    }
+                $prepareInsertTargetsList();
+                if (isset($insertTargetsList[$target])) {
+                    $targetElement = $insertTargetsList[$target];
+                    $targetElement->parentNode->removeChild($targetElement);
                 }
             }
         }
