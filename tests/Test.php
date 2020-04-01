@@ -502,6 +502,21 @@ class Test extends PHPUnit\Framework\TestCase
     }
 
     /**
+     * Test simple selectors if greedy
+     */
+    public function testComplexQuerySelectors3()
+    {
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<html><body><div class="class1" id="element1"><div><span>text1</span><a>text2</a></div><a>text3</a><a>text4</a></div></body></html>');
+        $this->assertEquals($dom->querySelector('div.class1 > div > a')->innerHTML, 'text2');
+        $this->assertEquals($dom->querySelector('div.class1 > a')->innerHTML, 'text3');
+        $this->assertEquals($dom->querySelector('div[class="class1"] > div > a')->innerHTML, 'text2');
+        $this->assertEquals($dom->querySelector('div[class="class1"] > a')->innerHTML, 'text3');
+        $this->assertEquals($dom->querySelector('div#element1 > div > a')->innerHTML, 'text2');
+        $this->assertEquals($dom->querySelector('div#element1 > a')->innerHTML, 'text3');
+    }
+
+    /**
      *
      */
     public function testInnerHTML()

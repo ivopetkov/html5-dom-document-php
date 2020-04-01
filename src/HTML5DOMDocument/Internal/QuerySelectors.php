@@ -226,7 +226,7 @@ trait QuerySelectors
         };
 
         // tagname#id or #id
-        $simpleSelectors['(?:[a-z0-9\-]*)#(?:.+)'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($getElementById) {
+        $simpleSelectors['(?:[a-z0-9\-]*)#(?:[a-z0-9\-\_]+?)'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($getElementById) {
             $run = function ($match) use ($mode, $context, $add, $getElementById) {
                 $tagName = strlen($match[1]) > 0 ? $match[1] : null;
                 $id = $match[2];
@@ -255,7 +255,7 @@ trait QuerySelectors
         };
 
         // tagname.classname, .classname, tagname.classname.classname2, .classname.classname2
-        $simpleSelectors['(?:[a-z0-9\-]*)\.(?:.+?)'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['(?:[a-z0-9\-]*)\.(?:[a-z0-9\-\_]+?)'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
             $rawData = []; // Array containing [tag, classnames]
             $tagNames = [];
             foreach ($matches as $match) {
