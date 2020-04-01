@@ -255,7 +255,7 @@ trait QuerySelectors
         };
 
         // tagname.classname, .classname, tagname.classname.classname2, .classname.classname2
-        $simpleSelectors['(?:[a-z0-9\-]*)\.(?:[a-z0-9\-\_]+?)'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['(?:[a-z0-9\-]*)\.(?:[a-z0-9\-\_\.]+?)'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
             $rawData = []; // Array containing [tag, classnames]
             $tagNames = [];
             foreach ($matches as $match) {
