@@ -453,6 +453,43 @@ class Test extends PHPUnit\Framework\TestCase
     /**
      *
      */
+    public function testElementQuerySelectorCaseSensitivity()
+    {
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<html><body>' .
+            '<dIV class="claSS1" id="elemeNT1">' .
+            '<div class="claSS2 claSS3">' .
+            '<spAN>text1</span>' .
+            '<A>text2</a>' .
+            '</div>' .
+            '<a>text3</a>' .
+            '<a>text4</a>' .
+            '</div>' .
+            '</body></html>');
+
+        $this->assertEquals($dom->querySelector('div')->innerHTML, '<div class="claSS2 claSS3"><span>text1</span><a>text2</a></div><a>text3</a><a>text4</a>');
+        $this->assertEquals($dom->querySelector('Div')->innerHTML, '<div class="claSS2 claSS3"><span>text1</span><a>text2</a></div><a>text3</a><a>text4</a>');
+        $this->assertEquals($dom->querySelector('span')->innerHTML, 'text1');
+        $this->assertEquals($dom->querySelector('Span')->innerHTML, 'text1');
+        $this->assertNull($dom->querySelector('div[class="class1"]'));
+        $this->assertEquals($dom->querySelector('div[class="claSS1"]')->innerHTML, '<div class="claSS2 claSS3"><span>text1</span><a>text2</a></div><a>text3</a><a>text4</a>');
+        $this->assertEquals($dom->querySelector('Div[Class="claSS1"]')->innerHTML, '<div class="claSS2 claSS3"><span>text1</span><a>text2</a></div><a>text3</a><a>text4</a>');
+        $this->assertNull($dom->querySelector('div#element1'));
+        $this->assertEquals($dom->querySelector('div#elemeNT1')->innerHTML, '<div class="claSS2 claSS3"><span>text1</span><a>text2</a></div><a>text3</a><a>text4</a>');
+        $this->assertNull($dom->querySelector('Div#element1'));
+        $this->assertEquals($dom->querySelector('Div#elemeNT1')->innerHTML, '<div class="claSS2 claSS3"><span>text1</span><a>text2</a></div><a>text3</a><a>text4</a>');
+        $this->assertNull($dom->querySelector('#element1'));
+        $this->assertEquals($dom->querySelector('#elemeNT1')->innerHTML, '<div class="claSS2 claSS3"><span>text1</span><a>text2</a></div><a>text3</a><a>text4</a>');
+        $this->assertNull($dom->querySelector('div.class2.class3'));
+        $this->assertEquals($dom->querySelector('div.claSS2.claSS3')->innerHTML, '<span>text1</span><a>text2</a>');
+        $this->assertNull($dom->querySelector('.class2.class3'));
+        $this->assertEquals($dom->querySelector('.claSS2.claSS3')->innerHTML, '<span>text1</span><a>text2</a>');
+    }
+
+    /**
+     *
+     */
     public function testComplexQuerySelectors()
     {
 
