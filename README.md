@@ -21,7 +21,7 @@ HTML5DOMDocument extends the native [DOMDocument](http://php.net/manual/en/class
 ## Install via Composer
 
 ```shell
-composer require ivopetkov/html5-dom-document-php:2.*
+composer require "ivopetkov/html5-dom-document-php:2.*"
 ```
 
 ## Documentation
