@@ -194,7 +194,7 @@ class HTML5DOMDocument extends \DOMDocument
                                 $id = $child->getAttribute('id');
                                 if ($id !== '') {
                                     if (isset($elementIDs[$id])) {
-                                        throw new \Exception('A DOM node with an ID value "' . $id . '" already exists!');
+                                        throw new \Exception('A DOM node with an ID value "' . $id . '" already exists! Pass the HTML5DOMDocument::ALLOW_DUPLICATE_IDS option to disable this check.');
                                     } else {
                                         $elementIDs[$id] = true;
                                     }
