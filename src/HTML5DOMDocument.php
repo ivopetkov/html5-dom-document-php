@@ -139,7 +139,7 @@ class HTML5DOMDocument extends \DOMDocument
             $source = substr($source, 0, $insertPosition) . $charsetTag . substr($source, $insertPosition);
         } else {
             $matches = [];
-            preg_match('/\<html.*?\>/', $source, $matches);
+            preg_match('/\<html(\s.*?\>|\>)/', $source, $matches);
             if (isset($matches[0])) { // has html tag
                 $source = str_replace($matches[0], $matches[0] . '<head>' . $charsetTag . '</head>', $source);
             } else {
