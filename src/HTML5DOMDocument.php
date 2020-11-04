@@ -119,7 +119,7 @@ class HTML5DOMDocument extends \DOMDocument
         $allowDuplicateIDs = ($options & self::ALLOW_DUPLICATE_IDS) !== 0;
 
         // Add body tag if missing
-        if ($autoAddHtmlAndBodyTags && $source !== '' && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html.*?\>/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
+        if ($autoAddHtmlAndBodyTags && $source !== '' && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html(\s.*?\>|\>)/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
             $source = '<body>' . $source . '</body>';
         }
 
@@ -139,7 +139,7 @@ class HTML5DOMDocument extends \DOMDocument
             $source = substr($source, 0, $insertPosition) . $charsetTag . substr($source, $insertPosition);
         } else {
             $matches = [];
-            preg_match('/\<html.*?\>/', $source, $matches);
+            preg_match('/\<html(\s.*?\>|\>)/', $source, $matches);
             if (isset($matches[0])) { // has html tag
                 $source = str_replace($matches[0], $matches[0] . '<head>' . $charsetTag . '</head>', $source);
             } else {
