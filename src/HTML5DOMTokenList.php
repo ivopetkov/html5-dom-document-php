@@ -219,7 +219,7 @@ class HTML5DOMTokenList
         if ($name === 'length') {
             $this->tokenize();
             return count($this->tokens);
-        } else if ($name === 'value') {
+        } elseif ($name === 'value') {
             return $this->__toString();
         }
         throw new \Exception('Undefined property: HTML5DOMTokenList::$' . $name);
@@ -239,10 +239,12 @@ class HTML5DOMTokenList
         $tokens = explode(' ', $current);
         $finals = [];
         foreach ($tokens as $token) {
-            if ($token === '')
+            if ($token === '') {
                 continue;
-            if (in_array($token, $finals))
+            }
+            if (in_array($token, $finals)) {
                 continue;
+            }
             $finals[] = $token;
         }
         $this->tokens = $finals;

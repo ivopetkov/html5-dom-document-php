@@ -561,7 +561,7 @@ class HTML5DOMDocument extends \DOMDocument
                             }
                         }
                     }
-                } else if ($target === 'beforeBodyEnd') {
+                } elseif ($target === 'beforeBodyEnd') {
                     foreach ($bodyElementChildren as $bodyElementChild) {
                         $newNode = $currentDomDocument->importNode($bodyElementChild, true);
                         if ($newNode !== null) {
