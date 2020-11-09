@@ -96,19 +96,19 @@ class HTML5DOMDocument extends \DOMDocument
             $matches[0] = array_unique($matches[0]);
             foreach ($matches[0] as $match) {
                 if (substr($match, -2, 1) !== '/') { // check if ends with />
-                    $source = str_replace($match, $match . '<![CDATA[html5-dom-document-internal-cdata', $source);
+                    $source = str_replace($match, $match . '<![CDATA[-html5-dom-document-internal-cdata', $source); // Add CDATA after the open tag
                 }
             }
         }
-        $source = str_replace('</script>', 'html5-dom-document-internal-cdata]]></script>', $source);
-        $source = str_replace('<![CDATA[html5-dom-document-internal-cdatahtml5-dom-document-internal-cdata]]>', '', $source); // clean empty script tags
+        $source = str_replace('</script>', '-html5-dom-document-internal-cdata]]></script>', $source); // Add CDATA before the end tag
+        $source = str_replace('<![CDATA[-html5-dom-document-internal-cdata-html5-dom-document-internal-cdata]]>', '', $source); // Clean empty script tags
         $matches = null;
-        preg_match_all('/\<!\[CDATA\[html5-dom-document-internal-cdata.*?html5-dom-document-internal-cdata\]\]>/s', $source, $matches);
+        preg_match_all('/\<!\[CDATA\[-html5-dom-document-internal-cdata.*?-html5-dom-document-internal-cdata\]\]>/s', $source, $matches);
         if (isset($matches[0])) {
             $matches[0] = array_unique($matches[0]);
             foreach ($matches[0] as $match) {
                 if (strpos($match, '</') !== false) { // check if contains </
-                    $source = str_replace($match, str_replace('</', '<html5-dom-document-internal-cdata-endtagfix/', $match), $source);
+                    $source = str_replace($match, str_replace('</', '<-html5-dom-document-internal-cdata-endtagfix/', $match), $source);
                 }
             }
         }
@@ -119,7 +119,7 @@ class HTML5DOMDocument extends \DOMDocument
         $allowDuplicateIDs = ($options & self::ALLOW_DUPLICATE_IDS) !== 0;
 
         // Add body tag if missing
-        if ($autoAddHtmlAndBodyTags && $source !== '' && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html(\s.*?\>|\>)/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
+        if ($autoAddHtmlAndBodyTags && $source !== '' && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html.*?\>/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
             $source = '<body>' . $source . '</body>';
         }
 
@@ -139,7 +139,7 @@ class HTML5DOMDocument extends \DOMDocument
             $source = substr($source, 0, $insertPosition) . $charsetTag . substr($source, $insertPosition);
         } else {
             $matches = [];
-            preg_match('/\<html(\s.*?\>|\>)/', $source, $matches);
+            preg_match('/\<html.*?\>/', $source, $matches);
             if (isset($matches[0])) { // has html tag
                 $source = str_replace($matches[0], $matches[0] . '<head>' . $charsetTag . '</head>', $source);
             } else {
@@ -373,7 +373,7 @@ class HTML5DOMDocument extends \DOMDocument
                 'html5-dom-document-internal-content',
                 '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8">',
                 '</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>',
-                '<![CDATA[html5-dom-document-internal-cdata', 'html5-dom-document-internal-cdata]]>', 'html5-dom-document-internal-cdata-endtagfix'
+                '<![CDATA[-html5-dom-document-internal-cdata', '-html5-dom-document-internal-cdata]]>', '-html5-dom-document-internal-cdata-endtagfix'
             ];
             if ($removeHeadElement) {
                 $codeToRemove[] = '<head></head>';

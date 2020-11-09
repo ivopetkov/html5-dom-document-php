@@ -1406,6 +1406,23 @@ class Test extends PHPUnit\Framework\TestCase
         }
     }
 
+    /**
+     *
+     */
+    public function testScriptsCDATA()
+    {
+        // There was a bug when "html5-dom-document-internal-cdata" is used and there is no html tag.
+        $html = '<script type="text/template"><div>Hi</div></script>';
+        $expectedResult = '<!DOCTYPE html>' . "\n" . '<html><body><script type="text/template"><div>Hi</div></script></body></html>';
+        $dom = new \IvoPetkov\HTML5DOMDocument();
+        $dom->loadHTML($html);
+        $this->assertEquals($expectedResult, $dom->saveHTML());
+    }
+
+    /**
+     * 
+     * @return array
+     */
     public function propertyGetterTestDataProvider()
     {
         return [
@@ -1417,7 +1434,9 @@ class Test extends PHPUnit\Framework\TestCase
         ];
     }
 
-    /** @dataProvider propertyGetterTestDataProvider */
+    /**
+     * @dataProvider propertyGetterTestDataProvider
+     */
     public function testInternalEntityFromGetters(string $dom, string $expectedFromProperty, string $expectedFromGetter)
     {
         $domDoc = new HTML5DOMDocument('1.0', 'utf-8');
