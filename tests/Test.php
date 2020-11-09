@@ -42,7 +42,7 @@ class Test extends PHPUnit\Framework\TestCase
 
         $dom = new HTML5DOMDocument();
         // without loading anything
-        $this->assertTrue('<!DOCTYPE html>' === $dom->saveHTML());
+        $this->assertTrue('' === $dom->saveHTML());
     }
 
     /**
@@ -1464,5 +1464,16 @@ class Test extends PHPUnit\Framework\TestCase
             static::assertEquals($expectedFromProperty, $node->textContent);
             static::assertEquals($expectedFromGetter, $node->getTextContent());
         }
+    }
+
+    /**
+     *
+     */
+    public function testSaveHTMLWithoutLoadHTML()
+    {
+        $dom = new \IvoPetkov\HTML5DOMDocument();
+        $dom->appendChild($dom->createElement('div'));
+        $dom->querySelector('*')->innerHTML = 'text';
+        $this->assertEquals('<div>text</div>', $dom->saveHTML());
     }
 }

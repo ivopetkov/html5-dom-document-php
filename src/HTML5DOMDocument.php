@@ -288,10 +288,6 @@ class HTML5DOMDocument extends \DOMDocument
      */
     public function saveHTML(\DOMNode $node = null): string
     {
-        if (!$this->loaded) {
-            return '<!DOCTYPE html>';
-        }
-
         $nodeMode = $node !== null;
         if ($nodeMode && $node instanceof \DOMDocument) {
             $nodeMode = false;
