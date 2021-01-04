@@ -1476,4 +1476,19 @@ class Test extends PHPUnit\Framework\TestCase
         $dom->querySelector('*')->innerHTML = 'text';
         $this->assertEquals('<div>text</div>', $dom->saveHTML());
     }
+
+    /**
+     *
+     */
+    public function testAllowDuplicateIDsWhenModifyingElements()
+    {
+        $dom = new \IvoPetkov\HTML5DOMDocument();
+        $dom->loadHTML('<html><body><div id="id1"></div><span id="id1"></span></body></div>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
+        $body = $dom->querySelector('body');
+        $body->innerHTML .= '<strong></strong>';
+        $strong = $dom->querySelector('strong');
+        $strong->outerHTML = '<strong>text</strong>';
+        $expectedResult = '<!DOCTYPE html>' . "\n" . '<html><body><div id="id1"></div><span id="id1"></span><strong>text</strong></body></html>';
+        $this->assertEquals($expectedResult, $dom->saveHTML());
+    }
 }

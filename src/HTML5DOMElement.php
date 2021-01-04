@@ -97,7 +97,7 @@ class HTML5DOMElement extends \DOMElement
                 self::$newObjectsCache['html5domdocument'] = new \IvoPetkov\HTML5DOMDocument();
             }
             $tmpDoc = clone (self::$newObjectsCache['html5domdocument']);
-            $tmpDoc->loadHTML('<body>' . $value . '</body>');
+            $tmpDoc->loadHTML('<body>' . $value . '</body>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
             foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
                 $node = $this->ownerDocument->importNode($node, true);
                 $this->appendChild($node);
@@ -108,7 +108,7 @@ class HTML5DOMElement extends \DOMElement
                 self::$newObjectsCache['html5domdocument'] = new \IvoPetkov\HTML5DOMDocument();
             }
             $tmpDoc = clone (self::$newObjectsCache['html5domdocument']);
-            $tmpDoc->loadHTML('<body>' . $value . '</body>');
+            $tmpDoc->loadHTML('<body>' . $value . '</body>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
             foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
                 $node = $this->ownerDocument->importNode($node, true);
                 $this->parentNode->insertBefore($node, $this);
