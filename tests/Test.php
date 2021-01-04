@@ -1178,7 +1178,6 @@ class Test extends PHPUnit\Framework\TestCase
 
     /**
      * @group classList
-     * @expectedException \Exception
      */
     public function testClassListUndefinedProperty()
     {
@@ -1186,7 +1185,12 @@ class Test extends PHPUnit\Framework\TestCase
         $dom->loadHTML('<html><body class="  a   b c b a c"></body></html>');
 
         $html = $dom->querySelector('html');
-        $html->classList->someProperty;
+        try {
+            $html->classList->someProperty;
+            $this->assertTrue(false); // should not get here
+        } catch (\Exception $e) {
+            $this->assertTrue(true);
+        }
     }
 
     /**
