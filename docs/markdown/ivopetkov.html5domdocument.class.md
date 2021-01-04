@@ -15,14 +15,14 @@ IvoPetkov\HTML5DOMDocument extends DOMDocument {
 
 	/* Methods */
 	public __construct ( [ string $version [, string $encoding ]] )
-	public DOMElement createInsertTarget ( string $name )
+	public HTML5DOMElement createInsertTarget ( string $name )
 	public void insertHTML ( string $source [, string $target = 'beforeBodyEnd' ] )
 	public void insertHTMLMulti ( array $sources )
 	public bool loadHTML ( string $source [, int $options = 0 ] )
 	public void loadHTMLFile ( string $filename [, int $options = 0 ] )
 	public void modify ( [ int $modifications = 0 ] )
-	public DOMElement|null querySelector ( string $selector )
-	public DOMNodeList querySelectorAll ( string $selector )
+	public HTML5DOMElement|null querySelector ( string $selector )
+	public HTML5DOMNodeList querySelectorAll ( string $selector )
 	public string saveHTML ( [ DOMNode $node ] )
 	public int saveHTMLFile ( string $filename )
 
@@ -65,7 +65,7 @@ IvoPetkov\HTML5DOMDocument extends DOMDocument {
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new HTML5DOMDocument object.
 
-##### public [DOMElement](http://php.net/manual/en/class.domelement.php) [createInsertTarget](ivopetkov.html5domdocument.createinserttarget.method.md) ( string $name )
+##### public HTML5DOMElement [createInsertTarget](ivopetkov.html5domdocument.createinserttarget.method.md) ( string $name )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates an element that will be replaced by the new body in insertHTML.
 
@@ -89,11 +89,11 @@ IvoPetkov\HTML5DOMDocument extends DOMDocument {
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Applies the modifications specified to the DOM document.
 
-##### public [DOMElement](http://php.net/manual/en/class.domelement.php)|null [querySelector](ivopetkov.html5domdocument.queryselector.method.md) ( string $selector )
+##### public HTML5DOMElement|null [querySelector](ivopetkov.html5domdocument.queryselector.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first document element matching the selector.
 
-##### public [DOMNodeList](http://php.net/manual/en/class.domnodelist.php) [querySelectorAll](ivopetkov.html5domdocument.queryselectorall.method.md) ( string $selector )
+##### public HTML5DOMNodeList [querySelectorAll](ivopetkov.html5domdocument.queryselectorall.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of document elements matching the selector.
 

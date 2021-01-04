@@ -3,7 +3,7 @@
 Returns a list of document elements matching the selector.
 
 ```php
-public DOMNodeList querySelectorAll ( string $selector )
+public HTML5DOMNodeList querySelectorAll ( string $selector )
 ```
 
 ## Parameters

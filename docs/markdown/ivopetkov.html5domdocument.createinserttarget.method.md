@@ -3,7 +3,7 @@
 Creates an element that will be replaced by the new body in insertHTML.
 
 ```php
-public DOMElement createInsertTarget ( string $name )
+public HTML5DOMElement createInsertTarget ( string $name )
 ```
 
 ## Parameters

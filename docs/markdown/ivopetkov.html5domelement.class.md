@@ -13,8 +13,10 @@ IvoPetkov\HTML5DOMElement extends DOMElement {
 	/* Methods */
 	public string getAttribute ( string $name )
 	public array getAttributes ( void )
-	public DOMElement|null querySelector ( string $selector )
-	public DOMNodeList querySelectorAll ( string $selector )
+	public string getNodeValue ( void )
+	public string getTextContent ( void )
+	public HTML5DOMElement|null querySelector ( string $selector )
+	public HTML5DOMNodeList querySelectorAll ( string $selector )
 
 }
 ```
@@ -47,11 +49,19 @@ IvoPetkov\HTML5DOMElement extends DOMElement {
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array containing all attributes.
 
-##### public [DOMElement](http://php.net/manual/en/class.domelement.php)|null [querySelector](ivopetkov.html5domelement.queryselector.method.md) ( string $selector )
+##### public string [getNodeValue](ivopetkov.html5domelement.getnodevalue.method.md) ( void )
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the updated nodeValue Property
+
+##### public string [getTextContent](ivopetkov.html5domelement.gettextcontent.method.md) ( void )
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the updated $textContent Property
+
+##### public HTML5DOMElement|null [querySelector](ivopetkov.html5domelement.queryselector.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first child element matching the selector.
 
-##### public [DOMNodeList](http://php.net/manual/en/class.domnodelist.php) [querySelectorAll](ivopetkov.html5domelement.queryselectorall.method.md) ( string $selector )
+##### public HTML5DOMNodeList [querySelectorAll](ivopetkov.html5domelement.queryselectorall.method.md) ( string $selector )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a list of children elements matching the selector.
 
