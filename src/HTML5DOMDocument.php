@@ -9,13 +9,15 @@
 
 namespace IvoPetkov;
 
+use IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors;
+
 /**
  * Represents a live (can be manipulated) representation of a HTML5 document.
  */
 class HTML5DOMDocument extends \DOMDocument
 {
 
-    use \IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors;
+    use QuerySelectors;
 
     /**
      * An option passed to loadHTML() and loadHTMLFile() to disable duplicate element IDs exception.

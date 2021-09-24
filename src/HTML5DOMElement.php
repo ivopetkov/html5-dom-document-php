@@ -9,6 +9,8 @@
 
 namespace IvoPetkov;
 
+use IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors;
+
 /**
  * Represents a live (can be manipulated) representation of an element in a HTML5 document.
  * 
@@ -19,7 +21,7 @@ namespace IvoPetkov;
 class HTML5DOMElement extends \DOMElement
 {
 
-    use \IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors;
+    use QuerySelectors;
 
     /**
      *
