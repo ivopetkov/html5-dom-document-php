@@ -1,19 +1,12 @@
-<?xml version="1.0"?>
-<phpunit bootstrap="vendor/autoload.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         beStrictAboutOutputDuringTests="true"
-         stopOnFailure="true">
+<phpunit bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist>
+    <coverage>
+        <include>
             <directory>./src/</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </coverage>
 </phpunit>
