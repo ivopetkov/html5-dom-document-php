@@ -68,7 +68,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param string $version The version number of the document as part of the XML declaration.
      * @param string $encoding The encoding of the document as part of the XML declaration.
      */
-    public function __construct(string $version = null, string $encoding = null)
+    public function __construct(string $version = '1.0', string $encoding = '')
     {
         parent::__construct($version, $encoding);
         $this->registerNodeClass('DOMElement', '\IvoPetkov\HTML5DOMElement');
