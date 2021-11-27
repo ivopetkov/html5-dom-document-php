@@ -389,8 +389,9 @@ class HTML5DOMDocument extends \DOMDocument
      * Dumps the internal document into a file using HTML formatting.
      * 
      * @param string $filename The path to the saved HTML document.
-     * @return int the number of bytes written or FALSE if an error occurred.
+     * @return int|false the number of bytes written or FALSE if an error occurred.
      */
+    #[\ReturnTypeWillChange] //
     public function saveHTMLFile($filename)
     {
         if (!is_writable($filename)) {
