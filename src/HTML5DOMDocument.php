@@ -391,7 +391,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param string $filename The path to the saved HTML document.
      * @return int|false the number of bytes written or FALSE if an error occurred.
      */
-    #[\ReturnTypeWillChange] //
+    #[\ReturnTypeWillChange] // Return type "int|false" is invalid in older supported versions.
     public function saveHTMLFile($filename)
     {
         if (!is_writable($filename)) {
