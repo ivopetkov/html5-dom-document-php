@@ -13,6 +13,13 @@ use IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors;
 
 /**
  * Represents a live (can be manipulated) representation of a HTML5 document.
+ * 
+ * @method HTML5DOMElement|false createElement(string $localName, string $value = '')
+ * Create new element node.
+ * @method HTML5DOMElement|false createElementNS(?string $namespace, string $qualifiedName, string $value = '')
+ * Create new element node with an associated namespace.
+ * @method ?HTML5DOMElement getElementById(string $elementId)
+ * Searches for an element with a certain id.
  */
 class HTML5DOMDocument extends \DOMDocument
 {
@@ -169,6 +176,7 @@ class HTML5DOMDocument extends \DOMDocument
                 break;
             }
         }
+        /** @var HTML5DOMElement|null */
         $metaTagElement = $this->getElementsByTagName('meta')->item(0);
         if ($metaTagElement !== null) {
             if ($metaTagElement->getAttribute('data-html5-dom-document-internal-attribute') === 'charset-meta') {
@@ -617,6 +625,7 @@ class HTML5DOMDocument extends \DOMDocument
         $fixMultipleBodies = ($modifications & self::FIX_MULTIPLE_BODIES) !== 0;
         $optimizeHead = ($modifications & self::OPTIMIZE_HEAD) !== 0;
 
+        /** @var \DOMNodeList<HTML5DOMElement> */
         $headElements = $this->getElementsByTagName('head');
 
         if ($fixMultipleHeads) { // Merges multiple head elements.
