@@ -14,12 +14,9 @@ use IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors;
 /**
  * Represents a live (can be manipulated) representation of a HTML5 document.
  * 
- * @method HTML5DOMElement|false createElement(string $localName, string $value = '')
- * Create new element node.
- * @method HTML5DOMElement|false createElementNS(?string $namespace, string $qualifiedName, string $value = '')
- * Create new element node with an associated namespace.
- * @method ?HTML5DOMElement getElementById(string $elementId)
- * Searches for an element with a certain id.
+ * @method \IvoPetkov\HTML5DOMElement|false createElement(string $localName, string $value = '') Create new element node.
+ * @method \IvoPetkov\HTML5DOMElement|false createElementNS(?string $namespace, string $qualifiedName, string $value = '') Create new element node with an associated namespace.
+ * @method ?\IvoPetkov\HTML5DOMElement getElementById(string $elementId) Searches for an element with a certain id.
  */
 class HTML5DOMDocument extends \DOMDocument
 {
