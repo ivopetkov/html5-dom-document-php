@@ -54,6 +54,11 @@ class HTML5DOMDocument extends \DOMDocument
     const OPTIMIZE_HEAD = 32;
 
     /**
+     * A modification (passed to modify()) that removes all but first styles with duplicate content.
+     */
+    const FIX_DUPLICATE_STYLES = 64;
+
+    /**
      *
      * @var array
      */
@@ -612,6 +617,7 @@ class HTML5DOMDocument extends \DOMDocument
      *  - HTML5DOMDocument::FIX_MULTIPLE_HEADS - merges multiple head elements.
      *  - HTML5DOMDocument::FIX_MULTIPLE_BODIES - merges multiple body elements.
      *  - HTML5DOMDocument::OPTIMIZE_HEAD - moves charset metatag and title elements first.
+     *  - HTML5DOMDocument::FIX_DUPLICATE_STYLES - removes all but first styles with duplicate content.
      */
     public function modify($modifications = 0)
     {
@@ -621,6 +627,7 @@ class HTML5DOMDocument extends \DOMDocument
         $fixMultipleHeads = ($modifications & self::FIX_MULTIPLE_HEADS) !== 0;
         $fixMultipleBodies = ($modifications & self::FIX_MULTIPLE_BODIES) !== 0;
         $optimizeHead = ($modifications & self::OPTIMIZE_HEAD) !== 0;
+        $fixDuplicateStyles = ($modifications & self::FIX_DUPLICATE_STYLES) !== 0;
 
         /** @var \DOMNodeList<HTML5DOMElement> */
         $headElements = $this->getElementsByTagName('head');
@@ -694,6 +701,27 @@ class HTML5DOMDocument extends \DOMDocument
                         }
                     }
                 }
+            }
+
+            if ($fixDuplicateStyles) {
+                $styles = $headElement->getElementsByTagName('style');
+                if ($styles->length > 0) {
+                    $stylesToRemove = [];
+                    $list = [];
+                    foreach ($styles as $style) {
+                        $innerHTML = trim($style->innerHTML);
+                        if (array_search($innerHTML, $list) === false) {
+                            $list[] = $innerHTML;
+                        } else {
+                            $stylesToRemove[] = $style;
+                        }
+                    }
+                    foreach ($stylesToRemove as $styleToRemove) {
+                        $styleToRemove->parentNode->removeChild($styleToRemove);
+                    }
+                    unset($list);
+                }
+                unset($styles);
             }
 
             if ($optimizeHead) { // Moves charset metatag and title elements first.

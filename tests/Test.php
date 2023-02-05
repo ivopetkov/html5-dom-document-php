@@ -796,6 +796,25 @@ class Test extends PHPUnit\Framework\TestCase
             . '<meta content="video.movie" property="og:type">'
             . '</head></html>';
         $this->assertEquals($expectedSource, $this->removeNewLines($dom->saveHTML()));
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><html><head>'
+            . '<style>body{color:red;}</style>'
+            . '<style>body{color:red;}</style>'
+            . '<style>div{color:blue;}</style>'
+            . '<style>span{color:green;}</style>'
+            . '<style>body{color:red;}</style>'
+            . '</head></html>');
+        $dom->insertHTML('<head>'
+            . '<style>div{color:blue;}</style>'
+            . '</head>');
+        $dom->modify(HTML5DOMDocument::FIX_DUPLICATE_STYLES);
+        $expectedSource = '<!DOCTYPE html><html><head>'
+            . '<style>body{color:red;}</style>'
+            . '<style>div{color:blue;}</style>'
+            . '<style>span{color:green;}</style>'
+            . '</head></html>';
+        $this->assertEquals($expectedSource, $this->removeNewLines($dom->saveHTML()));
     }
 
     /**
