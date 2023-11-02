@@ -125,7 +125,7 @@ class Test extends PHPUnit\Framework\TestCase
     /**
      *
      */
-    public function testInserHTML()
+    public function testInsertHTML()
     {
         // insert beforeBodyEnd
         $source = '<!DOCTYPE html><html><body>'
@@ -275,7 +275,7 @@ class Test extends PHPUnit\Framework\TestCase
         // Empty content
         $dom = new HTML5DOMDocument();
         $dom->insertHTML('');
-        $expectedSource = '<!DOCTYPE html><html></html>';
+        $expectedSource = '<!DOCTYPE html>';
         $this->assertEquals($expectedSource, $this->removeNewLines($dom->saveHTML()));
 
         // Html tag with attribute
@@ -329,7 +329,7 @@ class Test extends PHPUnit\Framework\TestCase
         $source = '<!DOCTYPE html>';
         $testSource($source, $source);
 
-        $testSource('', '<!DOCTYPE html><html></html>');
+        $testSource('', '<!DOCTYPE html>');
     }
 
     /**
@@ -1277,7 +1277,6 @@ class Test extends PHPUnit\Framework\TestCase
      */
     public function testLIBXML_HTML_NOIMPLIED()
     {
-
         $content = '<div>hello</div>';
         $dom = new HTML5DOMDocument();
         $dom->loadHTML($content, LIBXML_HTML_NOIMPLIED);
@@ -1446,7 +1445,7 @@ class Test extends PHPUnit\Framework\TestCase
      * 
      * @return array
      */
-    public function propertyGetterTestDataProvider()
+    static public function propertyGetterTestDataProvider()
     {
         return [
             [
