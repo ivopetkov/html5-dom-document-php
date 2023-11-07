@@ -344,7 +344,7 @@ class Test extends PHPUnit\Framework\TestCase
             . '<div id="text1" class="class1">text1</div>'
             . '<div>text2</div>'
             . '<div>'
-            . '<div class="text3 class1">text3</div>'
+            . '<div empty-attribute class="text3 class1">text3</div>'
             . '</div>'
             . '<my-custom-element class="text5 class1">text5</my-custom-element>'
             . '<span id="text4" class="class1 class2">text4</div>'
@@ -365,6 +365,7 @@ class Test extends PHPUnit\Framework\TestCase
         $this->assertTrue($dom->querySelectorAll('span[id="text4"]')->item(0)->innerHTML === 'text4');
         $this->assertTrue($dom->querySelectorAll('[id]')->item(0)->innerHTML === 'text1');
         $this->assertTrue($dom->querySelectorAll('[id]')->length === 2);
+        $this->assertTrue($dom->querySelectorAll('[empty-attribute]')->length === 1);
         $this->assertTrue($dom->querySelectorAll('span[id]')->item(0)->innerHTML === 'text4');
         $this->assertTrue($dom->querySelectorAll('span[data-other]')->length === 0);
         $this->assertTrue($dom->querySelectorAll('div#text4')->length === 0);
