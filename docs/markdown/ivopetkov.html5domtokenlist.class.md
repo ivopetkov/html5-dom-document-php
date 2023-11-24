@@ -3,7 +3,7 @@
 Represents a set of space-separated tokens of an element attribute.
 
 ```php
-IvoPetkov\HTML5DOMTokenList {
+IvoPetkov\HTML5DOMTokenList implements Stringable {
 
 	/* Properties */
 	public readonly int $length
@@ -21,6 +21,10 @@ IvoPetkov\HTML5DOMTokenList {
 
 }
 ```
+
+## Implements
+
+##### [Stringable](http://php.net/manual/en/class.stringable.php)
 
 ## Properties
 

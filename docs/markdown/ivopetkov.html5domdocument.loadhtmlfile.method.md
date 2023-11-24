@@ -3,7 +3,7 @@
 Load HTML from a file.
 
 ```php
-public void loadHTMLFile ( string $filename [, int $options = 0 ] )
+public bool loadHTMLFile ( string $filename [, int $options = 0 ] )
 ```
 
 ## Parameters

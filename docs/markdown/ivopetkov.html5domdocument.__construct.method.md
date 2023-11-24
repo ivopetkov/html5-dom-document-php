@@ -3,7 +3,7 @@
 Creates a new HTML5DOMDocument object.
 
 ```php
-public __construct ( [ string $version [, string $encoding ]] )
+public __construct ( [ string $version = '1.0' [, string $encoding = '' ]] )
 ```
 
 ## Parameters

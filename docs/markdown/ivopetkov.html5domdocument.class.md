@@ -3,28 +3,29 @@
 Represents a live (can be manipulated) representation of a HTML5 document.
 
 ```php
-IvoPetkov\HTML5DOMDocument extends DOMDocument {
+IvoPetkov\HTML5DOMDocument extends DOMDocument implements DOMParentNode {
 
 	/* Constants */
 	const int ALLOW_DUPLICATE_IDS
 	const int FIX_DUPLICATE_METATAGS
+	const int FIX_DUPLICATE_STYLES
 	const int FIX_MULTIPLE_BODIES
 	const int FIX_MULTIPLE_HEADS
 	const int FIX_MULTIPLE_TITLES
 	const int OPTIMIZE_HEAD
 
 	/* Methods */
-	public __construct ( [ string $version [, string $encoding ]] )
+	public __construct ( [ string $version = '1.0' [, string $encoding = '' ]] )
 	public HTML5DOMElement createInsertTarget ( string $name )
 	public void insertHTML ( string $source [, string $target = 'beforeBodyEnd' ] )
 	public void insertHTMLMulti ( array $sources )
 	public bool loadHTML ( string $source [, int $options = 0 ] )
-	public void loadHTMLFile ( string $filename [, int $options = 0 ] )
+	public bool loadHTMLFile ( string $filename [, int $options = 0 ] )
 	public void modify ( [ int $modifications = 0 ] )
 	public HTML5DOMElement|null querySelector ( string $selector )
 	public HTML5DOMNodeList querySelectorAll ( string $selector )
 	public string saveHTML ( [ DOMNode $node ] )
-	public int saveHTMLFile ( string $filename )
+	public int|false saveHTMLFile ( string $filename )
 
 }
 ```
@@ -32,6 +33,10 @@ IvoPetkov\HTML5DOMDocument extends DOMDocument {
 ## Extends
 
 ##### [DOMDocument](http://php.net/manual/en/class.domdocument.php)
+
+## Implements
+
+##### [DOMParentNode](http://php.net/manual/en/class.domparentnode.php)
 
 ## Constants
 
@@ -42,6 +47,10 @@ IvoPetkov\HTML5DOMDocument extends DOMDocument {
 ##### const int FIX_DUPLICATE_METATAGS
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A modification (passed to modify()) that removes all but the last metatags with matching name or property attributes.
+
+##### const int FIX_DUPLICATE_STYLES
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A modification (passed to modify()) that removes all but first styles with duplicate content.
 
 ##### const int FIX_MULTIPLE_BODIES
 
@@ -59,9 +68,91 @@ IvoPetkov\HTML5DOMDocument extends DOMDocument {
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A modification (passed to modify()) that moves charset metatag and title elements first.
 
+## Properties
+
+### Inherited from [DOMDocument](http://php.net/manual/en/class.domdocument.php)
+
+##### public  $actualEncoding
+
+##### public  $childElementCount
+
+##### public  $config
+
+##### public  $doctype
+
+##### public  $documentElement
+
+##### public  $documentURI
+
+##### public  $encoding
+
+##### public  $firstElementChild
+
+##### public  $formatOutput
+
+##### public  $implementation
+
+##### public  $lastElementChild
+
+##### public  $preserveWhiteSpace
+
+##### public  $recover
+
+##### public  $resolveExternals
+
+##### public  $standalone
+
+##### public  $strictErrorChecking
+
+##### public  $substituteEntities
+
+##### public  $validateOnParse
+
+##### public  $version
+
+##### public  $xmlEncoding
+
+##### public  $xmlStandalone
+
+##### public  $xmlVersion
+
+### Inherited from [DOMNode](http://php.net/manual/en/class.domnode.php)
+
+##### public  $attributes
+
+##### public  $baseURI
+
+##### public  $childNodes
+
+##### public  $firstChild
+
+##### public  $lastChild
+
+##### public  $localName
+
+##### public  $namespaceURI
+
+##### public  $nextSibling
+
+##### public  $nodeName
+
+##### public  $nodeType
+
+##### public  $nodeValue
+
+##### public  $ownerDocument
+
+##### public  $parentNode
+
+##### public  $prefix
+
+##### public  $previousSibling
+
+##### public  $textContent
+
 ## Methods
 
-##### public [__construct](ivopetkov.html5domdocument.__construct.method.md) ( [ string $version [, string $encoding ]] )
+##### public [__construct](ivopetkov.html5domdocument.__construct.method.md) ( [ string $version = '1.0' [, string $encoding = '' ]] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a new HTML5DOMDocument object.
 
@@ -81,7 +172,7 @@ IvoPetkov\HTML5DOMDocument extends DOMDocument {
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load HTML from a string.
 
-##### public void [loadHTMLFile](ivopetkov.html5domdocument.loadhtmlfile.method.md) ( string $filename [, int $options = 0 ] )
+##### public bool [loadHTMLFile](ivopetkov.html5domdocument.loadhtmlfile.method.md) ( string $filename [, int $options = 0 ] )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Load HTML from a file.
 
@@ -101,113 +192,105 @@ IvoPetkov\HTML5DOMDocument extends DOMDocument {
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dumps the internal document into a string using HTML formatting.
 
-##### public int [saveHTMLFile](ivopetkov.html5domdocument.savehtmlfile.method.md) ( string $filename )
+##### public int|false [saveHTMLFile](ivopetkov.html5domdocument.savehtmlfile.method.md) ( string $filename )
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dumps the internal document into a file using HTML formatting.
 
 ### Inherited from [DOMDocument](http://php.net/manual/en/class.domdocument.php)
 
-##### public void [adoptNode](http://php.net/manual/en/domdocument.adoptnode.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $source )
+##### public void [adoptNode](http://php.net/manual/en/domdocument.adoptnode.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $node )
 
-##### public void [createAttribute](http://php.net/manual/en/domdocument.createattribute.php) ( $name )
+##### public void [append](http://php.net/manual/en/domdocument.append.php) ( [  $nodes ] )
 
-##### public void [createAttributeNS](http://php.net/manual/en/domdocument.createattributens.php) ( $namespaceURI ,  $qualifiedName )
+##### public void [createAttribute](http://php.net/manual/en/domdocument.createattribute.php) ( string $localName )
 
-##### public void [createCDATASection](http://php.net/manual/en/domdocument.createcdatasection.php) ( $data )
+##### public void [createAttributeNS](http://php.net/manual/en/domdocument.createattributens.php) ( string|null $namespace , string $qualifiedName )
 
-##### public void [createComment](http://php.net/manual/en/domdocument.createcomment.php) ( $data )
+##### public void [createCDATASection](http://php.net/manual/en/domdocument.createcdatasection.php) ( string $data )
+
+##### public void [createComment](http://php.net/manual/en/domdocument.createcomment.php) ( string $data )
 
 ##### public void [createDocumentFragment](http://php.net/manual/en/domdocument.createdocumentfragment.php) ( void )
 
-##### public void [createElement](http://php.net/manual/en/domdocument.createelement.php) ( $tagName [,  $value ] )
+##### public void [createElement](http://php.net/manual/en/domdocument.createelement.php) ( string $localName [, string $value = '' ] )
 
-##### public void [createElementNS](http://php.net/manual/en/domdocument.createelementns.php) ( $namespaceURI ,  $qualifiedName [,  $value ] )
+##### public void [createElementNS](http://php.net/manual/en/domdocument.createelementns.php) ( string|null $namespace , string $qualifiedName [, string $value = '' ] )
 
-##### public void [createEntityReference](http://php.net/manual/en/domdocument.createentityreference.php) ( $name )
+##### public void [createEntityReference](http://php.net/manual/en/domdocument.createentityreference.php) ( string $name )
 
-##### public void [createProcessingInstruction](http://php.net/manual/en/domdocument.createprocessinginstruction.php) ( $target ,  $data )
+##### public void [createProcessingInstruction](http://php.net/manual/en/domdocument.createprocessinginstruction.php) ( string $target [, string $data = '' ] )
 
-##### public void [createTextNode](http://php.net/manual/en/domdocument.createtextnode.php) ( $data )
+##### public void [createTextNode](http://php.net/manual/en/domdocument.createtextnode.php) ( string $data )
 
-##### public void [getElementById](http://php.net/manual/en/domdocument.getelementbyid.php) ( $elementId )
+##### public void [getElementById](http://php.net/manual/en/domdocument.getelementbyid.php) ( string $elementId )
 
-##### public void [getElementsByTagName](http://php.net/manual/en/domdocument.getelementsbytagname.php) ( $tagName )
+##### public void [getElementsByTagName](http://php.net/manual/en/domdocument.getelementsbytagname.php) ( string $qualifiedName )
 
-##### public void [getElementsByTagNameNS](http://php.net/manual/en/domdocument.getelementsbytagnamens.php) ( $namespaceURI ,  $localName )
+##### public void [getElementsByTagNameNS](http://php.net/manual/en/domdocument.getelementsbytagnamens.php) ( string|null $namespace , string $localName )
 
-##### public void [importNode](http://php.net/manual/en/domdocument.importnode.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $importedNode ,  $deep )
+##### public void [importNode](http://php.net/manual/en/domdocument.importnode.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $node [, bool $deep = false ] )
 
-##### public void [load](http://php.net/manual/en/domdocument.load.php) ( $source [,  $options ] )
+##### public void [load](http://php.net/manual/en/domdocument.load.php) ( string $filename [, int $options = 0 ] )
 
-##### public void [loadXML](http://php.net/manual/en/domdocument.loadxml.php) ( $source [,  $options ] )
+##### public void [loadXML](http://php.net/manual/en/domdocument.loadxml.php) ( string $source [, int $options = 0 ] )
 
 ##### public void [normalizeDocument](http://php.net/manual/en/domdocument.normalizedocument.php) ( void )
 
-##### public void [registerNodeClass](http://php.net/manual/en/domdocument.registernodeclass.php) ( $baseClass ,  $extendedClass )
+##### public void [prepend](http://php.net/manual/en/domdocument.prepend.php) ( [  $nodes ] )
 
-##### public void [relaxNGValidate](http://php.net/manual/en/domdocument.relaxngvalidate.php) ( $filename )
+##### public void [registerNodeClass](http://php.net/manual/en/domdocument.registernodeclass.php) ( string $baseClass , string|null $extendedClass )
 
-##### public void [relaxNGValidateSource](http://php.net/manual/en/domdocument.relaxngvalidatesource.php) ( $source )
+##### public void [relaxNGValidate](http://php.net/manual/en/domdocument.relaxngvalidate.php) ( string $filename )
 
-##### public void [renameNode](http://php.net/manual/en/domdocument.renamenode.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $node ,  $namespaceURI ,  $qualifiedName )
+##### public void [relaxNGValidateSource](http://php.net/manual/en/domdocument.relaxngvalidatesource.php) ( string $source )
 
-##### public void [save](http://php.net/manual/en/domdocument.save.php) ( $file )
+##### public void [save](http://php.net/manual/en/domdocument.save.php) ( string $filename [, int $options = 0 ] )
 
-##### public void [saveXML](http://php.net/manual/en/domdocument.savexml.php) ( [ [DOMNode](http://php.net/manual/en/class.domnode.php) $node [,  $options ]] )
+##### public void [saveXML](http://php.net/manual/en/domdocument.savexml.php) ( [ [DOMNode](http://php.net/manual/en/class.domnode.php)|null $node [, int $options = 0 ]] )
 
-##### public void [schemaValidate](http://php.net/manual/en/domdocument.schemavalidate.php) ( $filename )
+##### public void [schemaValidate](http://php.net/manual/en/domdocument.schemavalidate.php) ( string $filename [, int $flags = 0 ] )
 
-##### public void [schemaValidateSource](http://php.net/manual/en/domdocument.schemavalidatesource.php) ( $source )
+##### public void [schemaValidateSource](http://php.net/manual/en/domdocument.schemavalidatesource.php) ( string $source [, int $flags = 0 ] )
 
 ##### public void [validate](http://php.net/manual/en/domdocument.validate.php) ( void )
 
-##### public void [xinclude](http://php.net/manual/en/domdocument.xinclude.php) ( [  $options ] )
+##### public void [xinclude](http://php.net/manual/en/domdocument.xinclude.php) ( [ int $options = 0 ] )
 
 ### Inherited from [DOMNode](http://php.net/manual/en/class.domnode.php)
 
-##### public void [C14N](http://php.net/manual/en/domnode.c14n.php) ( [  $exclusive [,  $with_comments [, array $xpath [, array $ns_prefixes ]]]] )
+##### public void [C14N](http://php.net/manual/en/domnode.c14n.php) ( [ bool $exclusive = false [, bool $withComments = false [, array|null $xpath [, array|null $nsPrefixes ]]]] )
 
-##### public void [C14NFile](http://php.net/manual/en/domnode.c14nfile.php) ( $uri [,  $exclusive [,  $with_comments [, array $xpath [, array $ns_prefixes ]]]] )
+##### public void [C14NFile](http://php.net/manual/en/domnode.c14nfile.php) ( string $uri [, bool $exclusive = false [, bool $withComments = false [, array|null $xpath [, array|null $nsPrefixes ]]]] )
 
-##### public void [appendChild](http://php.net/manual/en/domnode.appendchild.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $newChild )
+##### public void [appendChild](http://php.net/manual/en/domnode.appendchild.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $node )
 
-##### public void [cloneNode](http://php.net/manual/en/domnode.clonenode.php) ( $deep )
-
-##### public void [compareDocumentPosition](http://php.net/manual/en/domnode.comparedocumentposition.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $other )
-
-##### public void [getFeature](http://php.net/manual/en/domnode.getfeature.php) ( $feature ,  $version )
+##### public void [cloneNode](http://php.net/manual/en/domnode.clonenode.php) ( [ bool $deep = false ] )
 
 ##### public void [getLineNo](http://php.net/manual/en/domnode.getlineno.php) ( void )
 
 ##### public void [getNodePath](http://php.net/manual/en/domnode.getnodepath.php) ( void )
 
-##### public void [getUserData](http://php.net/manual/en/domnode.getuserdata.php) ( $key )
-
 ##### public void [hasAttributes](http://php.net/manual/en/domnode.hasattributes.php) ( void )
 
 ##### public void [hasChildNodes](http://php.net/manual/en/domnode.haschildnodes.php) ( void )
 
-##### public void [insertBefore](http://php.net/manual/en/domnode.insertbefore.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $newChild [, [DOMNode](http://php.net/manual/en/class.domnode.php) $refChild ] )
+##### public void [insertBefore](http://php.net/manual/en/domnode.insertbefore.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $node [, [DOMNode](http://php.net/manual/en/class.domnode.php)|null $child ] )
 
-##### public void [isDefaultNamespace](http://php.net/manual/en/domnode.isdefaultnamespace.php) ( $namespaceURI )
+##### public void [isDefaultNamespace](http://php.net/manual/en/domnode.isdefaultnamespace.php) ( string $namespace )
 
-##### public void [isEqualNode](http://php.net/manual/en/domnode.isequalnode.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $arg )
+##### public void [isSameNode](http://php.net/manual/en/domnode.issamenode.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $otherNode )
 
-##### public void [isSameNode](http://php.net/manual/en/domnode.issamenode.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $other )
+##### public void [isSupported](http://php.net/manual/en/domnode.issupported.php) ( string $feature , string $version )
 
-##### public void [isSupported](http://php.net/manual/en/domnode.issupported.php) ( $feature ,  $version )
+##### public void [lookupNamespaceURI](http://php.net/manual/en/domnode.lookupnamespaceuri.php) ( string|null $prefix )
 
-##### public void [lookupNamespaceUri](http://php.net/manual/en/domnode.lookupnamespaceuri.php) ( $prefix )
-
-##### public void [lookupPrefix](http://php.net/manual/en/domnode.lookupprefix.php) ( $namespaceURI )
+##### public void [lookupPrefix](http://php.net/manual/en/domnode.lookupprefix.php) ( string $namespace )
 
 ##### public void [normalize](http://php.net/manual/en/domnode.normalize.php) ( void )
 
-##### public void [removeChild](http://php.net/manual/en/domnode.removechild.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $oldChild )
+##### public void [removeChild](http://php.net/manual/en/domnode.removechild.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $child )
 
-##### public void [replaceChild](http://php.net/manual/en/domnode.replacechild.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $newChild , [DOMNode](http://php.net/manual/en/class.domnode.php) $oldChild )
-
-##### public void [setUserData](http://php.net/manual/en/domnode.setuserdata.php) ( $key ,  $data ,  $handler )
+##### public void [replaceChild](http://php.net/manual/en/domnode.replacechild.php) ( [DOMNode](http://php.net/manual/en/class.domnode.php) $node , [DOMNode](http://php.net/manual/en/class.domnode.php) $child )
 
 ## Details
 

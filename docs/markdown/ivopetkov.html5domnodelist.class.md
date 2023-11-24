@@ -5,10 +5,6 @@ Represents a list of DOM nodes.
 ```php
 IvoPetkov\HTML5DOMNodeList extends ArrayObject implements Countable, Serializable, ArrayAccess, Traversable, IteratorAggregate {
 
-	/* Constants */
-	const int ARRAY_AS_PROPS
-	const int STD_PROP_LIST
-
 	/* Properties */
 	public readonly int $length
 
@@ -34,12 +30,6 @@ IvoPetkov\HTML5DOMNodeList extends ArrayObject implements Countable, Serializabl
 
 ##### [IteratorAggregate](http://php.net/manual/en/class.iteratoraggregate.php)
 
-## Constants
-
-##### const int ARRAY_AS_PROPS
-
-##### const int STD_PROP_LIST
-
 ## Properties
 
 ##### public readonly int $length
@@ -54,15 +44,15 @@ IvoPetkov\HTML5DOMNodeList extends ArrayObject implements Countable, Serializabl
 
 ### Inherited from [ArrayObject](http://php.net/manual/en/class.arrayobject.php)
 
-##### public [__construct](http://php.net/manual/en/arrayobject.construct.php) ( [  $array [,  $ar_flags [,  $iterator_class ]]] )
+##### public [__construct](http://php.net/manual/en/arrayobject.construct.php) ( [ object|array $array = [] [, int $flags = 0 [, string $iteratorClass = 'ArrayIterator' ]]] )
 
-##### public void [append](http://php.net/manual/en/arrayobject.append.php) ( $value )
+##### public void [append](http://php.net/manual/en/arrayobject.append.php) ( mixed $value )
 
-##### public void [asort](http://php.net/manual/en/arrayobject.asort.php) ( void )
+##### public void [asort](http://php.net/manual/en/arrayobject.asort.php) ( [ int $flags = 0 ] )
 
 ##### public void [count](http://php.net/manual/en/arrayobject.count.php) ( void )
 
-##### public void [exchangeArray](http://php.net/manual/en/arrayobject.exchangearray.php) ( $array )
+##### public void [exchangeArray](http://php.net/manual/en/arrayobject.exchangearray.php) ( object|array $array )
 
 ##### public void [getArrayCopy](http://php.net/manual/en/arrayobject.getarraycopy.php) ( void )
 
@@ -72,7 +62,7 @@ IvoPetkov\HTML5DOMNodeList extends ArrayObject implements Countable, Serializabl
 
 ##### public void [getIteratorClass](http://php.net/manual/en/arrayobject.getiteratorclass.php) ( void )
 
-##### public void [ksort](http://php.net/manual/en/arrayobject.ksort.php) ( void )
+##### public void [ksort](http://php.net/manual/en/arrayobject.ksort.php) ( [ int $flags = 0 ] )
 
 ##### public void [natcasesort](http://php.net/manual/en/arrayobject.natcasesort.php) ( void )
 
@@ -80,15 +70,15 @@ IvoPetkov\HTML5DOMNodeList extends ArrayObject implements Countable, Serializabl
 
 ##### public void [serialize](http://php.net/manual/en/arrayobject.serialize.php) ( void )
 
-##### public void [setFlags](http://php.net/manual/en/arrayobject.setflags.php) ( $flags )
+##### public void [setFlags](http://php.net/manual/en/arrayobject.setflags.php) ( int $flags )
 
-##### public void [setIteratorClass](http://php.net/manual/en/arrayobject.setiteratorclass.php) ( $iteratorClass )
+##### public void [setIteratorClass](http://php.net/manual/en/arrayobject.setiteratorclass.php) ( string $iteratorClass )
 
-##### public void [uasort](http://php.net/manual/en/arrayobject.uasort.php) ( $cmp_function )
+##### public void [uasort](http://php.net/manual/en/arrayobject.uasort.php) ( callable $callback )
 
-##### public void [uksort](http://php.net/manual/en/arrayobject.uksort.php) ( $cmp_function )
+##### public void [uksort](http://php.net/manual/en/arrayobject.uksort.php) ( callable $callback )
 
-##### public void [unserialize](http://php.net/manual/en/arrayobject.unserialize.php) ( $serialized )
+##### public void [unserialize](http://php.net/manual/en/arrayobject.unserialize.php) ( string $data )
 
 ## Details
 

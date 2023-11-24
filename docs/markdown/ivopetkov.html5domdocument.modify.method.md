@@ -16,6 +16,7 @@ public void modify ( [ int $modifications = 0 ] )
 - HTML5DOMDocument::FIX_MULTIPLE_HEADS - merges multiple head elements.
 - HTML5DOMDocument::FIX_MULTIPLE_BODIES - merges multiple body elements.
 - HTML5DOMDocument::OPTIMIZE_HEAD - moves charset metatag and title elements first.
+- HTML5DOMDocument::FIX_DUPLICATE_STYLES - removes all but first styles with duplicate content.
 
 ## Details
 

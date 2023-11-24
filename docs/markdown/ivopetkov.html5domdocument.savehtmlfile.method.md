@@ -3,7 +3,7 @@
 Dumps the internal document into a file using HTML formatting.
 
 ```php
-public int saveHTMLFile ( string $filename )
+public int|false saveHTMLFile ( string $filename )
 ```
 
 ## Parameters
