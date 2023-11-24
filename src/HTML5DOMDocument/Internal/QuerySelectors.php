@@ -143,11 +143,10 @@ trait QuerySelectors
                 $tagName = strlen($match[1]) > 0 ? strtolower($match[1]) : null;
                 $check = function ($element) use ($attributeSelectors) {
                     if ($element->attributes->length > 0) {
-                        $attributes = $element->getAttributes();
                         foreach ($attributeSelectors as $attributeSelector) {
                             $isMatch = false;
-                            $attributeValue = $element->getAttribute($attributeSelector['name']);
                             if (isset($attributeSelector['value'])) {
+                                $attributeValue = $element->getAttribute($attributeSelector['name']);
                                 $valueToMatch = $attributeSelector['value'];
                                 switch ($attributeSelector['operator']) {
                                     case '=':
@@ -187,11 +186,11 @@ trait QuerySelectors
                                         break;
                                 }
                             } else {
-                                if ($attributeValue !== '') {
-                                    $isMatch = true;
-                                } else {
-                                    $found = array_search($attributeSelector['name'], array_keys($attributes));
-                                    $isMatch = ($found !== FALSE);
+                                foreach ($element->attributes as $elementAttributeName => $elementAttributeValue) {
+                                    if ($elementAttributeName === $attributeSelector['name']) {
+                                        $isMatch = true;
+                                        break;
+                                    }
                                 }
                             }
                             if (!$isMatch) {
