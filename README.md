@@ -2,11 +2,8 @@
 
 HTML5DOMDocument extends the native [DOMDocument](http://php.net/manual/en/class.domdocument.php) library. It fixes some bugs and adds some new functionality.
 
-[![Build Status](https://travis-ci.org/ivopetkov/html5-dom-document-php.svg)](https://travis-ci.org/ivopetkov/html5-dom-document-php)
 [![Latest Stable Version](https://poser.pugx.org/ivopetkov/html5-dom-document-php/v/stable)](https://packagist.org/packages/ivopetkov/html5-dom-document-php)
-[![codecov.io](https://codecov.io/github/ivopetkov/html5-dom-document-php/coverage.svg?branch=master)](https://codecov.io/github/ivopetkov/html5-dom-document-php?branch=master)
 [![License](https://poser.pugx.org/ivopetkov/html5-dom-document-php/license)](https://packagist.org/packages/ivopetkov/html5-dom-document-php)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/dafa5722288b409a9d447fa6aabd572b)](https://www.codacy.com/app/ivo_2/html5-dom-document-php)
 
 ## Why use?
 
