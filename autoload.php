@@ -15,7 +15,7 @@ $classes = array(
     'IvoPetkov\HTML5DOMTokenList' => __DIR__ . '/src/HTML5DOMTokenList.php'
 );
 
-spl_autoload_register(function ($class) use ($classes) {
+spl_autoload_register(function ($class) use ($classes): void {
     if (isset($classes[$class])) {
         require $classes[$class];
     }

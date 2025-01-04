@@ -44,7 +44,7 @@ trait QuerySelectors
             } else {
                 $getChildren = function () use ($context) {
                     $result = [];
-                    $process = function (\DOMNode $node) use (&$process, &$result) {
+                    $process = function (\DOMNode $node) use (&$process, &$result): void {
                         foreach ($node->childNodes as $child) {
                             if ($child instanceof \DOMElement) {
                                 $result[] = $child;
@@ -94,7 +94,7 @@ trait QuerySelectors
         $simpleSelectors = [];
 
         // all
-        $simpleSelectors['\*'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['\*'] = function (string $mode, array $matches, \DOMNode $context, ?callable $add = null) use ($walkChildren) {
             if ($mode === 'validate') {
                 return true;
             } else {
@@ -107,7 +107,7 @@ trait QuerySelectors
         };
 
         // tagname
-        $simpleSelectors['[a-zA-Z0-9\-]+'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['[a-zA-Z0-9\-]+'] = function (string $mode, array $matches, \DOMNode $context, ?callable $add = null) use ($walkChildren) {
             $tagNames = [];
             foreach ($matches as $match) {
                 $tagNames[] = strtolower($match[0]);
@@ -123,7 +123,7 @@ trait QuerySelectors
         };
 
         // tagname[target] or [target] // Available values for targets: attr, attr="value", attr~="value", attr|="value", attr^="value", attr$="value", attr*="value"
-        $simpleSelectors['(?:[a-zA-Z0-9\-]*)(?:\[.+?\])'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['(?:[a-zA-Z0-9\-]*)(?:\[.+?\])'] = function (string $mode, array $matches, \DOMNode $context, ?callable $add = null) use ($walkChildren) {
             $run = function ($match) use ($mode, $context, $add, $walkChildren) {
                 $attributeSelectors = explode('][', substr($match[2], 1, -1));
                 foreach ($attributeSelectors as $i => $attributeSelector) {
@@ -229,7 +229,7 @@ trait QuerySelectors
         };
 
         // tagname#id or #id
-        $simpleSelectors['(?:[a-zA-Z0-9\-]*)#(?:[a-zA-Z0-9\-\_]+?)'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($getElementById) {
+        $simpleSelectors['(?:[a-zA-Z0-9\-]*)#(?:[a-zA-Z0-9\-\_]+?)'] = function (string $mode, array $matches, \DOMNode $context, ?callable $add = null) use ($getElementById) {
             $run = function ($match) use ($mode, $context, $add, $getElementById) {
                 $tagName = strlen($match[1]) > 0 ? strtolower($match[1]) : null;
                 $id = $match[2];
@@ -258,7 +258,7 @@ trait QuerySelectors
         };
 
         // tagname.classname, .classname, tagname.classname.classname2, .classname.classname2
-        $simpleSelectors['(?:[a-zA-Z0-9\-]*)\.(?:[a-zA-Z0-9\-\_\.]+?)'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['(?:[a-zA-Z0-9\-]*)\.(?:[a-zA-Z0-9\-\_\.]+?)'] = function (string $mode, array $matches, \DOMNode $context, ?callable $add = null) use ($walkChildren) {
             $rawData = []; // Array containing [tag, classnames]
             $tagNames = [];
             foreach ($matches as $match) {
@@ -350,7 +350,7 @@ trait QuerySelectors
                         }
                         if (!$found) {
                             $result[] = $element;
-                            if ($preferredLimit !== null && sizeof($result) >= $preferredLimit) {
+                            if ($preferredLimit !== null && count($result) >= $preferredLimit) {
                                 return true;
                             }
                         }
@@ -359,8 +359,8 @@ trait QuerySelectors
                 }
 
                 $selectorsToCall = [];
-                $addSelectorToCall = function ($type, $selector, $argument) use (&$selectorsToCall) {
-                    $previousIndex = sizeof($selectorsToCall) - 1;
+                $addSelectorToCall = function ($type, $selector, $argument) use (&$selectorsToCall): void {
+                    $previousIndex = count($selectorsToCall) - 1;
                     // todo optimize complex too
                     if ($type === 1 && isset($selectorsToCall[$previousIndex]) && $selectorsToCall[$previousIndex][0] === $type && $selectorsToCall[$previousIndex][1] === $selector) {
                         $selectorsToCall[$previousIndex][2][] = $argument;
@@ -421,7 +421,7 @@ trait QuerySelectors
         };
 
         // div p (space between) - all <p> elements inside <div> elements
-        $complexSelectors[' '] = function (array $parts, \DOMNode $context, callable $add = null) use (&$getMatchingElements) {
+        $complexSelectors[' '] = function (array $parts, \DOMNode $context, ?callable $add = null) use (&$getMatchingElements): void {
             $elements = null;
             foreach ($parts as $part) {
                 if ($elements === null) {
@@ -440,7 +440,7 @@ trait QuerySelectors
         };
 
         // div > p - all <p> elements where the parent is a <div> element
-        $complexSelectors['>'] = function (array $parts, \DOMNode $context, callable $add = null) use (&$getMatchingElements, &$isMatchingElement) {
+        $complexSelectors['>'] = function (array $parts, \DOMNode $context, ?callable $add = null) use (&$getMatchingElements, &$isMatchingElement): void {
             $elements = null;
             foreach ($parts as $part) {
                 if ($elements === null) {
@@ -463,7 +463,7 @@ trait QuerySelectors
         };
 
         // div + p - all <p> elements that are placed immediately after <div> elements
-        $complexSelectors['+'] = function (array $parts, \DOMNode $context, callable $add = null) use (&$getMatchingElements, &$isMatchingElement) {
+        $complexSelectors['+'] = function (array $parts, \DOMNode $context, ?callable $add = null) use (&$getMatchingElements, &$isMatchingElement): void {
             $elements = null;
             foreach ($parts as $part) {
                 if ($elements === null) {
@@ -484,7 +484,7 @@ trait QuerySelectors
         };
 
         // p ~ ul -	all <ul> elements that are preceded by a <p> element
-        $complexSelectors['~'] = function (array $parts, \DOMNode $context, callable $add = null) use (&$getMatchingElements, &$isMatchingElement) {
+        $complexSelectors['~'] = function (array $parts, \DOMNode $context, ?callable $add = null) use (&$getMatchingElements, &$isMatchingElement): void {
             $elements = null;
             foreach ($parts as $part) {
                 if ($elements === null) {

@@ -22,7 +22,7 @@ class Test extends PHPUnit\Framework\TestCase
     public function testSaveHTML()
     {
 
-        $testSource = function ($source, $expectedSource) {
+        $testSource = function ($source, $expectedSource): void {
             $dom = new HTML5DOMDocument();
             $dom->loadHTML($source);
             $this->assertEquals($expectedSource, $this->removeNewLines($dom->saveHTML()));
@@ -50,7 +50,7 @@ class Test extends PHPUnit\Framework\TestCase
      */
     public function testOmitedElements()
     {
-        $testSource = function ($source, $expectedSource) {
+        $testSource = function ($source, $expectedSource): void {
             $dom = new HTML5DOMDocument();
             $dom->loadHTML($source);
             $this->assertEquals($expectedSource, $this->removeNewLines($dom->saveHTML()));
@@ -312,7 +312,7 @@ class Test extends PHPUnit\Framework\TestCase
     public function testEmpty()
     {
 
-        $testSource = function ($source, $expectedSource) {
+        $testSource = function ($source, $expectedSource): void {
             $dom = new HTML5DOMDocument();
             $dom->loadHTML($source);
             $this->assertEquals($expectedSource, $this->removeNewLines($dom->saveHTML()));
@@ -631,7 +631,7 @@ class Test extends PHPUnit\Framework\TestCase
         $this->assertTrue($dom->querySelector('div')->getAttribute('unknown') === '');
         $this->assertTrue($dom->querySelector('div')->getAttribute('data-value') === $expectedDataAttributeValue);
         $attributes = $dom->querySelector('div')->getAttributes();
-        $this->assertTrue(sizeof($attributes) === 2);
+        $this->assertTrue(count($attributes) === 2);
         $this->assertTrue($attributes['class'] === 'text1');
     }
 
@@ -1295,12 +1295,12 @@ class Test extends PHPUnit\Framework\TestCase
     public function testCompatibilityWithDOMDocument()
     {
 
-        $compareDOMs = function (HTML5DOMDocument $dom1, DOMDocument $dom2) {
+        $compareDOMs = function (HTML5DOMDocument $dom1, DOMDocument $dom2): void {
             $this->assertEquals($dom1->getElementsByTagName('html')->length, $dom2->getElementsByTagName('html')->length);
             $this->assertEquals($dom1->getElementsByTagName('head')->length, $dom2->getElementsByTagName('head')->length);
             $this->assertEquals($dom1->getElementsByTagName('body')->length, $dom2->getElementsByTagName('body')->length);
 
-            $updateNewLines = function (&$content) {
+            $updateNewLines = function (&$content): void {
                 $content = str_replace("\n<head>", '<head>', $content);
                 $content = str_replace("\n<body>", '<body>', $content);
                 $content = str_replace("\n</html>", '</html>', $content);
@@ -1335,7 +1335,7 @@ class Test extends PHPUnit\Framework\TestCase
             }
         };
 
-        $compareContent = function ($content) use ($compareDOMs) {
+        $compareContent = function ($content) use ($compareDOMs): void {
             $dom = new HTML5DOMDocument();
             $dom->loadHTML($content);
             $dom2 = new DOMDocument();

@@ -200,7 +200,7 @@ class HTML5DOMDocument extends \DOMDocument
             preg_match_all('/\sid[\s]*=[\s]*(["\'])(.*?)\1/', $source, $matches);
             if (!empty($matches[2]) && max(array_count_values($matches[2])) > 1) {
                 $elementIDs = [];
-                $walkChildren = function ($element) use (&$walkChildren, &$elementIDs) {
+                $walkChildren = function ($element) use (&$walkChildren, &$elementIDs): void {
                     foreach ($element->childNodes as $child) {
                         if ($child instanceof \DOMElement) {
                             if ($child->attributes->length > 0) { // Performance optimization
@@ -301,7 +301,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param \DOMNode $node Optional parameter to output a subset of the document.
      * @return string The document (or node) HTML code as string.
      */
-    public function saveHTML(\DOMNode $node = null): string
+    public function saveHTML(?\DOMNode $node = null): string
     {
         $nodeMode = $node !== null;
         if ($nodeMode && $node instanceof \DOMDocument) {
@@ -489,7 +489,7 @@ class HTML5DOMDocument extends \DOMDocument
 
         $currentDomDocument = &$this;
 
-        $copyAttributes = function ($sourceNode, $targetNode) {
+        $copyAttributes = function ($sourceNode, $targetNode): void {
             foreach ($sourceNode->attributes as $attributeName => $attribute) {
                 $targetNode->setAttribute($attributeName, $attribute->value);
             }
@@ -500,7 +500,7 @@ class HTML5DOMDocument extends \DOMDocument
         $currentDomBodyElement = null;
 
         $insertTargetsList = null;
-        $prepareInsertTargetsList = function () use (&$insertTargetsList) {
+        $prepareInsertTargetsList = function () use (&$insertTargetsList): void {
             if ($insertTargetsList === null) {
                 $insertTargetsList = [];
                 $targetElements = $this->getElementsByTagName('html5-dom-document-insert-target');
