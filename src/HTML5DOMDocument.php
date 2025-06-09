@@ -384,8 +384,25 @@ class HTML5DOMDocument extends \DOMDocument
             $codeToRemove = [
                 'html5-dom-document-internal-content',
                 '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8">',
-                '</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>',
-                '<![CDATA[-html5-dom-document-internal-cdata', '-html5-dom-document-internal-cdata]]>', '-html5-dom-document-internal-cdata-endtagfix'
+                '</area>',
+                '</base>',
+                '</br>',
+                '</col>',
+                '</command>',
+                '</embed>',
+                '</hr>',
+                '</img>',
+                '</input>',
+                '</keygen>',
+                '</link>',
+                '</meta>',
+                '</param>',
+                '</source>',
+                '</track>',
+                '</wbr>',
+                '<![CDATA[-html5-dom-document-internal-cdata',
+                '-html5-dom-document-internal-cdata]]>',
+                '-html5-dom-document-internal-cdata-endtagfix'
             ];
             if ($removeHeadElement) {
                 $codeToRemove[] = '<head></head>';
@@ -659,7 +676,9 @@ class HTML5DOMDocument extends \DOMDocument
                 $titleTagsCount = $titleTags->length;
                 for ($i = 0; $i < $titleTagsCount - 1; $i++) {
                     $node = $titleTags->item($i);
-                    $node->parentNode->removeChild($node);
+                    if ($node !== null) { // can be null when invalid html
+                        $node->parentNode->removeChild($node);
+                    }
                 }
             }
 
