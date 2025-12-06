@@ -1445,48 +1445,46 @@ class Test extends PHPUnit\Framework\TestCase
 
     /**
      * 
-     * @return array
+     * @return void
      */
-    static public function propertyGetterTestDataProvider()
+    public function testInternalEntityFromGetters()
     {
-        return [
+
+        $testData = [
             [
                 '<html><body><p><span>Lorem Ipsum</span> &mdash; <span>dolor sit amet,</span></p></body></html>',
                 'Lorem Ipsum html5-dom-document-internal-entity1-mdash-end dolor sit amet,',
                 'Lorem Ipsum — dolor sit amet,'
             ]
         ];
-    }
 
-    /**
-     * @dataProvider propertyGetterTestDataProvider
-     */
-    public function testInternalEntityFromGetters(string $dom, string $expectedFromProperty, string $expectedFromGetter)
-    {
-        $domDoc = new HTML5DOMDocument('1.0', 'utf-8');
-        $domDoc->loadHTML($dom);
-        $xpath = new DOMXPath($domDoc);
+        foreach ($testData as $testDataItem) {
+            [$html, $expectedFromProperty, $expectedFromGetter] = $testDataItem;
+            $domDoc = new HTML5DOMDocument('1.0', 'utf-8');
+            $domDoc->loadHTML($html);
+            $xpath = new DOMXPath($domDoc);
 
-        $xPathNodeList = $xpath->query('//p');
+            $xPathNodeList = $xpath->query('//p');
 
-        foreach ($xPathNodeList as $node) {
-            static::assertInstanceOf(HTML5DOMElement::class, $node);
-            static::assertEquals($expectedFromProperty, $node->nodeValue);
-            static::assertEquals($expectedFromGetter, $node->getNodeValue());
+            foreach ($xPathNodeList as $node) {
+                static::assertInstanceOf(HTML5DOMElement::class, $node);
+                static::assertEquals($expectedFromProperty, $node->nodeValue);
+                static::assertEquals($expectedFromGetter, $node->getNodeValue());
 
-            static::assertEquals($expectedFromProperty, $node->textContent);
-            static::assertEquals($expectedFromGetter, $node->getTextContent());
-        }
+                static::assertEquals($expectedFromProperty, $node->textContent);
+                static::assertEquals($expectedFromGetter, $node->getTextContent());
+            }
 
-        $querySelectorNodeList = $domDoc->querySelectorAll('p');
+            $querySelectorNodeList = $domDoc->querySelectorAll('p');
 
-        foreach ($querySelectorNodeList as $node) {
-            static::assertInstanceOf(HTML5DOMElement::class, $node);
-            static::assertEquals($expectedFromProperty, $node->nodeValue);
-            static::assertEquals($expectedFromGetter, $node->getNodeValue());
+            foreach ($querySelectorNodeList as $node) {
+                static::assertInstanceOf(HTML5DOMElement::class, $node);
+                static::assertEquals($expectedFromProperty, $node->nodeValue);
+                static::assertEquals($expectedFromGetter, $node->getNodeValue());
 
-            static::assertEquals($expectedFromProperty, $node->textContent);
-            static::assertEquals($expectedFromGetter, $node->getTextContent());
+                static::assertEquals($expectedFromProperty, $node->textContent);
+                static::assertEquals($expectedFromGetter, $node->getTextContent());
+            }
         }
     }
 
