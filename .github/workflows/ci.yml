@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: master
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  php-tests:
+    name: PHP ${{ matrix.php }} Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [8.0, 8.1, 8.2, 8.3, 8.4]
+
+    steps:
+      - uses: actions/checkout@v6.0.1
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@2.36.0
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          coverage: xdebug
+
+      - name: Print Libxml Version
+        shell: bash
+        run: |
+          php -r 'echo "libxml: " . LIBXML_DOTTED_VERSION . PHP_EOL;'
+
+      - name: Install Composer Dependencies
+        uses: ramsey/composer-install@3.1.1
+
+      - name: Run Tests
+        run: composer test
