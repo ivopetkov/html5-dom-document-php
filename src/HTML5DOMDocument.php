@@ -129,7 +129,6 @@ class HTML5DOMDocument extends \DOMDocument
         $autoAddDoctype = !defined('LIBXML_HTML_NODEFDTD') || ($options & LIBXML_HTML_NODEFDTD) === 0;
 
         $allowDuplicateIDs = ($options & self::ALLOW_DUPLICATE_IDS) !== 0;
-        $options = $options & ~self::ALLOW_DUPLICATE_IDS;
 
         // Add body tag if missing
         if ($autoAddHtmlAndBodyTags && $source !== '' && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html.*?\>/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
@@ -166,7 +165,7 @@ class HTML5DOMDocument extends \DOMDocument
             $source = "<!DOCTYPE html>\n" . $source;
         }
 
-        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $options | LIBXML_PARSEHUGE);
+        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $this->cleanupOptions($options) | LIBXML_PARSEHUGE);
         if ($internalErrorsOptionValue === false) {
             libxml_use_internal_errors(false);
         }
@@ -229,6 +228,14 @@ class HTML5DOMDocument extends \DOMDocument
 
         $this->loaded = true;
         return true;
+    }
+
+    /**
+     * Remove non-libxml options from the user-provided options
+     * to prevent unintended side-effects within the extension
+     */
+    private function cleanupOptions(int $options): int {
+        return $options & ~self::ALLOW_DUPLICATE_IDS;
     }
 
     /**
