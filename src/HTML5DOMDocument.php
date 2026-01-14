@@ -179,6 +179,11 @@ class HTML5DOMDocument extends \DOMDocument
                 $this->removeChild($item);
                 break;
             }
+            /** libxml 2.15+ converts <?xml ?> to comment instead of PI node */
+            if ($item->nodeType === XML_COMMENT_NODE && strpos($item->nodeValue, '?xml') === 0) {
+                $this->removeChild($item);
+                break;
+            }
         }
         /** @var HTML5DOMElement|null */
         $metaTagElement = $this->getElementsByTagName('meta')->item(0);
