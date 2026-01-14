@@ -1515,6 +1515,17 @@ class Test extends PHPUnit\Framework\TestCase
     }
 
     /**
+     * Test void tags in combination with HTML5DOMDocument::ALLOW_DUPLICATE_IDS
+     */
+    public function testVoidTagsWithAllowDuplicateIDs()
+    {
+        $dom = new \IvoPetkov\HTML5DOMDocument();
+        $dom->loadHTML('<p>foo <br /> bar</p><p> another paragraph </p>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
+        $expectedResult = '<!DOCTYPE html><html><body><p>foo <br> bar</p></body></html>';
+        $this->assertEquals($expectedResult, $this->removeNewLines($dom->saveHTML()));
+    }
+
+    /**
      * 
      * @param string $text
      * @return string
