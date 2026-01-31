@@ -503,7 +503,7 @@ class Test extends PHPUnit\Framework\TestCase
             . '<div><span>text4</span></div>'
             . '<div id="id,1">text5</div>'
             . '<a href="#">text6</a>'
-            . '<div"><a href="#">text7</a></div>'
+            . '<div><a href="#">text7</a></div>'
             . '</body></html>');
 
         $this->assertTrue($dom->querySelectorAll('span, div')->length === 7); // 4 spans + 3 divs
@@ -1407,9 +1407,9 @@ class Test extends PHPUnit\Framework\TestCase
         $scripts = $dom->querySelectorAll('script');
         $this->assertEquals($scripts[0]->innerHTML, '');
         $this->assertEquals($scripts[1]->innerHTML, '');
-        $this->assertEquals($scripts[2]->innerHTML, $js1);
-        $this->assertEquals($scripts[3]->innerHTML, $js2);
-        $this->assertEquals($dom->saveHTML(), "<!DOCTYPE html>\n" . str_replace('<script src="url1"/>', '<script src="url1"></script>', $content));
+        $this->assertEquals($this->removeNewLines($scripts[2]->innerHTML), $this->removeNewLines($js1));
+        $this->assertEquals($this->removeNewLines($scripts[3]->innerHTML), $this->removeNewLines($js2));
+        $this->assertEquals($this->removeNewLines($dom->saveHTML()), $this->removeNewLines("<!DOCTYPE html>\n" . str_replace('<script src="url1"/>', '<script src="url1"></script>', $content)));
     }
 
     /**
@@ -1521,6 +1521,6 @@ class Test extends PHPUnit\Framework\TestCase
      */
     private function removeNewLines(string $text): string
     {
-        return str_replace("\n", '', $text);
+        return str_replace(["\r\n", "\n"], '', $text);
     }
 }

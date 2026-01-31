@@ -164,8 +164,8 @@ class HTML5DOMDocument extends \DOMDocument
         if ($autoAddDoctype && strtoupper(substr($source, 0, 9)) !== '<!DOCTYPE') {
             $source = "<!DOCTYPE html>\n" . $source;
         }
-
-        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $options | LIBXML_PARSEHUGE);
+        $parentOptions = $options & ~self::ALLOW_DUPLICATE_IDS;
+        $result = parent::loadHTML($source, $parentOptions | LIBXML_PARSEHUGE);
         if ($internalErrorsOptionValue === false) {
             libxml_use_internal_errors(false);
         }
