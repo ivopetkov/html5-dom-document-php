@@ -14,11 +14,15 @@
         "ext-dom": "*"
     },
     "require-dev": {
-        "ivopetkov/docs-generator": "1.*"
+        "ivopetkov/docs-generator": "1.*",
+        "phpunit/phpunit": "^12.5"
     },
     "autoload": {
         "files": [
             "autoload.php"
         ]
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     }
 }
