@@ -15,7 +15,7 @@
     },
     "require-dev": {
         "ivopetkov/docs-generator": "1.*",
-        "phpunit/phpunit": "^12.5"
+        "phpunit/phpunit": "^9.6"
     },
     "autoload": {
         "files": [
