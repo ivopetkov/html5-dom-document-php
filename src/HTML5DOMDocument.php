@@ -346,34 +346,34 @@ class HTML5DOMDocument extends \DOMDocument
             $html = trim($html);
         } else {
             //$this->modify(self::OPTIMIZE_HEAD);
-            $removeHtmlElement = false;
             $removeHeadElement = false;
             $headElement = $this->getElementsByTagName('head')->item(0);
-            if ($headElement === null) {
-                if ($this->addHtmlElementIfMissing()) {
-                    $removeHtmlElement = true;
-                }
+            if ($headElement === null && $this->getElementsByTagName('html')->length > 0) {
                 if ($this->addHeadElementIfMissing()) {
                     $removeHeadElement = true;
                 }
                 $headElement = $this->getElementsByTagName('head')->item(0);
             }
-            $meta = $this->createElement('meta');
-            $meta->setAttribute('data-html5-dom-document-internal-attribute', 'charset-meta');
-            $meta->setAttribute('http-equiv', 'content-type');
-            $meta->setAttribute('content', 'text/html; charset=utf-8');
-            if ($headElement->firstChild !== null) {
-                $headElement->insertBefore($meta, $headElement->firstChild);
-            } else {
-                $headElement->appendChild($meta);
+            if ($headElement !== null) {
+                $meta = $this->createElement('meta');
+                $meta->setAttribute('data-html5-dom-document-internal-attribute', 'charset-meta');
+                $meta->setAttribute('http-equiv', 'content-type');
+                $meta->setAttribute('content', 'text/html; charset=utf-8');
+                if ($headElement->firstChild !== null) {
+                    $headElement->insertBefore($meta, $headElement->firstChild);
+                } else {
+                    $headElement->appendChild($meta);
+                }
             }
             $html = parent::saveHTML();
             $html = rtrim($html, "\n");
 
-            if ($removeHeadElement) {
-                $headElement->parentNode->removeChild($headElement);
-            } else {
-                $meta->parentNode->removeChild($meta);
+            if ($headElement !== null) {
+                if ($removeHeadElement) {
+                    $headElement->parentNode->removeChild($headElement);
+                } else {
+                    $meta->parentNode->removeChild($meta);
+                }
             }
 
             if (strpos($html, 'html5-dom-document-internal-entity') !== false) {
@@ -406,9 +406,6 @@ class HTML5DOMDocument extends \DOMDocument
             ];
             if ($removeHeadElement) {
                 $codeToRemove[] = '<head></head>';
-            }
-            if ($removeHtmlElement) {
-                $codeToRemove[] = '<html></html>';
             }
 
             $html = str_replace($codeToRemove, '', $html);

@@ -1425,8 +1425,8 @@ class Test extends PHPUnit\Framework\TestCase
         foreach ($fragments as $fragment) {
             $dom = new HTML5DOMDocument();
             $dom->loadHTML($fragment, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-            $this->assertEquals($dom->querySelectorAll('*')->length, 1);
             $this->assertEquals($fragment, $dom->saveHTML());
+            $this->assertEquals(1, $dom->querySelectorAll('*')->length);
         }
     }
 
