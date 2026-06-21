@@ -817,6 +817,25 @@ class Test extends PHPUnit\Framework\TestCase
             . '<style>span{color:green;}</style>'
             . '</head></html>';
         $this->assertEquals($expectedSource, $this->removeNewLines($dom->saveHTML()));
+
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML('<!DOCTYPE html><html><head>'
+            . '<link rel="stylesheet" type="text/css" href="style1.css">'
+            . '<link rel="stylesheet" type="text/css" href="style2.css">'
+            . '<link rel="stylesheet" type="text/css" href="style1.css">'
+            . '</head></html>');
+        $dom->insertHTML('<head>'
+            . '<link rel="stylesheet" type="text/css" href="style1.css">'
+            . '<link rel="stylesheet" type="text/css" href="style2.css">'
+            . '<link rel="stylesheet" type="text/css" href="style3.css">'
+            . '</head>');
+        $dom->modify(HTML5DOMDocument::FIX_DUPLICATE_LINKS);
+        $expectedSource = '<!DOCTYPE html><html><head>'
+            . '<link rel="stylesheet" type="text/css" href="style1.css">'
+            . '<link rel="stylesheet" type="text/css" href="style2.css">'
+            . '<link rel="stylesheet" type="text/css" href="style3.css">'
+            . '</head></html>';
+        $this->assertEquals($expectedSource, $this->removeNewLines($dom->saveHTML()));
     }
 
     /**

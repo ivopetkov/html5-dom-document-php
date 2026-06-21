@@ -59,6 +59,11 @@ class HTML5DOMDocument extends \DOMDocument
     const FIX_DUPLICATE_STYLES = 64;
 
     /**
+     * A modification (passed to modify()) that removes all but first links with duplicate content.
+     */
+    const FIX_DUPLICATE_LINKS = 128;
+
+    /**
      *
      * @var array
      */
@@ -636,6 +641,7 @@ class HTML5DOMDocument extends \DOMDocument
      *  - HTML5DOMDocument::FIX_MULTIPLE_BODIES - merges multiple body elements.
      *  - HTML5DOMDocument::OPTIMIZE_HEAD - moves charset metatag and title elements first.
      *  - HTML5DOMDocument::FIX_DUPLICATE_STYLES - removes all but first styles with duplicate content.
+     *  - HTML5DOMDocument::FIX_DUPLICATE_LINKS - removes all but first links with duplicate content.
      */
     public function modify($modifications = 0)
     {
@@ -646,6 +652,7 @@ class HTML5DOMDocument extends \DOMDocument
         $fixMultipleBodies = ($modifications & self::FIX_MULTIPLE_BODIES) !== 0;
         $optimizeHead = ($modifications & self::OPTIMIZE_HEAD) !== 0;
         $fixDuplicateStyles = ($modifications & self::FIX_DUPLICATE_STYLES) !== 0;
+        $fixDuplicateLinks = ($modifications & self::FIX_DUPLICATE_LINKS) !== 0;
 
         /** @var \DOMNodeList<HTML5DOMElement> */
         $headElements = $this->getElementsByTagName('head');
@@ -745,6 +752,30 @@ class HTML5DOMDocument extends \DOMDocument
                     unset($list);
                 }
                 unset($styles);
+            }
+
+            if ($fixDuplicateLinks) {
+                $links = $headElement->getElementsByTagName('link');
+                if ($links->length > 0) {
+                    $linksToRemove = [];
+                    $list = [];
+                    foreach ($links as $link) {
+                        if ($link->parentNode !== $headElement) {
+                            continue;
+                        }
+                        $outerHTML = trim($link->outerHTML);
+                        if (array_search($outerHTML, $list) === false) {
+                            $list[] = $outerHTML;
+                        } else {
+                            $linksToRemove[] = $link;
+                        }
+                    }
+                    foreach ($linksToRemove as $linkToRemove) {
+                        $linkToRemove->parentNode->removeChild($linkToRemove);
+                    }
+                    unset($list);
+                }
+                unset($links);
             }
 
             if ($optimizeHead) { // Moves charset metatag and title elements first.
