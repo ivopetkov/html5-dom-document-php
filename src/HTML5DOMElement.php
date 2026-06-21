@@ -61,9 +61,9 @@ class HTML5DOMElement extends \DOMElement
             if ($this->firstChild === null) {
                 $nodeName = $this->nodeName;
                 $attributes = $this->getAttributes();
-                $result = '<' . $nodeName . '';
-                foreach ($attributes as $name => $value) {
-                    $result .= ' ' . $name . '="' . htmlentities($value) . '"';
+                $result = '<' . $nodeName;
+                foreach ($attributes as $attributeName => $attributeValue) {
+                    $result .= ' ' . $attributeName . '="' . htmlentities($attributeValue) . '"';
                 }
                 if (array_search($nodeName, ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr']) === false) {
                     $result .= '></' . $nodeName . '>';
@@ -98,7 +98,7 @@ class HTML5DOMElement extends \DOMElement
             if (!isset(self::$newObjectsCache['html5domdocument'])) {
                 self::$newObjectsCache['html5domdocument'] = new \IvoPetkov\HTML5DOMDocument();
             }
-            $tmpDoc = clone (self::$newObjectsCache['html5domdocument']);
+            $tmpDoc = clone(self::$newObjectsCache['html5domdocument']);
             $tmpDoc->loadHTML('<body>' . $value . '</body>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
             foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
                 $node = $this->ownerDocument->importNode($node, true);
@@ -109,7 +109,7 @@ class HTML5DOMElement extends \DOMElement
             if (!isset(self::$newObjectsCache['html5domdocument'])) {
                 self::$newObjectsCache['html5domdocument'] = new \IvoPetkov\HTML5DOMDocument();
             }
-            $tmpDoc = clone (self::$newObjectsCache['html5domdocument']);
+            $tmpDoc = clone(self::$newObjectsCache['html5domdocument']);
             $tmpDoc->loadHTML('<body>' . $value . '</body>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
             foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
                 $node = $this->ownerDocument->importNode($node, true);
